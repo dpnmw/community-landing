@@ -1,88 +1,114 @@
 en:
   site_settings:
     # ── Master Switch ──
-    community_landing_enabled: "Activate the community landing page. When enabled, logged-out visitors see a branded welcome page instead of the default Discourse homepage."
+    community_landing_enabled: "━━ LANDING PAGE ━━ — Enable the branded community landing page. When turned on, logged-out visitors see a custom welcome page instead of the default Discourse homepage. All sections below are configurable."
 
     # ── Branding: Logo ──
-    community_landing_logo_dark_url: "Logo image URL for dark mode. Shown in the navbar and footer. Leave blank to display the site name as text."
+    community_landing_logo_dark_url: "━━ BRANDING ━━ — Logo image URL for dark mode. Displayed in the navbar header and footer. Leave blank to show the site name as text instead."
     community_landing_logo_light_url: "Logo image URL for light mode. If not set, the dark logo is used for both themes."
     community_landing_logo_height: "Logo height in pixels (16–80). Applies to both the navbar and footer logos."
-    community_landing_footer_logo_url: "Override logo specifically for the footer. If not set, the navbar logo is used."
-
-    # ── Navbar ──
-    community_landing_navbar_signin_label: "Text for the sign-in link in the navigation bar."
-    community_landing_navbar_join_label: "Text for the join/register button in the navigation bar."
-
-    # ── Hero Section: Content ──
-    community_landing_hero_title: "The large headline displayed in the hero section. The last word is automatically highlighted with your accent color gradient."
-    community_landing_hero_subtitle: "Supporting text shown below the hero title. Use this to briefly describe your community's purpose or value proposition."
-
-    # ── Hero Section: Imagery ──
-    community_landing_hero_background_image_url: "Full-bleed background image behind the entire hero section. A dark overlay is applied automatically to maintain text readability."
-    community_landing_hero_image_urls: "Images displayed on the right side of the hero section. Add up to 5 image URLs — a random one is shown on each visit. Click + to add each image row."
-    community_landing_hero_image_max_height: "Maximum height (in pixels) for the hero image. Keeps tall images from overwhelming the hero section. Range: 100–1200px."
-
-    # ── Hero Section: Call-to-Action Buttons ──
-    community_landing_hero_primary_button_label: "Text on the primary (filled) call-to-action button in the hero section."
-    community_landing_hero_primary_button_url: "Where the primary button links to. Use a relative path like /latest or an absolute URL."
-    community_landing_hero_secondary_button_label: "Text on the secondary (outlined) call-to-action button in the hero section."
-    community_landing_hero_secondary_button_url: "Where the secondary button links to. Defaults to the login page."
+    community_landing_footer_logo_url: "Override logo specifically for the footer. If not set, the navbar logo is reused."
 
     # ── Appearance: Color Scheme ──
-    community_landing_accent_color: "Primary accent color used for buttons, links, highlights, and gradients. Enter a hex value (e.g. #d4a24e)."
-    community_landing_accent_hover_color: "Accent color on hover states. Should be slightly lighter or brighter than the primary accent. Hex value (e.g. #c4922e)."
-    community_landing_dark_bg_color: "Background color for dark mode. Sets the overall page tone in dark theme. Hex value (e.g. #06060f)."
-    community_landing_light_bg_color: "Background color for light mode. Sets the overall page tone in light theme. Hex value (e.g. #faf6f0)."
+    community_landing_accent_color: "━━ GLOBAL COLORS ━━ — Primary accent color used across the entire landing page: buttons, links, highlights, gradients, and stat icons. Enter a hex value (e.g. #d4a24e)."
+    community_landing_accent_hover_color: "Accent color on hover states. Should be slightly lighter or darker than the primary accent. Hex value."
+    community_landing_dark_bg_color: "Background color for dark mode. Sets the overall page background when in dark theme. Hex value."
+    community_landing_light_bg_color: "Background color for light mode. Sets the overall page background when in light theme. Hex value."
 
-    # ── Section: Stats ──
-    community_landing_stats_title: "Heading text displayed above the stats counter row. Set to 'Premium Stats' by default."
-    community_landing_stat_icon_color: "Color for the stat counter icons. Enter a hex value (e.g. #d4a24e). Applies to all stat icons uniformly."
-    community_landing_stat_members_label: "Custom label for the Members stat counter shown in the stats row below the hero."
-    community_landing_stat_topics_label: "Custom label for the Topics stat counter."
-    community_landing_stat_posts_label: "Custom label for the Posts stat counter."
-    community_landing_stat_likes_label: "Custom label for the Likes stat counter."
-    community_landing_stat_chats_label: "Custom label for the Chats stat counter. Shows total chat messages if the Chat plugin is enabled."
+    # ── Custom CSS ──
+    community_landing_custom_css: "━━ CUSTOM CSS ━━ — Inject your own CSS directly into the landing page. Use this for fine-tuning styles, overriding any default, or adding completely custom design touches. Paste raw CSS rules here (no &lt;style&gt; tags needed). This CSS loads after all other styles, giving it the highest priority."
 
-    # ── Section: About ──
-    community_landing_about_enabled: "Show the About section with a quote card describing your community."
-    community_landing_about_title: "Title heading displayed at the top of the About Community section."
-    community_landing_about_role: "Subtitle shown below the about author name (e.g. 'Community Manager', 'Founded 2020'). If blank, the site name is used."
-    community_landing_about_body: "Main body text for the About section. Supports basic HTML tags: p, a, strong, em, ul, li, br."
-    community_landing_about_image_url: "Small avatar image shown next to the about section author name. Works best with a square image."
-    community_landing_about_gradient_start: "Start color for the About section card gradient background. Hex value (e.g. #fdf6ec)."
-    community_landing_about_gradient_end: "End color for the About section card gradient background. Hex value (e.g. #fef9f0)."
+    # ── Scroll Animations ──
+    community_landing_scroll_animation: "━━ SCROLL ANIMATIONS ━━ — Choose how sections animate into view as the visitor scrolls down the page. Options: fade_up (slide up from below), fade_in (appear in place), slide_left / slide_right (horizontal entrance), zoom_in (scale up from smaller), flip_up (3D rotation), or none to disable all scroll animations."
 
-    # ── Section: App Download Banner ──
-    community_landing_show_app_ctas: "Show a mobile app download banner above the footer. Requires at least one app store URL to be set."
-    community_landing_ios_app_url: "Apple App Store URL for your iOS app. Leave blank to hide the iOS badge."
-    community_landing_android_app_url: "Google Play Store URL for your Android app. Leave blank to hide the Android badge."
-    community_landing_ios_app_icon_url: "Custom image URL for the iOS app badge (e.g. an uploaded SVG or PNG). If not set, a default text badge is shown."
-    community_landing_android_app_icon_url: "Custom image URL for the Android app badge (e.g. an uploaded SVG or PNG). If not set, a default text badge is shown."
-    community_landing_app_badge_height: "Height of app badges in pixels (30–80). Applies to both default and custom icon badges."
-    community_landing_app_badge_style: "Border-radius style for app badges: rounded (12px corners), pill (fully rounded ends), or square (minimal rounding)."
-    community_landing_app_cta_headline: "Bold headline text shown in the app download banner."
-    community_landing_app_cta_subtext: "Supporting text shown below the app banner headline."
-    community_landing_app_cta_gradient_start: "Start color for the app CTA section gradient background. Hex value (e.g. #d4a24e)."
-    community_landing_app_cta_gradient_end: "End color for the app CTA section gradient background. Hex value (e.g. #b8862e)."
-    community_landing_app_cta_image_url: "Image displayed on the right side of the app CTA banner. Supports PNG for transparent backgrounds. Shown overlapping above the gradient area."
+    # ── Navbar ──
+    community_landing_navbar_signin_label: "━━ ROW 1: NAVBAR ━━ — The fixed navigation bar at the top of the page with your logo, theme toggle, sign-in link, and join button. This setting controls the text for the sign-in link."
+    community_landing_navbar_join_label: "Text for the join/register call-to-action button in the navbar."
+    community_landing_navbar_bg_color: "Custom background color for the navbar when scrolled. Leave blank for the default frosted glass effect."
+    community_landing_navbar_border_style: "Border line style at the bottom of the navbar when scrolled. Choose none, solid, dashed, or dotted."
 
-    # ── Section: Top Contributors ──
-    community_landing_contributors_enabled: "Show a section highlighting your most active community members with their avatars and usernames."
-    community_landing_contributors_title: "Heading text for the Top Creators section."
-    community_landing_contributors_days: "Lookback period in days for calculating top contributors. A larger number gives a broader view of active members."
-    community_landing_contributors_count: "How many top contributors to display. Recommended: 6–12 for a balanced layout."
+    # ── Hero Section ──
+    community_landing_hero_title: "━━ ROW 2: HERO SECTION ━━ — The large welcome area at the top of the page with headline, subtitle, CTA buttons, and optional imagery. This setting is the main headline text. The last word is automatically highlighted with your accent color gradient."
+    community_landing_hero_subtitle: "Supporting text shown below the hero headline. Describe your community's purpose or value proposition."
+    community_landing_hero_card_enabled: "Wrap the hero content inside a rounded card container with a subtle border and shadow. Turn off for a flat, full-width hero layout."
+    community_landing_hero_background_image_url: "Full-bleed background image behind the hero section. In card mode, the image fills the card with a dark overlay. In flat mode, it covers the entire section."
+    community_landing_hero_image_urls: "Images displayed on the right side of the hero. Add up to 5 image URLs — a random one is shown on each page load. Click + to add rows."
+    community_landing_hero_image_max_height: "Maximum height in pixels for the hero image (100–1200). Prevents tall images from overwhelming the section."
+    community_landing_hero_primary_button_label: "Text on the primary (filled, accent-colored) call-to-action button."
+    community_landing_hero_primary_button_url: "URL the primary button links to. Use a relative path like /latest or an absolute URL."
+    community_landing_hero_secondary_button_label: "Text on the secondary (outlined) call-to-action button."
+    community_landing_hero_secondary_button_url: "URL the secondary button links to. Defaults to the login page."
+    community_landing_hero_bg_color: "Custom background color for the hero section wrapper. Leave blank for the default page background."
+    community_landing_hero_border_style: "Border line style at the bottom of the hero section. Choose none, solid, dashed, or dotted."
 
-    # ── Section: Groups ──
-    community_landing_groups_enabled: "Show public groups as browsable cards. Only groups with public visibility are displayed."
-    community_landing_groups_title: "Heading text for the Community Spaces section."
-    community_landing_groups_count: "Number of group cards to display (default 5). Only public, non-automatic groups are shown."
+    # ── Stats Section ──
+    community_landing_stats_title: "━━ ROW 3: PREMIUM STATS ━━ — A full-width row displaying live community statistics (members, topics, posts, likes, chats) with animated counters and icons. Each card shows the icon and label on one line with the counter number below. This setting is the section heading text."
+    community_landing_stat_icon_color: "Color for all stat counter icons. Enter a hex value (e.g. #d4a24e). Matches your accent color by default."
+    community_landing_stat_members_label: "Custom label for the Members stat counter card."
+    community_landing_stat_topics_label: "Custom label for the Topics stat counter card."
+    community_landing_stat_posts_label: "Custom label for the Posts stat counter card."
+    community_landing_stat_likes_label: "Custom label for the Likes stat counter card."
+    community_landing_stat_chats_label: "Custom label for the Chats stat counter card. Shows total chat messages if the Chat plugin is active."
+    community_landing_stats_bg_color: "Custom background color for the stats section wrapper. Leave blank for default."
+    community_landing_stats_border_style: "Border line style at the bottom of the stats section."
 
-    # ── Section: Trending Discussions ──
-    community_landing_topics_enabled: "Show a list of trending discussions as horizontally scrollable cards."
-    community_landing_topics_title: "Heading text for the Trending Discussions section."
-    community_landing_topics_count: "Number of trending topics to display. Shows the most-replied topics from the last 30 days."
+    # ── About Section ──
+    community_landing_about_enabled: "━━ ROW 4: ABOUT COMMUNITY ━━ — A full-width gradient card with a bold heading, decorative quote icon, community description text, and author attribution (avatar, name, role). Supports a 3-color gradient background and an optional overlay image. Toggle this to show or hide the entire section."
+    community_landing_about_heading_enabled: "Show the bold heading text (e.g. 'About Community') at the top of the card. Turn off to start directly with the quote icon and description."
+    community_landing_about_heading: "The bold heading text displayed at the top of the About card (e.g. 'About Community', 'Our Story', 'Who We Are')."
+    community_landing_about_title: "Author or community name shown in the card's bottom attribution area, next to the avatar."
+    community_landing_about_role: "Subtitle below the author name (e.g. 'Community Manager', 'Founded 2020'). If blank, the site name is used."
+    community_landing_about_body: "Main body text for the About card. This is the community description. Supports basic HTML: p, a, strong, em, ul, li, br."
+    community_landing_about_image_url: "Small avatar image shown next to the author name in the card footer. Square images work best."
+    community_landing_about_gradient_start: "First color (left) of the About card's 3-color gradient background. Hex value (e.g. #fdf6ec)."
+    community_landing_about_gradient_mid: "Middle color of the About card gradient. Hex value (e.g. #fef9f0)."
+    community_landing_about_gradient_end: "Third color (right) of the About card gradient. Hex value (e.g. #fdf6ec)."
+    community_landing_about_background_image_url: "Background image layered on top of the gradient. Use a subtle pattern or texture. The gradient shows through any transparent areas."
+    community_landing_about_bg_color: "Custom background color for the about section wrapper (the area around the card). Leave blank for default."
+    community_landing_about_border_style: "Border line style at the bottom of the about section."
+
+    # ── Trending Discussions ──
+    community_landing_topics_enabled: "━━ ROW 5: TRENDING DISCUSSIONS ━━ — A horizontally scrollable row of topic cards showing the most active discussions. Each card displays the category badge, topic title, reply count, and like count — all pulled live from your forum. Supports drag-to-scroll on desktop and native swipe on mobile. Toggle to show or hide."
+    community_landing_topics_title: "Heading text displayed above the scrollable topic cards (e.g. 'Trending Discussions', 'Hot Topics')."
+    community_landing_topics_count: "Number of trending topic cards to display. Shows the most-replied topics from the last 30 days."
+    community_landing_topics_bg_color: "Custom background color for the trending discussions section wrapper. Leave blank for default."
+    community_landing_topics_border_style: "Border line style at the bottom of the trending section."
+
+    # ── Top Creators ──
+    community_landing_contributors_enabled: "━━ ROW 6: TOP CREATORS ━━ — A row of pill-shaped badges showing your most active community members. Each pill displays the user's avatar, @username, and activity count (number of posts in the lookback period). Toggle to show or hide the entire section."
+    community_landing_contributors_title: "Heading text displayed above the creator pills (e.g. 'Top Creators', 'Most Active Members')."
+    community_landing_contributors_days: "Lookback period in days for calculating top contributors. A larger number captures a wider time range of activity."
+    community_landing_contributors_count: "Number of top contributor pills to display. Recommended: 6–12 for a balanced layout."
+    community_landing_contributors_bg_color: "Custom background color for the creators section wrapper. Leave blank for default."
+    community_landing_contributors_border_style: "Border line style at the bottom of the creators section."
+
+    # ── Community Spaces ──
+    community_landing_groups_enabled: "━━ ROW 7: COMMUNITY SPACES ━━ — A grid of colorful cards representing your public community groups. Each card shows a large colored icon (with the group's first letter if no flair is set), the group name, and member count. Only publicly visible, non-automatic groups are displayed. Toggle to show or hide."
+    community_landing_groups_title: "Heading text displayed above the group cards (e.g. 'Community Spaces', 'Our Groups')."
+    community_landing_groups_count: "Number of group cards to display. Only public, non-automatic groups are shown."
+    community_landing_groups_bg_color: "Custom background color for the community spaces section wrapper. Leave blank for default."
+    community_landing_groups_border_style: "Border line style at the bottom of the spaces section."
+
+    # ── App Download CTA ──
+    community_landing_show_app_ctas: "━━ ROW 8: APP DOWNLOAD CTA ━━ — A gradient banner promoting your mobile app with a headline, subtitle, download badges (App Store / Google Play), and an optional promotional image on the right side. The gradient, badge style, and all text are fully configurable. Requires at least one app store URL. Toggle to show or hide."
+    community_landing_ios_app_url: "Apple App Store URL for your iOS app. Leave blank to hide the iOS badge entirely."
+    community_landing_android_app_url: "Google Play Store URL for your Android app. Leave blank to hide the Android badge entirely."
+    community_landing_ios_app_badge_image_url: "Replace the entire iOS badge button with a custom image (e.g. an official App Store badge PNG/SVG). Leave blank to use the default icon+text button."
+    community_landing_android_app_badge_image_url: "Replace the entire Android badge button with a custom image (e.g. an official Google Play badge PNG/SVG). Leave blank to use the default icon+text button."
+    community_landing_app_badge_height: "Height of app download badges in pixels (30–80). Applies to both default and custom image badges."
+    community_landing_app_badge_style: "Border-radius style for default badges: rounded (soft corners), pill (fully rounded), or square (minimal rounding)."
+    community_landing_app_cta_headline: "Bold headline text in the app download banner (e.g. 'Get the best experience on our app')."
+    community_landing_app_cta_subtext: "Supporting text below the headline (e.g. 'Available free on iOS and Android')."
+    community_landing_app_cta_gradient_start: "First color (left) of the app CTA 3-color gradient background. Hex value."
+    community_landing_app_cta_gradient_mid: "Middle color of the app CTA gradient. Hex value."
+    community_landing_app_cta_gradient_end: "Third color (right) of the app CTA gradient. Hex value."
+    community_landing_app_cta_image_url: "Promotional image on the right side of the CTA (e.g. a phone mockup). Supports PNG for transparent backgrounds. The image extends above the gradient area."
+    community_landing_app_cta_bg_color: "Custom background color for the app CTA section wrapper (behind the gradient card). Leave blank for default."
+    community_landing_app_cta_border_style: "Border line style at the bottom of the app CTA section."
 
     # ── Footer ──
-    community_landing_footer_description: "Description text displayed between the app CTA and footer navigation. Useful for a brief community description or tagline."
-    community_landing_footer_text: "Optional text displayed in the footer area. Supports basic HTML: p, a, strong, em, ul, li, br."
-    community_landing_footer_links: 'Footer navigation links as a JSON array. Format: [{"label":"Terms","url":"/tos"},{"label":"Privacy","url":"/privacy"}]'
+    community_landing_footer_description: "━━ ROW 9: FOOTER ━━ — The bottom of the page with your logo, navigation links, copyright notice, and optional description text. This setting adds a description paragraph between the app CTA and the footer bar. Useful for a brief community tagline or mission statement."
+    community_landing_footer_text: "Optional HTML text displayed inside the footer bar area. Supports: p, a, strong, em, ul, li, br."
+    community_landing_footer_links: 'Footer navigation links as a JSON array. Format: [{"label":"Terms","url":"/tos"},{"label":"Privacy","url":"/privacy"}]. Logo and links appear on the left, copyright on the right.'
+    community_landing_footer_bg_color: "Custom background color for the footer bar. Leave blank for the default footer background."
+    community_landing_footer_border_style: "Border line style at the top of the footer bar. Defaults to solid."

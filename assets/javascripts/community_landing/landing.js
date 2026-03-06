@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// Community Landing v2 — JS
-// Theme detection, scroll animations, stat counters, horizontal scroll
+// Community Landing v2.1 — JS
+// Theme, scroll animations, stat counters, smooth horizontal drag
 // ═══════════════════════════════════════════════════════════════════
 (function () {
   "use strict";
@@ -51,7 +51,7 @@
       img.src = pick;
       img.onload = function () { img.style.opacity = ""; img.classList.add("loaded"); };
       img.onerror = function () { img.src = images[0]; img.style.opacity = ""; img.classList.add("loaded"); };
-    } catch (e) { /* invalid JSON, keep default first image */ }
+    } catch (e) { /* invalid JSON */ }
   })();
 
   // ═══════════════════════════════════════════════════════════════════
@@ -59,6 +59,12 @@
   // ═══════════════════════════════════════════════════════════════════
   var navbar = $("#cl-navbar");
   if (navbar) {
+    // Apply custom navbar bg/border from data attributes
+    var navBg = navbar.getAttribute("data-nav-bg");
+    var navBorder = navbar.getAttribute("data-nav-border");
+    if (navBg) navbar.style.setProperty("--cl-nav-bg", navBg);
+    if (navBorder) navbar.style.setProperty("--cl-nav-border", "1px " + navBorder + " var(--cl-border)");
+
     var onScroll = function () {
       navbar.classList.toggle("scrolled", window.scrollY > 50);
     };
@@ -82,22 +88,30 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 4. SCROLL REVEAL ANIMATIONS
+  // 4. SCROLL REVEAL ANIMATIONS (supports configurable anim types)
   // ═══════════════════════════════════════════════════════════════════
-  if ("IntersectionObserver" in window) {
+  var animType = document.documentElement.getAttribute("data-scroll-anim") || "fade_up";
+
+  if (animType !== "none" && "IntersectionObserver" in window) {
     var revealObserver = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (entry) {
           if (entry.isIntersecting) {
             entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
           }
         });
       },
-      { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
+      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
     );
 
-    $$(".cl-reveal").forEach(function (el) {
+    $$(".cl-anim").forEach(function (el) {
       revealObserver.observe(el);
+    });
+  } else {
+    // No animation — make everything visible immediately
+    $$(".cl-anim").forEach(function (el) {
+      el.classList.add("visible");
     });
   }
 
@@ -139,32 +153,86 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 6. HORIZONTAL SCROLL — drag support for trending discussions
+  // 6. SMOOTH HORIZONTAL DRAG — trending discussions
+  //    Prevents link clicks during drag, smooth momentum scrolling
   // ═══════════════════════════════════════════════════════════════════
-  $$(".cl-topics__scroll").forEach(function (scroll) {
-    var isDown = false, startX, scrollLeft;
+  $$(".cl-topics__scroll").forEach(function (scrollEl) {
+    var isDown = false;
+    var startX = 0;
+    var scrollStart = 0;
+    var moved = false;
+    var velX = 0;
+    var lastX = 0;
+    var lastTime = 0;
+    var momentumId = null;
 
-    scroll.addEventListener("mousedown", function (e) {
+    function stopMomentum() {
+      if (momentumId) {
+        cancelAnimationFrame(momentumId);
+        momentumId = null;
+      }
+    }
+
+    function doMomentum() {
+      if (Math.abs(velX) < 0.5) return;
+      scrollEl.scrollLeft -= velX;
+      velX *= 0.92;
+      momentumId = requestAnimationFrame(doMomentum);
+    }
+
+    scrollEl.addEventListener("mousedown", function (ev) {
+      stopMomentum();
       isDown = true;
-      scroll.style.cursor = "grabbing";
-      startX = e.pageX - scroll.offsetLeft;
-      scrollLeft = scroll.scrollLeft;
+      moved = false;
+      startX = ev.pageX;
+      scrollStart = scrollEl.scrollLeft;
+      lastX = ev.pageX;
+      lastTime = Date.now();
+      velX = 0;
+      scrollEl.style.scrollSnapType = "none";
+      scrollEl.style.userSelect = "none";
     });
-    scroll.addEventListener("mouseleave", function () {
-      isDown = false;
-      scroll.style.cursor = "";
-    });
-    scroll.addEventListener("mouseup", function () {
-      isDown = false;
-      scroll.style.cursor = "";
-    });
-    scroll.addEventListener("mousemove", function (e) {
+
+    window.addEventListener("mousemove", function (ev) {
       if (!isDown) return;
-      e.preventDefault();
-      var x = e.pageX - scroll.offsetLeft;
-      var walk = (x - startX) * 1.5;
-      scroll.scrollLeft = scrollLeft - walk;
+      var dx = ev.pageX - startX;
+      if (Math.abs(dx) > 3) moved = true;
+      var now = Date.now();
+      var dt = now - lastTime;
+      if (dt > 0) {
+        velX = (ev.pageX - lastX) / dt * 16;
+      }
+      lastX = ev.pageX;
+      lastTime = now;
+      scrollEl.scrollLeft = scrollStart - dx;
     });
+
+    function endDrag() {
+      if (!isDown) return;
+      isDown = false;
+      scrollEl.style.userSelect = "";
+      if (Math.abs(velX) > 1) {
+        doMomentum();
+      }
+      // Re-enable snap after a tick
+      setTimeout(function () {
+        scrollEl.style.scrollSnapType = "";
+      }, 100);
+    }
+
+    window.addEventListener("mouseup", endDrag);
+    scrollEl.addEventListener("mouseleave", endDrag);
+
+    // Prevent link navigation if we dragged
+    scrollEl.addEventListener("click", function (ev) {
+      if (moved) {
+        ev.preventDefault();
+        ev.stopPropagation();
+        moved = false;
+      }
+    }, true);
+
+    // Touch support — native scrolling works, no extra handling needed
   });
 
   // ═══════════════════════════════════════════════════════════════════

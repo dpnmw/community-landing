@@ -1,10 +1,14 @@
 plugins:
-  # ── Master Switch ──
+  # ══════════════════════════════════════════
+  # Master Switch
+  # ══════════════════════════════════════════
   community_landing_enabled:
     default: true
     type: bool
 
-  # ── Branding: Logo ──
+  # ══════════════════════════════════════════
+  # Branding: Logo
+  # ══════════════════════════════════════════
   community_landing_logo_dark_url:
     default: ""
     type: string
@@ -20,50 +24,9 @@ plugins:
     default: ""
     type: string
 
-  # ── Navbar ──
-  community_landing_navbar_signin_label:
-    default: "Sign In"
-    type: string
-  community_landing_navbar_join_label:
-    default: "Get Started"
-    type: string
-
-  # ── Hero Section: Content ──
-  community_landing_hero_title:
-    default: "Welcome to Our Creative HeadQuarters"
-    type: string
-  community_landing_hero_subtitle:
-    default: "Are you ready to start your creative journey?"
-    type: string
-
-  # ── Hero Section: Imagery ──
-  community_landing_hero_background_image_url:
-    default: ""
-    type: string
-  community_landing_hero_image_urls:
-    default: ""
-    type: list
-  community_landing_hero_image_max_height:
-    default: 500
-    type: integer
-    min: 100
-    max: 1200
-
-  # ── Hero Section: Call-to-Action Buttons ──
-  community_landing_hero_primary_button_label:
-    default: "View Latest Topics"
-    type: string
-  community_landing_hero_primary_button_url:
-    default: "/latest"
-    type: string
-  community_landing_hero_secondary_button_label:
-    default: "Explore Our Spaces"
-    type: string
-  community_landing_hero_secondary_button_url:
-    default: "/login"
-    type: string
-
-  # ── Appearance: Color Scheme ──
+  # ══════════════════════════════════════════
+  # Appearance: Color Scheme
+  # ══════════════════════════════════════════
   community_landing_accent_color:
     default: "#d4a24e"
     type: string
@@ -77,7 +40,99 @@ plugins:
     default: "#faf6f0"
     type: string
 
-  # ── Section: Stats ──
+  # ══════════════════════════════════════════
+  # Scroll Animations
+  # ══════════════════════════════════════════
+  community_landing_scroll_animation:
+    default: "fade_up"
+    type: enum
+    choices:
+      - fade_up
+      - fade_in
+      - slide_left
+      - slide_right
+      - zoom_in
+      - flip_up
+      - none
+
+  # ══════════════════════════════════════════
+  # Custom CSS
+  # ══════════════════════════════════════════
+  community_landing_custom_css:
+    default: ""
+    type: string
+
+  # ══════════════════════════════════════════
+  # 1. Navbar
+  # ══════════════════════════════════════════
+  community_landing_navbar_signin_label:
+    default: "Sign In"
+    type: string
+  community_landing_navbar_join_label:
+    default: "Get Started"
+    type: string
+  community_landing_navbar_bg_color:
+    default: ""
+    type: string
+  community_landing_navbar_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
+
+  # ══════════════════════════════════════════
+  # 2. Hero Section
+  # ══════════════════════════════════════════
+  community_landing_hero_title:
+    default: "Welcome to Our Creative HeadQuarters"
+    type: string
+  community_landing_hero_subtitle:
+    default: "Are you ready to start your creative journey?"
+    type: string
+  community_landing_hero_card_enabled:
+    default: true
+    type: bool
+  community_landing_hero_background_image_url:
+    default: ""
+    type: string
+  community_landing_hero_image_urls:
+    default: ""
+    type: list
+  community_landing_hero_image_max_height:
+    default: 500
+    type: integer
+    min: 100
+    max: 1200
+  community_landing_hero_primary_button_label:
+    default: "View Latest Topics"
+    type: string
+  community_landing_hero_primary_button_url:
+    default: "/latest"
+    type: string
+  community_landing_hero_secondary_button_label:
+    default: "Explore Our Spaces"
+    type: string
+  community_landing_hero_secondary_button_url:
+    default: "/login"
+    type: string
+  community_landing_hero_bg_color:
+    default: ""
+    type: string
+  community_landing_hero_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
+
+  # ══════════════════════════════════════════
+  # 3. Premium Stats Section
+  # ══════════════════════════════════════════
   community_landing_stats_title:
     default: "Premium Stats"
     type: string
@@ -99,13 +154,32 @@ plugins:
   community_landing_stat_chats_label:
     default: "Chats"
     type: string
+  community_landing_stats_bg_color:
+    default: ""
+    type: string
+  community_landing_stats_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
 
-  # ── Section: About ──
+  # ══════════════════════════════════════════
+  # 4. About Community Section
+  # ══════════════════════════════════════════
   community_landing_about_enabled:
     default: true
     type: bool
-  community_landing_about_title:
+  community_landing_about_heading_enabled:
+    default: true
+    type: bool
+  community_landing_about_heading:
     default: "About Community"
+    type: string
+  community_landing_about_title:
+    default: "Community Name"
     type: string
   community_landing_about_role:
     default: ""
@@ -119,11 +193,105 @@ plugins:
   community_landing_about_gradient_start:
     default: "#fdf6ec"
     type: string
-  community_landing_about_gradient_end:
+  community_landing_about_gradient_mid:
     default: "#fef9f0"
     type: string
+  community_landing_about_gradient_end:
+    default: "#fdf6ec"
+    type: string
+  community_landing_about_background_image_url:
+    default: ""
+    type: string
+  community_landing_about_bg_color:
+    default: ""
+    type: string
+  community_landing_about_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
 
-  # ── Section: App Download Banner ──
+  # ══════════════════════════════════════════
+  # 5. Trending Discussions Section
+  # ══════════════════════════════════════════
+  community_landing_topics_enabled:
+    default: true
+    type: bool
+  community_landing_topics_title:
+    default: "Trending Discussions"
+    type: string
+  community_landing_topics_count:
+    default: 5
+    type: integer
+  community_landing_topics_bg_color:
+    default: ""
+    type: string
+  community_landing_topics_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
+
+  # ══════════════════════════════════════════
+  # 6. Top Creators Section
+  # ══════════════════════════════════════════
+  community_landing_contributors_enabled:
+    default: true
+    type: bool
+  community_landing_contributors_title:
+    default: "Top Creators"
+    type: string
+  community_landing_contributors_days:
+    default: 90
+    type: integer
+  community_landing_contributors_count:
+    default: 10
+    type: integer
+  community_landing_contributors_bg_color:
+    default: ""
+    type: string
+  community_landing_contributors_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
+
+  # ══════════════════════════════════════════
+  # 7. Community Spaces Section
+  # ══════════════════════════════════════════
+  community_landing_groups_enabled:
+    default: true
+    type: bool
+  community_landing_groups_title:
+    default: "Community Spaces"
+    type: string
+  community_landing_groups_count:
+    default: 5
+    type: integer
+  community_landing_groups_bg_color:
+    default: ""
+    type: string
+  community_landing_groups_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
+
+  # ══════════════════════════════════════════
+  # 8. App Download CTA Section
+  # ══════════════════════════════════════════
   community_landing_show_app_ctas:
     default: true
     type: bool
@@ -133,10 +301,10 @@ plugins:
   community_landing_android_app_url:
     default: ""
     type: string
-  community_landing_ios_app_icon_url:
+  community_landing_ios_app_badge_image_url:
     default: ""
     type: string
-  community_landing_android_app_icon_url:
+  community_landing_android_app_badge_image_url:
     default: ""
     type: string
   community_landing_app_badge_height:
@@ -160,50 +328,30 @@ plugins:
   community_landing_app_cta_gradient_start:
     default: "#d4a24e"
     type: string
+  community_landing_app_cta_gradient_mid:
+    default: "#c4922e"
+    type: string
   community_landing_app_cta_gradient_end:
     default: "#b8862e"
     type: string
   community_landing_app_cta_image_url:
     default: ""
     type: string
-
-  # ── Section: Top Contributors ──
-  community_landing_contributors_enabled:
-    default: true
-    type: bool
-  community_landing_contributors_title:
-    default: "Top Creators"
+  community_landing_app_cta_bg_color:
+    default: ""
     type: string
-  community_landing_contributors_days:
-    default: 90
-    type: integer
-  community_landing_contributors_count:
-    default: 10
-    type: integer
+  community_landing_app_cta_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
 
-  # ── Section: Groups ──
-  community_landing_groups_enabled:
-    default: true
-    type: bool
-  community_landing_groups_title:
-    default: "Community Spaces"
-    type: string
-  community_landing_groups_count:
-    default: 5
-    type: integer
-
-  # ── Section: Trending Discussions ──
-  community_landing_topics_enabled:
-    default: true
-    type: bool
-  community_landing_topics_title:
-    default: "Trending Discussions"
-    type: string
-  community_landing_topics_count:
-    default: 5
-    type: integer
-
-  # ── Footer ──
+  # ══════════════════════════════════════════
+  # 9. Footer
+  # ══════════════════════════════════════════
   community_landing_footer_description:
     default: ""
     type: string
@@ -213,3 +361,14 @@ plugins:
   community_landing_footer_links:
     default: '[{"label":"Brand","url":"/about"},{"label":"Links","url":"/links"},{"label":"Terms","url":"/tos"},{"label":"Privacy","url":"/privacy"}]'
     type: string
+  community_landing_footer_bg_color:
+    default: ""
+    type: string
+  community_landing_footer_border_style:
+    default: "solid"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted

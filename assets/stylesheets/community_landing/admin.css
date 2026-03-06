@@ -1,0 +1,74 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Community Landing — Admin Settings Panel Styles
+   Adds visual separators and spacing between setting groups
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* All community_landing settings get extra bottom spacing */
+.admin-detail .row.setting[data-setting^="community_landing_"] {
+  margin-bottom: 20px;
+}
+
+/* ── Section separator borders ──
+   These selectors target the FIRST setting of each group to add
+   a visible border-top separator with extra padding above it. */
+
+/* Branding section */
+.admin-detail .row.setting[data-setting="community_landing_logo_dark_url"],
+/* Global Colors section */
+.admin-detail .row.setting[data-setting="community_landing_accent_color"],
+/* Custom CSS section */
+.admin-detail .row.setting[data-setting="community_landing_custom_css"],
+/* Scroll Animations section */
+.admin-detail .row.setting[data-setting="community_landing_scroll_animation"],
+/* Row 1: Navbar */
+.admin-detail .row.setting[data-setting="community_landing_navbar_signin_label"],
+/* Row 2: Hero Section */
+.admin-detail .row.setting[data-setting="community_landing_hero_title"],
+/* Row 3: Premium Stats */
+.admin-detail .row.setting[data-setting="community_landing_stats_title"],
+/* Row 4: About Community */
+.admin-detail .row.setting[data-setting="community_landing_about_enabled"],
+/* Row 5: Trending Discussions */
+.admin-detail .row.setting[data-setting="community_landing_topics_enabled"],
+/* Row 6: Top Creators */
+.admin-detail .row.setting[data-setting="community_landing_contributors_enabled"],
+/* Row 7: Community Spaces */
+.admin-detail .row.setting[data-setting="community_landing_groups_enabled"],
+/* Row 8: App Download CTA */
+.admin-detail .row.setting[data-setting="community_landing_show_app_ctas"],
+/* Row 9: Footer */
+.admin-detail .row.setting[data-setting="community_landing_footer_description"] {
+  border-top: 2px solid rgba(0, 0, 0, 0.12);
+  margin-top: 28px;
+  padding-top: 24px;
+}
+
+/* Dark mode admin panel support */
+.admin-detail.dark .row.setting[data-setting="community_landing_logo_dark_url"],
+.admin-detail.dark .row.setting[data-setting="community_landing_accent_color"],
+.admin-detail.dark .row.setting[data-setting="community_landing_custom_css"],
+.admin-detail.dark .row.setting[data-setting="community_landing_scroll_animation"],
+.admin-detail.dark .row.setting[data-setting="community_landing_navbar_signin_label"],
+.admin-detail.dark .row.setting[data-setting="community_landing_hero_title"],
+.admin-detail.dark .row.setting[data-setting="community_landing_stats_title"],
+.admin-detail.dark .row.setting[data-setting="community_landing_about_enabled"],
+.admin-detail.dark .row.setting[data-setting="community_landing_topics_enabled"],
+.admin-detail.dark .row.setting[data-setting="community_landing_contributors_enabled"],
+.admin-detail.dark .row.setting[data-setting="community_landing_groups_enabled"],
+.admin-detail.dark .row.setting[data-setting="community_landing_show_app_ctas"],
+.admin-detail.dark .row.setting[data-setting="community_landing_footer_description"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_logo_dark_url"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_accent_color"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_custom_css"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_scroll_animation"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_navbar_signin_label"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_hero_title"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_stats_title"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_about_enabled"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_topics_enabled"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_contributors_enabled"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_groups_enabled"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_show_app_ctas"],
+html.dark-scheme .admin-detail .row.setting[data-setting="community_landing_footer_description"] {
+  border-top-color: rgba(255, 255, 255, 0.12);
+}

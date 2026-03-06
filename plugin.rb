@@ -2,11 +2,13 @@
 
 # name: community-landing
 # about: Branded public landing page for unauthenticated visitors
-# version: 2.0.0
+# version: 2.1.0
 # authors: Community
 # url: https://github.com/community/community-landing
 
 enabled_site_setting :community_landing_enabled
+
+register_asset "stylesheets/community_landing/admin.css", :admin
 
 after_initialize do
   module ::CommunityLanding
@@ -130,11 +132,17 @@ after_initialize do
       dark_bg = s.community_landing_dark_bg_color.presence || "#06060f"
       light_bg = s.community_landing_light_bg_color.presence || "#faf6f0"
       stat_icon_color = s.community_landing_stat_icon_color.presence || accent
-      about_grad_start = s.community_landing_about_gradient_start.presence || "#fdf6ec"
-      about_grad_end = s.community_landing_about_gradient_end.presence || "#fef9f0"
-      app_grad_start = s.community_landing_app_cta_gradient_start.presence || accent
-      app_grad_end = s.community_landing_app_cta_gradient_end.presence || accent_hover
+      about_g1 = s.community_landing_about_gradient_start.presence || "#fdf6ec"
+      about_g2 = s.community_landing_about_gradient_mid.presence || "#fef9f0"
+      about_g3 = s.community_landing_about_gradient_end.presence || "#fdf6ec"
+      about_bg_img = s.community_landing_about_background_image_url.presence
+      app_g1 = s.community_landing_app_cta_gradient_start.presence || accent
+      app_g2 = s.community_landing_app_cta_gradient_mid.presence || accent_hover
+      app_g3 = s.community_landing_app_cta_gradient_end.presence || accent_hover
       accent_rgb = hex_to_rgb(accent)
+      anim = s.community_landing_scroll_animation rescue "fade_up"
+
+      about_bg_extra = about_bg_img ? ", url('#{about_bg_img}') center/cover no-repeat" : ""
 
       "<style>
 :root, [data-theme=\"dark\"] {
@@ -148,8 +156,8 @@ after_initialize do
   --cl-border-hover: rgba(#{accent_rgb}, 0.25);
   --cl-orb-1: rgba(#{accent_rgb}, 0.12);
   --cl-stat-icon-color: #{stat_icon_color};
-  --cl-about-gradient: linear-gradient(135deg, #{about_grad_start}, #{about_grad_end});
-  --cl-app-gradient: linear-gradient(135deg, #{app_grad_start}, #{app_grad_end});
+  --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
 [data-theme=\"light\"] {
   --cl-accent: #{accent};
@@ -162,8 +170,8 @@ after_initialize do
   --cl-border-hover: rgba(#{accent_rgb}, 0.3);
   --cl-orb-1: rgba(#{accent_rgb}, 0.08);
   --cl-stat-icon-color: #{stat_icon_color};
-  --cl-about-gradient: linear-gradient(135deg, #{about_grad_start}, #{about_grad_end});
-  --cl-app-gradient: linear-gradient(135deg, #{app_grad_start}, #{app_grad_end});
+  --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme=\"dark\"]) {
@@ -177,11 +185,20 @@ after_initialize do
     --cl-border-hover: rgba(#{accent_rgb}, 0.3);
     --cl-orb-1: rgba(#{accent_rgb}, 0.08);
     --cl-stat-icon-color: #{stat_icon_color};
-    --cl-about-gradient: linear-gradient(135deg, #{about_grad_start}, #{about_grad_end});
-    --cl-app-gradient: linear-gradient(135deg, #{app_grad_start}, #{app_grad_end});
+    --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
+    --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
   }
 }
 </style>\n"
+    end
+
+    # ── Section row style helpers ──
+
+    def section_style(bg_color, border_style)
+      parts = []
+      parts << "background: #{bg_color};" if bg_color.present?
+      parts << "border-bottom: 1px #{border_style} var(--cl-border);" if border_style.present? && border_style != "none"
+      parts.any? ? " style=\"#{parts.join(" ")}\"" : ""
     end
 
     # ── Logo helpers ──
@@ -199,24 +216,12 @@ after_initialize do
       end
     end
 
-    # ── App badge helper ──
-
-    def render_app_badge(store_url, icon_svg, label, badge_h, badge_style)
-      style_class = case badge_style
-                    when "pill" then "cl-app-badge--pill"
-                    when "square" then "cl-app-badge--square"
-                    else "cl-app-badge--rounded"
-                    end
-      "<a href=\"#{store_url}\" class=\"cl-app-badge #{style_class}\" target=\"_blank\" rel=\"noopener noreferrer\">" \
-      "<span class=\"cl-app-badge__icon\">#{icon_svg}</span>" \
-      "<span class=\"cl-app-badge__label\">#{e(label)}</span>" \
-      "</a>\n"
-    end
-
     def build_html(css, js)
       s = SiteSetting
       site_name = s.title
       login_url = "/login"
+      anim_class = s.community_landing_scroll_animation rescue "fade_up"
+      anim_class = "none" if anim_class.blank?
 
       # Logo URLs
       logo_dark_url  = s.community_landing_logo_dark_url.presence
@@ -228,11 +233,10 @@ after_initialize do
       has_logo  = logo_dark_url.present? || logo_light_url.present?
       logo_h    = s.community_landing_logo_height rescue 30
       og_logo   = logo_dark_url || logo_light_url
-
       footer_logo_url = s.community_landing_footer_logo_url.presence
 
       html = +""
-      html << "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n"
+      html << "<!DOCTYPE html>\n<html lang=\"en\" data-scroll-anim=\"#{e(anim_class)}\">\n<head>\n"
       html << "<meta charset=\"UTF-8\">\n"
       html << "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n"
       html << "<meta name=\"color-scheme\" content=\"dark light\">\n"
@@ -246,30 +250,66 @@ after_initialize do
       html << "<link rel=\"canonical\" href=\"#{Discourse.base_url}\">\n"
       html << "<style>\n#{css}\n</style>\n"
       html << build_color_overrides(s)
+
+      # Custom CSS injection
+      custom_css = s.community_landing_custom_css.presence rescue nil
+      if custom_css
+        html << "<style>\n/* Custom CSS */\n#{custom_css}\n</style>\n"
+      end
+
       html << "</head>\n<body class=\"cl-body\">\n"
 
       signin_label = s.community_landing_navbar_signin_label.presence || "Sign In"
       join_label   = s.community_landing_navbar_join_label.presence || "Get Started"
 
-      # ── NAVBAR ──
-      html << "<nav class=\"cl-navbar\" id=\"cl-navbar\"><div class=\"cl-navbar__inner\">\n"
+      # ── 1. NAVBAR ──
+      navbar_bg = s.community_landing_navbar_bg_color.presence rescue nil
+      navbar_border = s.community_landing_navbar_border_style rescue "none"
+      navbar_data = ""
+      navbar_data << " data-nav-bg=\"#{e(navbar_bg)}\"" if navbar_bg
+      navbar_data << " data-nav-border=\"#{e(navbar_border)}\"" if navbar_border && navbar_border != "none"
+      html << "<nav class=\"cl-navbar\" id=\"cl-navbar\"#{navbar_data}><div class=\"cl-navbar__inner\">\n"
       html << "<div class=\"cl-navbar__left\">"
-      html << "<button class=\"cl-theme-toggle\" aria-label=\"Toggle theme\">#{SUN_SVG}#{MOON_SVG}</button>\n"
+      html << "<a href=\"/\" class=\"cl-navbar__brand\">"
+      if has_logo
+        html << render_logo(logo_dark_url, logo_light_url, site_name, "cl-navbar__logo", logo_h)
+      else
+        html << "<span class=\"cl-navbar__site-name\">#{e(site_name)}</span>"
+      end
+      html << "</a>\n"
       html << "</div>"
       html << "<div class=\"cl-navbar__right\">"
+      html << "<button class=\"cl-theme-toggle\" aria-label=\"Toggle theme\">#{SUN_SVG}#{MOON_SVG}</button>\n"
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{e(join_label)}</a>\n"
       html << "</div>"
       html << "<button class=\"cl-navbar__hamburger\" id=\"cl-hamburger\" aria-label=\"Toggle menu\"><span></span><span></span><span></span></button>\n"
       html << "<div class=\"cl-navbar__mobile-menu\" id=\"cl-nav-links\">\n"
+      html << "<button class=\"cl-theme-toggle\" aria-label=\"Toggle theme\">#{SUN_SVG}#{MOON_SVG}</button>\n"
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{e(join_label)}</a>\n"
       html << "</div>"
       html << "</div></nav>\n"
 
-      # ── HERO ──
-      html << "<section class=\"cl-hero\" id=\"cl-hero\">\n"
-      html << "<div class=\"cl-hero__inner\">\n"
+      # ── 2. HERO ──
+      hero_card = s.community_landing_hero_card_enabled rescue true
+      hero_bg_img = s.community_landing_hero_background_image_url.presence
+      hero_bg_color = s.community_landing_hero_bg_color.presence
+      hero_border = s.community_landing_hero_border_style rescue "none"
+
+      hero_section_style = section_style(hero_bg_color, hero_border)
+      html << "<section class=\"cl-hero#{hero_card ? ' cl-hero--card' : ''}\" id=\"cl-hero\"#{hero_section_style}>\n"
+
+      if hero_bg_img && !hero_card
+        html << "<div class=\"cl-hero__bg\" style=\"background-image: url('#{hero_bg_img}');\"></div>\n"
+      end
+
+      inner_style = ""
+      if hero_card && hero_bg_img
+        inner_style = " style=\"background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('#{hero_bg_img}'); background-size: cover; background-position: center;\""
+      end
+
+      html << "<div class=\"cl-hero__inner\"#{inner_style}>\n"
       html << "<div class=\"cl-hero__content\">\n"
 
       title_words = s.community_landing_hero_title.to_s.split(" ")
@@ -292,7 +332,6 @@ after_initialize do
       html << "</div>\n"
       html << "</div>\n"
 
-      # Hero image
       hero_image_urls_raw = s.community_landing_hero_image_urls.presence
       if hero_image_urls_raw
         urls = hero_image_urls_raw.split("|").map(&:strip).reject(&:empty?).first(5)
@@ -306,9 +345,11 @@ after_initialize do
 
       html << "</div></section>\n"
 
-      # ── PREMIUM STATS ROW ──
+      # ── 3. PREMIUM STATS ──
       stats_title = s.community_landing_stats_title.presence || "Premium Stats"
-      html << "<section class=\"cl-stats cl-reveal\" id=\"cl-stats-row\"><div class=\"cl-container\">\n"
+      stats_bg = s.community_landing_stats_bg_color.presence
+      stats_border = s.community_landing_stats_border_style rescue "none"
+      html << "<section class=\"cl-stats cl-anim\" id=\"cl-stats-row\"#{section_style(stats_bg, stats_border)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(stats_title)}</h2>\n"
       html << "<div class=\"cl-stats__grid\">\n"
       html << stats_counter_card(STAT_MEMBERS_SVG, @stats[:members], s.community_landing_stat_members_label)
@@ -318,14 +359,19 @@ after_initialize do
       html << stats_counter_card(STAT_CHATS_SVG, @stats[:chats], s.community_landing_stat_chats_label)
       html << "</div>\n</div></section>\n"
 
-      # ── ABOUT COMMUNITY — full-width card ──
+      # ── 4. ABOUT COMMUNITY ──
       if s.community_landing_about_enabled
         about_body = s.community_landing_about_body.presence || ""
         about_image = s.community_landing_about_image_url.presence
         about_role = s.community_landing_about_role.presence || site_name
-        html << "<section class=\"cl-about cl-reveal\" id=\"cl-about\"><div class=\"cl-container\">\n"
+        about_heading_on = s.community_landing_about_heading_enabled rescue true
+        about_heading = s.community_landing_about_heading.presence || "About Community"
+        about_bg = s.community_landing_about_bg_color.presence
+        about_border = s.community_landing_about_border_style rescue "none"
+
+        html << "<section class=\"cl-about cl-anim\" id=\"cl-about\"#{section_style(about_bg, about_border)}><div class=\"cl-container\">\n"
         html << "<div class=\"cl-about__card\">\n"
-        html << "<h2 class=\"cl-about__heading\">#{e(s.community_landing_about_title)}</h2>\n"
+        html << "<h2 class=\"cl-about__heading\">#{e(about_heading)}</h2>\n" if about_heading_on
         html << QUOTE_SVG
         if about_body.present?
           html << "<div class=\"cl-about__body\">#{about_body}</div>\n"
@@ -342,53 +388,63 @@ after_initialize do
         html << "</div></section>\n"
       end
 
-      # ── TRENDING DISCUSSIONS — horizontal scrollable cards ──
+      # ── 5. TRENDING DISCUSSIONS ──
       if s.community_landing_topics_enabled && @hot_topics&.any?
-        html << "<section class=\"cl-topics cl-reveal\" id=\"cl-topics\"><div class=\"cl-container\">\n"
+        topics_bg = s.community_landing_topics_bg_color.presence
+        topics_border = s.community_landing_topics_border_style rescue "none"
+        html << "<section class=\"cl-topics cl-anim\" id=\"cl-topics\"#{section_style(topics_bg, topics_border)}><div class=\"cl-container\">\n"
         html << "<h2 class=\"cl-section-title\">#{e(s.community_landing_topics_title)}</h2>\n"
         html << "<div class=\"cl-topics__scroll\">\n"
         @hot_topics.each do |topic|
+          topic_likes = topic.like_count rescue 0
+          topic_replies = topic.posts_count.to_i
           html << "<a href=\"#{login_url}\" class=\"cl-topic-card\">\n"
           if topic.category
             html << "<span class=\"cl-topic-card__cat\" style=\"--cat-color: ##{topic.category.color}\">#{e(topic.category.name)}</span>\n"
           end
           html << "<span class=\"cl-topic-card__title\">#{e(topic.title)}</span>\n"
           html << "<div class=\"cl-topic-card__meta\">"
-          html << "<span class=\"cl-topic-card__stat\">#{COMMENT_SVG} #{topic.posts_count}</span>"
-          html << "<span class=\"cl-topic-card__stat\">#{HEART_SVG} #{topic.like_count}</span>"
+          html << "<span class=\"cl-topic-card__stat\">#{COMMENT_SVG} #{topic_replies}</span>"
+          html << "<span class=\"cl-topic-card__stat\">#{HEART_SVG} #{topic_likes}</span>"
           html << "</div>"
           html << "</a>\n"
         end
         html << "</div>\n</div></section>\n"
       end
 
-      # ── TOP CREATORS — pill badges ──
+      # ── 6. TOP CREATORS ──
       if s.community_landing_contributors_enabled && @top_contributors&.any?
-        html << "<section class=\"cl-creators cl-reveal\" id=\"cl-contributors\"><div class=\"cl-container\">\n"
+        contrib_bg = s.community_landing_contributors_bg_color.presence
+        contrib_border = s.community_landing_contributors_border_style rescue "none"
+        html << "<section class=\"cl-creators cl-anim\" id=\"cl-contributors\"#{section_style(contrib_bg, contrib_border)}><div class=\"cl-container\">\n"
         html << "<h2 class=\"cl-section-title\">#{e(s.community_landing_contributors_title)}</h2>\n"
         html << "<div class=\"cl-creators__list\">\n"
         @top_contributors.each do |user|
           avatar_url = user.avatar_template.gsub("{size}", "120")
-          cheers = user.respond_to?(:post_count) ? user.post_count : 0
+          activity_count = user.attributes["post_count"].to_i rescue 0
           html << "<a href=\"#{login_url}\" class=\"cl-creator-pill\">\n"
           html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-creator-pill__avatar\" loading=\"lazy\">\n"
           html << "<span class=\"cl-creator-pill__name\">@#{e(user.username)}</span>\n"
-          html << "<span class=\"cl-creator-pill__cheers\">#{cheers} cheers</span>\n"
+          html << "<span class=\"cl-creator-pill__activity\">#{activity_count} Activity</span>\n"
           html << "</a>\n"
         end
         html << "</div>\n</div></section>\n"
       end
 
-      # ── COMMUNITY SPACES — colored cards ──
+      # ── 7. COMMUNITY SPACES ──
       if s.community_landing_groups_enabled && @groups&.any?
-        html << "<section class=\"cl-spaces cl-reveal\" id=\"cl-groups\"><div class=\"cl-container\">\n"
+        groups_bg = s.community_landing_groups_bg_color.presence
+        groups_border = s.community_landing_groups_border_style rescue "none"
+        html << "<section class=\"cl-spaces cl-anim\" id=\"cl-groups\"#{section_style(groups_bg, groups_border)}><div class=\"cl-container\">\n"
         html << "<h2 class=\"cl-section-title\">#{e(s.community_landing_groups_title)}</h2>\n"
         html << "<div class=\"cl-spaces__grid\">\n"
         @groups.each do |group|
           display_name = group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)
           hue = group.name.bytes.sum % 360
+          sat = 50 + (group.name.bytes.first.to_i % 20)
+          light = 40 + (group.name.bytes.last.to_i % 15)
           html << "<a href=\"#{login_url}\" class=\"cl-space-card\">\n"
-          html << "<div class=\"cl-space-card__icon\" style=\"background: hsl(#{hue}, 55%, 50%)\">"
+          html << "<div class=\"cl-space-card__icon\" style=\"background: hsl(#{hue}, #{sat}%, #{light}%)\">"
           if group.flair_url.present?
             html << "<img src=\"#{group.flair_url}\" alt=\"\">"
           else
@@ -396,29 +452,61 @@ after_initialize do
           end
           html << "</div>\n"
           html << "<span class=\"cl-space-card__name\">#{e(display_name)}</span>\n"
-          html << "<span class=\"cl-space-card__count\">#{group.user_count} members</span>\n"
+          html << "<span class=\"cl-space-card__sub\">#{group.user_count} members</span>\n"
           html << "</a>\n"
         end
         html << "</div>\n</div></section>\n"
       end
 
-      # ── APP CTA — split layout with image ──
+      # ── 8. APP CTA ──
       if s.community_landing_show_app_ctas && (s.community_landing_ios_app_url.present? || s.community_landing_android_app_url.present?)
         badge_h = s.community_landing_app_badge_height rescue 45
         badge_style = s.community_landing_app_badge_style rescue "rounded"
         app_image = s.community_landing_app_cta_image_url.presence
+        ios_custom = s.community_landing_ios_app_badge_image_url.presence rescue nil
+        android_custom = s.community_landing_android_app_badge_image_url.presence rescue nil
+        app_bg = s.community_landing_app_cta_bg_color.presence
+        app_border = s.community_landing_app_cta_border_style rescue "none"
 
-        html << "<section class=\"cl-app-cta cl-reveal\" id=\"cl-app-cta\"><div class=\"cl-container\">\n"
+        html << "<section class=\"cl-app-cta cl-anim\" id=\"cl-app-cta\"#{section_style(app_bg, app_border)}><div class=\"cl-container\">\n"
         html << "<div class=\"cl-app-cta__inner\">\n"
         html << "<div class=\"cl-app-cta__content\">\n"
         html << "<h2 class=\"cl-app-cta__headline\">#{e(s.community_landing_app_cta_headline)}</h2>\n"
         html << "<p class=\"cl-app-cta__subtext\">#{e(s.community_landing_app_cta_subtext)}</p>\n" if s.community_landing_app_cta_subtext.present?
         html << "<div class=\"cl-app-cta__badges\">\n"
         if s.community_landing_ios_app_url.present?
-          html << render_app_badge(s.community_landing_ios_app_url, IOS_BADGE_SVG, "App Store", badge_h, badge_style)
+          if ios_custom
+            style_class = case badge_style
+                          when "pill" then "cl-app-badge--pill"
+                          when "square" then "cl-app-badge--square"
+                          else "cl-app-badge--rounded"
+                          end
+            html << "<a href=\"#{s.community_landing_ios_app_url}\" class=\"cl-app-badge-img #{style_class}\" target=\"_blank\" rel=\"noopener noreferrer\">"
+            html << "<img src=\"#{ios_custom}\" alt=\"App Store\" style=\"height: #{badge_h}px; width: auto;\">"
+            html << "</a>\n"
+          else
+            html << "<a href=\"#{s.community_landing_ios_app_url}\" class=\"cl-app-badge cl-app-badge--#{badge_style == 'pill' ? 'pill' : badge_style == 'square' ? 'square' : 'rounded'}\" target=\"_blank\" rel=\"noopener noreferrer\">"
+            html << "<span class=\"cl-app-badge__icon\">#{IOS_BADGE_SVG}</span>"
+            html << "<span class=\"cl-app-badge__label\">App Store</span>"
+            html << "</a>\n"
+          end
         end
         if s.community_landing_android_app_url.present?
-          html << render_app_badge(s.community_landing_android_app_url, ANDROID_BADGE_SVG, "Google Play", badge_h, badge_style)
+          if android_custom
+            style_class = case badge_style
+                          when "pill" then "cl-app-badge--pill"
+                          when "square" then "cl-app-badge--square"
+                          else "cl-app-badge--rounded"
+                          end
+            html << "<a href=\"#{s.community_landing_android_app_url}\" class=\"cl-app-badge-img #{style_class}\" target=\"_blank\" rel=\"noopener noreferrer\">"
+            html << "<img src=\"#{android_custom}\" alt=\"Google Play\" style=\"height: #{badge_h}px; width: auto;\">"
+            html << "</a>\n"
+          else
+            html << "<a href=\"#{s.community_landing_android_app_url}\" class=\"cl-app-badge cl-app-badge--#{badge_style == 'pill' ? 'pill' : badge_style == 'square' ? 'square' : 'rounded'}\" target=\"_blank\" rel=\"noopener noreferrer\">"
+            html << "<span class=\"cl-app-badge__icon\">#{ANDROID_BADGE_SVG}</span>"
+            html << "<span class=\"cl-app-badge__label\">Google Play</span>"
+            html << "</a>\n"
+          end
         end
         html << "</div>\n"
         html << "</div>\n"
@@ -431,15 +519,21 @@ after_initialize do
         html << "</div></section>\n"
       end
 
-      # ── FOOTER DESCRIPTION ──
+      # ── 9. FOOTER DESCRIPTION ──
       if s.community_landing_footer_description.present?
         html << "<div class=\"cl-footer-desc\"><div class=\"cl-container\">\n"
         html << "<p class=\"cl-footer-desc__text\">#{s.community_landing_footer_description}</p>\n"
         html << "</div></div>\n"
       end
 
-      # ── FOOTER ──
-      html << "<footer class=\"cl-footer\" id=\"cl-footer\">\n"
+      # ── 10. FOOTER ──
+      footer_bg = s.community_landing_footer_bg_color.presence rescue nil
+      footer_border = s.community_landing_footer_border_style rescue "solid"
+      footer_style_parts = []
+      footer_style_parts << "background: #{footer_bg};" if footer_bg
+      footer_style_parts << "border-top: 1px #{footer_border} var(--cl-border);" if footer_border && footer_border != "none"
+      footer_style_attr = footer_style_parts.any? ? " style=\"#{footer_style_parts.join(" ")}\"" : ""
+      html << "<footer class=\"cl-footer\" id=\"cl-footer\"#{footer_style_attr}>\n"
       html << "<div class=\"cl-container\">\n"
       html << "<div class=\"cl-footer__row\">\n"
       html << "<div class=\"cl-footer__left\">\n"
@@ -476,8 +570,10 @@ after_initialize do
 
     def stats_counter_card(icon_svg, count, label)
       "<div class=\"cl-stat-card\">\n" \
-      "<div class=\"cl-stat-card__icon\">#{icon_svg}</div>\n" \
+      "<div class=\"cl-stat-card__top\">\n" \
+      "<span class=\"cl-stat-card__icon\">#{icon_svg}</span>\n" \
       "<span class=\"cl-stat-card__label\">#{e(label)}</span>\n" \
+      "</div>\n" \
       "<span class=\"cl-stat-card__value\" data-count=\"#{count}\">0</span>\n" \
       "</div>\n"
     end
