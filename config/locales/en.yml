@@ -1,0 +1,78 @@
+en:
+  site_settings:
+    # ── Master Switch ──
+    community_landing_enabled: "Activate the community landing page. When enabled, logged-out visitors see a branded welcome page instead of the default Discourse homepage."
+
+    # ── Branding: Logo ──
+    community_landing_logo_dark_url: "Logo image URL for dark mode. Shown in the navbar and footer. Leave blank to display the site name as text."
+    community_landing_logo_light_url: "Logo image URL for light mode. If not set, the dark logo is used for both themes."
+    community_landing_logo_height: "Logo height in pixels (16–80). Applies to both the navbar and footer logos."
+    community_landing_footer_logo_url: "Override logo specifically for the footer. If not set, the navbar logo is used."
+
+    # ── Navbar ──
+    community_landing_navbar_signin_label: "Text for the sign-in link in the navigation bar."
+    community_landing_navbar_join_label: "Text for the join/register button in the navigation bar."
+
+    # ── Hero Section: Content ──
+    community_landing_hero_title: "The large headline displayed in the hero section. The last word is automatically highlighted with your accent color gradient."
+    community_landing_hero_subtitle: "Supporting text shown below the hero title. Use this to briefly describe your community's purpose or value proposition."
+
+    # ── Hero Section: Imagery ──
+    community_landing_hero_background_image_url: "Full-bleed background image behind the entire hero section. A dark overlay is applied automatically to maintain text readability."
+    community_landing_hero_image_urls: "Images displayed on the right side of the hero section. Add up to 5 image URLs — a random one is shown on each visit. Click + to add each image row."
+    community_landing_hero_image_max_height: "Maximum height (in pixels) for the hero image. Keeps tall images from overwhelming the hero section. Range: 100–1200px."
+
+    # ── Hero Section: Call-to-Action Buttons ──
+    community_landing_hero_primary_button_label: "Text on the primary (filled) call-to-action button in the hero section."
+    community_landing_hero_primary_button_url: "Where the primary button links to. Use a relative path like /latest or an absolute URL."
+    community_landing_hero_secondary_button_label: "Text on the secondary (outlined) call-to-action button in the hero section."
+    community_landing_hero_secondary_button_url: "Where the secondary button links to. Defaults to the login page."
+
+    # ── Appearance: Color Scheme ──
+    community_landing_accent_color: "Primary accent color used for buttons, links, highlights, and gradients. Enter a hex value (e.g. #7c6aff)."
+    community_landing_accent_hover_color: "Accent color on hover states. Should be slightly lighter or brighter than the primary accent. Hex value (e.g. #9485ff)."
+    community_landing_dark_bg_color: "Background color for dark mode. Sets the overall page tone in dark theme. Hex value (e.g. #06060f)."
+    community_landing_light_bg_color: "Background color for light mode. Sets the overall page tone in light theme. Hex value (e.g. #f8f9fc)."
+
+    # ── Section: App Download Banner ──
+    community_landing_show_app_ctas: "Show a mobile app download banner above the footer. Requires at least one app store URL to be set."
+    community_landing_ios_app_url: "Apple App Store URL for your iOS app. Leave blank to hide the iOS badge."
+    community_landing_android_app_url: "Google Play Store URL for your Android app. Leave blank to hide the Android badge."
+    community_landing_ios_app_icon_url: "Custom image URL for the iOS app badge (e.g. an uploaded SVG or PNG). If not set, a default text badge is shown."
+    community_landing_android_app_icon_url: "Custom image URL for the Android app badge (e.g. an uploaded SVG or PNG). If not set, a default text badge is shown."
+    community_landing_app_badge_height: "Height of app badges in pixels (30–80). Applies to both default and custom icon badges."
+    community_landing_app_badge_style: "Border-radius style for app badges: rounded (12px corners), pill (fully rounded ends), or square (minimal rounding)."
+    community_landing_app_cta_headline: "Bold headline text shown in the app download banner."
+    community_landing_app_cta_subtext: "Supporting text shown below the app banner headline."
+
+    # ── Section: About ──
+    community_landing_about_enabled: "Show the About section with a quote card describing your community."
+    community_landing_about_title: "Author name or title displayed below the about quote card. Typically the community name or admin name."
+    community_landing_about_role: "Subtitle shown below the about author name (e.g. 'Community Manager', 'Founded 2020'). If blank, the site name is used."
+    community_landing_about_body: "Main body text for the About section. Supports basic HTML tags: p, a, strong, em, ul, li, br."
+    community_landing_about_image_url: "Small avatar image shown next to the about section author name. Works best with a square image."
+    community_landing_stat_members_label: "Custom label for the Members stat counter shown in the stats row below the hero."
+    community_landing_stat_topics_label: "Custom label for the Topics stat counter."
+    community_landing_stat_posts_label: "Custom label for the Posts stat counter."
+    community_landing_stat_likes_label: "Custom label for the Likes stat counter."
+    community_landing_stat_chats_label: "Custom label for the Chats stat counter. Shows total chat messages if the Chat plugin is enabled."
+
+    # ── Section: Top Contributors ──
+    community_landing_contributors_enabled: "Show a section highlighting your most active community members with their avatars and usernames."
+    community_landing_contributors_title: "Heading text for the Top Contributors section."
+    community_landing_contributors_days: "Lookback period in days for calculating top contributors. A larger number gives a broader view of active members."
+    community_landing_contributors_count: "How many top contributors to display. Recommended: 6–12 for a balanced layout."
+
+    # ── Section: Groups ──
+    community_landing_groups_enabled: "Show public groups as browsable cards. Only groups with public visibility are displayed."
+    community_landing_groups_title: "Heading text for the Groups section."
+    community_landing_groups_count: "Number of group cards to display (default 5). Only public, non-automatic groups are shown."
+
+    # ── Section: Trending Discussions ──
+    community_landing_topics_enabled: "Show a list of trending discussions based on recent activity and reply count."
+    community_landing_topics_title: "Heading text for the Trending Discussions section."
+    community_landing_topics_count: "Number of trending topics to display. Shows the most-replied topics from the last 30 days."
+
+    # ── Footer ──
+    community_landing_footer_text: "Optional text displayed in the footer area. Supports basic HTML: p, a, strong, em, ul, li, br."
+    community_landing_footer_links: 'Footer navigation links as a JSON array. Format: [{"label":"Terms","url":"/tos"},{"label":"Privacy","url":"/privacy"}]'

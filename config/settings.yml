@@ -1,0 +1,189 @@
+plugins:
+  # ── Master Switch ──
+  community_landing_enabled:
+    default: true
+    type: bool
+
+  # ── Branding: Logo ──
+  community_landing_logo_dark_url:
+    default: ""
+    type: string
+  community_landing_logo_light_url:
+    default: ""
+    type: string
+  community_landing_logo_height:
+    default: 30
+    type: integer
+    min: 16
+    max: 80
+  community_landing_footer_logo_url:
+    default: ""
+    type: string
+
+  # ── Navbar ──
+  community_landing_navbar_signin_label:
+    default: "Sign In"
+    type: string
+  community_landing_navbar_join_label:
+    default: "Join Free"
+    type: string
+
+  # ── Hero Section: Content ──
+  community_landing_hero_title:
+    default: "Welcome to Our Community"
+    type: string
+  community_landing_hero_subtitle:
+    default: "Join thousands of members in the conversation"
+    type: string
+
+  # ── Hero Section: Imagery ──
+  community_landing_hero_background_image_url:
+    default: ""
+    type: string
+  community_landing_hero_image_urls:
+    default: ""
+    type: list
+  community_landing_hero_image_max_height:
+    default: 500
+    type: integer
+    min: 100
+    max: 1200
+
+  # ── Hero Section: Call-to-Action Buttons ──
+  community_landing_hero_primary_button_label:
+    default: "Browse the Forum"
+    type: string
+  community_landing_hero_primary_button_url:
+    default: "/latest"
+    type: string
+  community_landing_hero_secondary_button_label:
+    default: "Join the Community"
+    type: string
+  community_landing_hero_secondary_button_url:
+    default: "/login"
+    type: string
+
+  # ── Appearance: Color Scheme ──
+  community_landing_accent_color:
+    default: "#7c6aff"
+    type: string
+  community_landing_accent_hover_color:
+    default: "#9485ff"
+    type: string
+  community_landing_dark_bg_color:
+    default: "#06060f"
+    type: string
+  community_landing_light_bg_color:
+    default: "#f8f9fc"
+    type: string
+
+  # ── Section: App Download Banner ──
+  community_landing_show_app_ctas:
+    default: true
+    type: bool
+  community_landing_ios_app_url:
+    default: ""
+    type: string
+  community_landing_android_app_url:
+    default: ""
+    type: string
+  community_landing_ios_app_icon_url:
+    default: ""
+    type: string
+  community_landing_android_app_icon_url:
+    default: ""
+    type: string
+  community_landing_app_badge_height:
+    default: 45
+    type: integer
+    min: 30
+    max: 80
+  community_landing_app_badge_style:
+    default: "rounded"
+    type: enum
+    choices:
+      - rounded
+      - pill
+      - square
+  community_landing_app_cta_headline:
+    default: "Get the best experience on our app"
+    type: string
+  community_landing_app_cta_subtext:
+    default: "Available free on iOS and Android"
+    type: string
+
+  # ── Section: About ──
+  community_landing_about_enabled:
+    default: true
+    type: bool
+  community_landing_about_title:
+    default: "About Our Community"
+    type: string
+  community_landing_about_role:
+    default: ""
+    type: string
+  community_landing_about_body:
+    default: ""
+    type: string
+  community_landing_about_image_url:
+    default: ""
+    type: string
+  community_landing_stat_members_label:
+    default: "Members"
+    type: string
+  community_landing_stat_topics_label:
+    default: "Topics"
+    type: string
+  community_landing_stat_posts_label:
+    default: "Posts"
+    type: string
+  community_landing_stat_likes_label:
+    default: "Likes"
+    type: string
+  community_landing_stat_chats_label:
+    default: "Chats"
+    type: string
+
+  # ── Section: Top Contributors ──
+  community_landing_contributors_enabled:
+    default: true
+    type: bool
+  community_landing_contributors_title:
+    default: "Top Contributors"
+    type: string
+  community_landing_contributors_days:
+    default: 90
+    type: integer
+  community_landing_contributors_count:
+    default: 10
+    type: integer
+
+  # ── Section: Groups ──
+  community_landing_groups_enabled:
+    default: true
+    type: bool
+  community_landing_groups_title:
+    default: "Our Groups"
+    type: string
+  community_landing_groups_count:
+    default: 5
+    type: integer
+
+  # ── Section: Trending Discussions ──
+  community_landing_topics_enabled:
+    default: true
+    type: bool
+  community_landing_topics_title:
+    default: "Trending Discussions"
+    type: string
+  community_landing_topics_count:
+    default: 5
+    type: integer
+
+  # ── Footer ──
+  community_landing_footer_text:
+    default: ""
+    type: string
+  community_landing_footer_links:
+    default: '[{"label":"Terms","url":"/tos"},{"label":"Privacy","url":"/privacy"}]'
+    type: string
