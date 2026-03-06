@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════════
-// Community Landing — JS
-// Theme detection, scroll animations, stat counters
+// Community Landing v2 — JS
+// Theme detection, scroll animations, stat counters, horizontal scroll
 // ═══════════════════════════════════════════════════════════════════
 (function () {
   "use strict";
@@ -96,7 +96,7 @@
       { threshold: 0.1, rootMargin: "0px 0px -40px 0px" }
     );
 
-    $$(".cl-reveal, .cl-reveal-stagger").forEach(function (el) {
+    $$(".cl-reveal").forEach(function (el) {
       revealObserver.observe(el);
     });
   }
@@ -139,7 +139,36 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 6. APP BADGE DETECTION
+  // 6. HORIZONTAL SCROLL — drag support for trending discussions
+  // ═══════════════════════════════════════════════════════════════════
+  $$(".cl-topics__scroll").forEach(function (scroll) {
+    var isDown = false, startX, scrollLeft;
+
+    scroll.addEventListener("mousedown", function (e) {
+      isDown = true;
+      scroll.style.cursor = "grabbing";
+      startX = e.pageX - scroll.offsetLeft;
+      scrollLeft = scroll.scrollLeft;
+    });
+    scroll.addEventListener("mouseleave", function () {
+      isDown = false;
+      scroll.style.cursor = "";
+    });
+    scroll.addEventListener("mouseup", function () {
+      isDown = false;
+      scroll.style.cursor = "";
+    });
+    scroll.addEventListener("mousemove", function (e) {
+      if (!isDown) return;
+      e.preventDefault();
+      var x = e.pageX - scroll.offsetLeft;
+      var walk = (x - startX) * 1.5;
+      scroll.scrollLeft = scrollLeft - walk;
+    });
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 7. APP BADGE DETECTION
   // ═══════════════════════════════════════════════════════════════════
   var ua = navigator.userAgent || "";
   if (/iPhone|iPad|iPod/.test(ua)) $$(".cl-app-badge--ios").forEach(function (e) { e.classList.add("highlighted"); });
