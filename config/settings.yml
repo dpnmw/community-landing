@@ -9,41 +9,41 @@ plugins:
   # ══════════════════════════════════════════
   # Branding: Logo
   # ══════════════════════════════════════════
-  community_landing_logo_dark_url:
+  logo_dark_url:
     default: ""
     type: string
-  community_landing_logo_light_url:
+  logo_light_url:
     default: ""
     type: string
-  community_landing_logo_height:
+  logo_height:
     default: 30
     type: integer
     min: 16
     max: 80
-  community_landing_footer_logo_url:
+  footer_logo_url:
     default: ""
     type: string
 
   # ══════════════════════════════════════════
   # Appearance: Color Scheme
   # ══════════════════════════════════════════
-  community_landing_accent_color:
-    default: "#d4a24e"
-    type: string
-  community_landing_accent_hover_color:
-    default: "#c4922e"
-    type: string
-  community_landing_dark_bg_color:
-    default: "#06060f"
-    type: string
-  community_landing_light_bg_color:
-    default: "#faf6f0"
-    type: string
+  accent_color:
+    default: "d4a24e"
+    type: color
+  accent_hover_color:
+    default: "c4922e"
+    type: color
+  dark_bg_color:
+    default: "06060f"
+    type: color
+  light_bg_color:
+    default: "faf6f0"
+    type: color
 
   # ══════════════════════════════════════════
   # Scroll Animations
   # ══════════════════════════════════════════
-  community_landing_scroll_animation:
+  scroll_animation:
     default: "fade_up"
     type: enum
     choices:
@@ -56,25 +56,18 @@ plugins:
       - none
 
   # ══════════════════════════════════════════
-  # Custom CSS
-  # ══════════════════════════════════════════
-  community_landing_custom_css:
-    default: ""
-    type: string
-
-  # ══════════════════════════════════════════
   # 1. Navbar
   # ══════════════════════════════════════════
-  community_landing_navbar_signin_label:
+  navbar_signin_label:
     default: "Sign In"
     type: string
-  community_landing_navbar_join_label:
+  navbar_join_label:
     default: "Get Started"
     type: string
-  community_landing_navbar_bg_color:
+  navbar_bg_color:
     default: ""
     type: string
-  community_landing_navbar_border_style:
+  navbar_border_style:
     default: "none"
     type: enum
     choices:
@@ -86,42 +79,50 @@ plugins:
   # ══════════════════════════════════════════
   # 2. Hero Section
   # ══════════════════════════════════════════
-  community_landing_hero_title:
+  hero_title:
     default: "Welcome to Our Creative HeadQuarters"
     type: string
-  community_landing_hero_subtitle:
+  hero_subtitle:
     default: "Are you ready to start your creative journey?"
     type: string
-  community_landing_hero_card_enabled:
+  hero_card_enabled:
     default: true
     type: bool
-  community_landing_hero_background_image_url:
+  hero_background_image_url:
     default: ""
     type: string
-  community_landing_hero_image_urls:
+  hero_image_urls:
     default: ""
     type: list
-  community_landing_hero_image_max_height:
+  hero_image_max_height:
     default: 500
     type: integer
     min: 100
     max: 1200
-  community_landing_hero_primary_button_label:
+  hero_primary_button_label:
     default: "View Latest Topics"
     type: string
-  community_landing_hero_primary_button_url:
+  hero_primary_button_url:
     default: "/latest"
     type: string
-  community_landing_hero_secondary_button_label:
+  hero_secondary_button_label:
     default: "Explore Our Spaces"
     type: string
-  community_landing_hero_secondary_button_url:
+  hero_secondary_button_url:
     default: "/login"
     type: string
-  community_landing_hero_bg_color:
+  hero_bg_dark:
     default: ""
     type: string
-  community_landing_hero_border_style:
+  hero_bg_light:
+    default: ""
+    type: string
+  hero_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  hero_border_style:
     default: "none"
     type: enum
     choices:
@@ -133,31 +134,39 @@ plugins:
   # ══════════════════════════════════════════
   # 3. Premium Stats Section
   # ══════════════════════════════════════════
-  community_landing_stats_title:
+  stats_title:
     default: "Premium Stats"
     type: string
-  community_landing_stat_icon_color:
-    default: "#d4a24e"
-    type: string
-  community_landing_stat_members_label:
+  stat_icon_color:
+    default: "d4a24e"
+    type: color
+  stat_members_label:
     default: "Members"
     type: string
-  community_landing_stat_topics_label:
+  stat_topics_label:
     default: "Topics"
     type: string
-  community_landing_stat_posts_label:
+  stat_posts_label:
     default: "Posts"
     type: string
-  community_landing_stat_likes_label:
+  stat_likes_label:
     default: "Likes"
     type: string
-  community_landing_stat_chats_label:
+  stat_chats_label:
     default: "Chats"
     type: string
-  community_landing_stats_bg_color:
+  stats_bg_dark:
     default: ""
     type: string
-  community_landing_stats_border_style:
+  stats_bg_light:
+    default: ""
+    type: string
+  stats_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  stats_border_style:
     default: "none"
     type: enum
     choices:
@@ -169,43 +178,51 @@ plugins:
   # ══════════════════════════════════════════
   # 4. About Community Section
   # ══════════════════════════════════════════
-  community_landing_about_enabled:
+  about_enabled:
     default: true
     type: bool
-  community_landing_about_heading_enabled:
+  about_heading_enabled:
     default: true
     type: bool
-  community_landing_about_heading:
+  about_heading:
     default: "About Community"
     type: string
-  community_landing_about_title:
+  about_title:
     default: "Community Name"
     type: string
-  community_landing_about_role:
+  about_role:
     default: ""
     type: string
-  community_landing_about_body:
+  about_body:
     default: ""
     type: string
-  community_landing_about_image_url:
+  about_image_url:
     default: ""
     type: string
-  community_landing_about_gradient_start:
-    default: "#fdf6ec"
-    type: string
-  community_landing_about_gradient_mid:
-    default: "#fef9f0"
-    type: string
-  community_landing_about_gradient_end:
-    default: "#fdf6ec"
-    type: string
-  community_landing_about_background_image_url:
+  about_gradient_start:
+    default: "fdf6ec"
+    type: color
+  about_gradient_mid:
+    default: "fef9f0"
+    type: color
+  about_gradient_end:
+    default: "fdf6ec"
+    type: color
+  about_background_image_url:
     default: ""
     type: string
-  community_landing_about_bg_color:
+  about_bg_dark:
     default: ""
     type: string
-  community_landing_about_border_style:
+  about_bg_light:
+    default: ""
+    type: string
+  about_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  about_border_style:
     default: "none"
     type: enum
     choices:
@@ -217,19 +234,27 @@ plugins:
   # ══════════════════════════════════════════
   # 5. Trending Discussions Section
   # ══════════════════════════════════════════
-  community_landing_topics_enabled:
+  topics_enabled:
     default: true
     type: bool
-  community_landing_topics_title:
+  topics_title:
     default: "Trending Discussions"
     type: string
-  community_landing_topics_count:
+  topics_count:
     default: 5
     type: integer
-  community_landing_topics_bg_color:
+  topics_bg_dark:
     default: ""
     type: string
-  community_landing_topics_border_style:
+  topics_bg_light:
+    default: ""
+    type: string
+  topics_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  topics_border_style:
     default: "none"
     type: enum
     choices:
@@ -241,22 +266,30 @@ plugins:
   # ══════════════════════════════════════════
   # 6. Top Creators Section
   # ══════════════════════════════════════════
-  community_landing_contributors_enabled:
+  contributors_enabled:
     default: true
     type: bool
-  community_landing_contributors_title:
+  contributors_title:
     default: "Top Creators"
     type: string
-  community_landing_contributors_days:
+  contributors_days:
     default: 90
     type: integer
-  community_landing_contributors_count:
+  contributors_count:
     default: 10
     type: integer
-  community_landing_contributors_bg_color:
+  contributors_bg_dark:
     default: ""
     type: string
-  community_landing_contributors_border_style:
+  contributors_bg_light:
+    default: ""
+    type: string
+  contributors_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  contributors_border_style:
     default: "none"
     type: enum
     choices:
@@ -268,19 +301,27 @@ plugins:
   # ══════════════════════════════════════════
   # 7. Community Spaces Section
   # ══════════════════════════════════════════
-  community_landing_groups_enabled:
+  groups_enabled:
     default: true
     type: bool
-  community_landing_groups_title:
+  groups_title:
     default: "Community Spaces"
     type: string
-  community_landing_groups_count:
+  groups_count:
     default: 5
     type: integer
-  community_landing_groups_bg_color:
+  groups_bg_dark:
     default: ""
     type: string
-  community_landing_groups_border_style:
+  groups_bg_light:
+    default: ""
+    type: string
+  groups_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  groups_border_style:
     default: "none"
     type: enum
     choices:
@@ -292,55 +333,63 @@ plugins:
   # ══════════════════════════════════════════
   # 8. App Download CTA Section
   # ══════════════════════════════════════════
-  community_landing_show_app_ctas:
+  show_app_ctas:
     default: true
     type: bool
-  community_landing_ios_app_url:
+  ios_app_url:
     default: ""
     type: string
-  community_landing_android_app_url:
+  android_app_url:
     default: ""
     type: string
-  community_landing_ios_app_badge_image_url:
+  ios_app_badge_image_url:
     default: ""
     type: string
-  community_landing_android_app_badge_image_url:
+  android_app_badge_image_url:
     default: ""
     type: string
-  community_landing_app_badge_height:
+  app_badge_height:
     default: 45
     type: integer
     min: 30
     max: 80
-  community_landing_app_badge_style:
+  app_badge_style:
     default: "rounded"
     type: enum
     choices:
       - rounded
       - pill
       - square
-  community_landing_app_cta_headline:
+  app_cta_headline:
     default: "Get the best experience on our app"
     type: string
-  community_landing_app_cta_subtext:
+  app_cta_subtext:
     default: "Available free on iOS and Android"
     type: string
-  community_landing_app_cta_gradient_start:
-    default: "#d4a24e"
-    type: string
-  community_landing_app_cta_gradient_mid:
-    default: "#c4922e"
-    type: string
-  community_landing_app_cta_gradient_end:
-    default: "#b8862e"
-    type: string
-  community_landing_app_cta_image_url:
+  app_cta_gradient_start:
+    default: "d4a24e"
+    type: color
+  app_cta_gradient_mid:
+    default: "c4922e"
+    type: color
+  app_cta_gradient_end:
+    default: "b8862e"
+    type: color
+  app_cta_image_url:
     default: ""
     type: string
-  community_landing_app_cta_bg_color:
+  app_cta_bg_dark:
     default: ""
     type: string
-  community_landing_app_cta_border_style:
+  app_cta_bg_light:
+    default: ""
+    type: string
+  app_cta_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  app_cta_border_style:
     default: "none"
     type: enum
     choices:
@@ -352,19 +401,22 @@ plugins:
   # ══════════════════════════════════════════
   # 9. Footer
   # ══════════════════════════════════════════
-  community_landing_footer_description:
+  footer_description:
     default: ""
     type: string
-  community_landing_footer_text:
+  footer_text:
     default: ""
     type: string
-  community_landing_footer_links:
+  footer_links:
     default: '[{"label":"Brand","url":"/about"},{"label":"Links","url":"/links"},{"label":"Terms","url":"/tos"},{"label":"Privacy","url":"/privacy"}]'
     type: string
-  community_landing_footer_bg_color:
+  footer_bg_dark:
     default: ""
     type: string
-  community_landing_footer_border_style:
+  footer_bg_light:
+    default: ""
+    type: string
+  footer_border_style:
     default: "solid"
     type: enum
     choices:
@@ -372,3 +424,10 @@ plugins:
       - solid
       - dashed
       - dotted
+
+  # ══════════════════════════════════════════
+  # Custom CSS (last)
+  # ══════════════════════════════════════════
+  custom_css:
+    default: ""
+    type: text

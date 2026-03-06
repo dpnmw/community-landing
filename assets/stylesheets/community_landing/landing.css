@@ -493,9 +493,10 @@
   font-size: 0.82rem; font-weight: 600; color: var(--cl-text-strong);
   white-space: nowrap;
 }
-.cl-creator-pill__activity {
-  font-size: 0.72rem; color: var(--cl-muted); white-space: nowrap;
-  font-weight: 500;
+.cl-creator-pill__count {
+  font-size: 0.72rem; color: var(--cl-accent); white-space: nowrap;
+  font-weight: 700; margin-left: auto; padding-left: 0.4rem;
+  min-width: 1.2em; text-align: center;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
