@@ -3,13 +3,19 @@
    Tab navigation + fallback separators
    ═══════════════════════════════════════════════════════════════════ */
 
+/* ── Tab-hidden class (used instead of inline display:none) ── */
+
+.cl-tab-hidden {
+  display: none !important;
+}
+
 /* ── Tab Navigation ── */
 
 .cl-admin-tabs {
   display: flex;
   flex-wrap: wrap;
   gap: 0;
-  margin: 0 0 24px 0;
+  margin: 0 0 20px 0;
   padding: 0;
   border-bottom: 1px solid var(--primary-low, rgba(0, 0, 0, 0.1));
 }
@@ -24,7 +30,7 @@
   cursor: pointer;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
 
 .cl-admin-tab:hover {
@@ -34,6 +40,15 @@
 .cl-admin-tab.active {
   color: var(--tertiary, #0088cc);
   border-bottom-color: var(--tertiary, #0088cc);
+}
+
+/* Dimmed state when Discourse filter/search is active */
+.cl-admin-tabs.filter-active .cl-admin-tab {
+  opacity: 0.4;
+}
+
+.cl-admin-tabs.filter-active .cl-admin-tab.active {
+  border-bottom-color: transparent;
 }
 
 /* Dark mode tabs */
@@ -75,8 +90,7 @@ html.dark-scheme .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="ios_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="android_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="app_"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="footer_"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="custom_css"] {
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="footer_"] {
   margin-bottom: 20px;
 }
 
@@ -92,8 +106,7 @@ html.dark-scheme .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="contributors_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="groups_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="show_app_ctas"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="footer_description"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="custom_css"] {
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="footer_description"] {
   border-top: 2px solid rgba(0, 0, 0, 0.12);
   margin-top: 28px;
   padding-top: 24px;

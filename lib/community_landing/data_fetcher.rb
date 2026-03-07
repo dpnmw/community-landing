@@ -19,12 +19,19 @@ module CommunityLanding
           .select("users.*, COUNT(posts.id) AS post_count")
       end
 
-      # Public groups
+      # Public groups — optionally filtered by selected names
       data[:groups] = if s.groups_enabled
-        Group
+        selected = s.groups_selected.presence
+        scope = Group
           .where(visibility_level: Group.visibility_levels[:public])
           .where(automatic: false)
-          .limit(s.groups_count)
+
+        if selected
+          names = selected.split("|").map(&:strip).reject(&:empty?)
+          scope = scope.where(name: names) if names.any?
+        end
+
+        scope.limit(s.groups_count)
       end
 
       # Trending topics

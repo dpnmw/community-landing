@@ -58,9 +58,6 @@ module CommunityLanding
       html << @styles.color_overrides
       html << @styles.section_backgrounds
 
-      custom_css = @s.custom_css.presence rescue nil
-      html << "<style>\n/* Custom CSS */\n#{custom_css}\n</style>\n" if custom_css
-
       html << "</head>\n"
       html
     end
@@ -169,21 +166,22 @@ module CommunityLanding
       stats_title = @s.stats_title.presence || "Premium Stats"
       border      = @s.stats_border_style rescue "none"
       min_h       = @s.stats_min_height rescue 0
+      icon_shape  = @s.stat_icon_shape rescue "circle"
 
       html = +""
       html << "<section class=\"cl-stats cl-anim\" id=\"cl-stats-row\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(stats_title)}</h2>\n"
       html << "<div class=\"cl-stats__grid\">\n"
-      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label)
-      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label)
-      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label)
-      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label)
-      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label)
+      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape)
+      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape)
+      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label,   icon_shape)
+      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label,   icon_shape)
+      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label,   icon_shape)
       html << "</div>\n</div></section>\n"
       html
     end
 
-    # ── 4. ABOUT ──
+    # ── 4. ABOUT — split layout: image left on gradient, text right ──
 
     def render_about
       return "" unless @s.about_enabled
@@ -193,21 +191,34 @@ module CommunityLanding
       about_role       = @s.about_role.presence || @s.title
       about_heading_on = @s.about_heading_enabled rescue true
       about_heading    = @s.about_heading.presence || "About Community"
+      about_bg_img     = @s.about_background_image_url.presence
       border           = @s.about_border_style rescue "none"
       min_h            = @s.about_min_height rescue 0
 
       html = +""
       html << "<section class=\"cl-about cl-anim\" id=\"cl-about\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<div class=\"cl-about__card\">\n"
+
+      # Left side — image on gradient background
+      html << "<div class=\"cl-about__left\">\n"
+      if about_image
+        html << "<img src=\"#{about_image}\" alt=\"#{e(@s.about_title)}\" class=\"cl-about__image\">\n"
+      end
+      html << "</div>\n"
+
+      # Right side — text content
+      html << "<div class=\"cl-about__right\">\n"
       html << "<h2 class=\"cl-about__heading\">#{e(about_heading)}</h2>\n" if about_heading_on
       html << Icons::QUOTE_SVG
       html << "<div class=\"cl-about__body\">#{about_body}</div>\n" if about_body.present?
       html << "<div class=\"cl-about__meta\">\n"
-      html << "<img src=\"#{about_image}\" alt=\"\" class=\"cl-about__avatar\">\n" if about_image
       html << "<div class=\"cl-about__meta-text\">\n"
       html << "<span class=\"cl-about__author\">#{e(@s.about_title)}</span>\n"
       html << "<span class=\"cl-about__role\">#{e(about_role)}</span>\n"
-      html << "</div></div>\n</div>\n</div></section>\n"
+      html << "</div></div>\n"
+      html << "</div>\n"
+
+      html << "</div>\n</div></section>\n"
       html
     end
 
@@ -223,7 +234,7 @@ module CommunityLanding
       html = +""
       html << "<section class=\"cl-topics cl-anim\" id=\"cl-topics\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(@s.topics_title)}</h2>\n"
-      html << "<div class=\"cl-topics__scroll\">\n"
+      html << "<div class=\"cl-topics__grid\">\n"
 
       topics.each do |topic|
         topic_likes   = topic.like_count rescue 0
@@ -288,21 +299,26 @@ module CommunityLanding
       html << "<div class=\"cl-spaces__grid\">\n"
 
       groups.each do |group|
-        display_name = group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)
+        display_name = group.full_name.presence || group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)
         hue   = group.name.bytes.sum % 360
-        sat   = 50 + (group.name.bytes.first.to_i % 20)
-        light = 40 + (group.name.bytes.last.to_i % 15)
+        sat   = 55 + (group.name.bytes.first.to_i % 15)
+        light = 45 + (group.name.bytes.last.to_i % 12)
+        icon_color = "hsl(#{hue}, #{sat}%, #{light}%)"
 
         html << "<a href=\"#{login_url}\" class=\"cl-space-card\">\n"
-        html << "<div class=\"cl-space-card__icon\" style=\"background: hsl(#{hue}, #{sat}%, #{light}%)\">"
+        html << "<div class=\"cl-space-card__header\" style=\"--space-color: #{icon_color}\">\n"
+        html << "<div class=\"cl-space-card__icon\">"
         if group.flair_url.present?
           html << "<img src=\"#{group.flair_url}\" alt=\"\">"
         else
           html << "<span class=\"cl-space-card__letter\">#{group.name[0].upcase}</span>"
         end
         html << "</div>\n"
+        html << "</div>\n"
+        html << "<div class=\"cl-space-card__body\">\n"
         html << "<span class=\"cl-space-card__name\">#{e(display_name)}</span>\n"
         html << "<span class=\"cl-space-card__sub\">#{group.user_count} members</span>\n"
+        html << "</div>\n"
         html << "</a>\n"
       end
 
@@ -397,12 +413,11 @@ module CommunityLanding
 
     # ── Shared helpers ──
 
-    def stat_card(icon_svg, count, label)
+    def stat_card(icon_svg, count, label, icon_shape = "circle")
+      shape_class = icon_shape == "rounded" ? "cl-stat-icon--rounded" : "cl-stat-icon--circle"
       "<div class=\"cl-stat-card\">\n" \
-      "<div class=\"cl-stat-card__top\">\n" \
-      "<span class=\"cl-stat-card__icon\">#{icon_svg}</span>\n" \
+      "<div class=\"cl-stat-card__icon-wrap #{shape_class}\">#{icon_svg}</div>\n" \
       "<span class=\"cl-stat-card__label\">#{e(label)}</span>\n" \
-      "</div>\n" \
       "<span class=\"cl-stat-card__value\" data-count=\"#{count}\">0</span>\n" \
       "</div>\n"
     end

@@ -33,7 +33,7 @@ const TABS = [
     id: "stats",
     label: "Stats",
     settings: new Set([
-      "stats_title", "stat_icon_color",
+      "stats_title", "stat_icon_color", "stat_icon_bg_color", "stat_icon_shape", "stat_counter_color",
       "stat_members_label", "stat_topics_label", "stat_posts_label",
       "stat_likes_label", "stat_chats_label",
       "stats_bg_dark", "stats_bg_light", "stats_min_height", "stats_border_style"
@@ -70,7 +70,7 @@ const TABS = [
     id: "groups",
     label: "Spaces",
     settings: new Set([
-      "groups_enabled", "groups_title", "groups_count",
+      "groups_enabled", "groups_title", "groups_count", "groups_selected", "groups_card_bg_color",
       "groups_bg_dark", "groups_bg_light", "groups_min_height", "groups_border_style"
     ])
   },
@@ -94,46 +94,73 @@ const TABS = [
       "footer_description", "footer_text", "footer_links",
       "footer_bg_dark", "footer_bg_light", "footer_border_style"
     ])
-  },
-  {
-    id: "css",
-    label: "Custom CSS",
-    settings: new Set(["custom_css"])
   }
 ];
 
 let currentTab = "general";
+let filterActive = false;
+let isActive = false;
+let recheckTimer = null;
 
-function applyTabFilter(container) {
+function getContainer() {
+  return (
+    document.querySelector(".admin-plugin-config-area") ||
+    document.querySelector(".admin-detail")
+  );
+}
+
+function applyTabFilter() {
+  const container = getContainer();
+  if (!container) return;
+
   const tab = TABS.find((t) => t.id === currentTab);
   if (!tab) return;
 
   container.querySelectorAll(".row.setting[data-setting]").forEach((row) => {
     const name = row.getAttribute("data-setting");
-    row.style.display = tab.settings.has(name) ? "" : "none";
+    row.classList.toggle(
+      "cl-tab-hidden",
+      !filterActive && !tab.settings.has(name)
+    );
   });
+
+  const tabBar = container.querySelector(".cl-admin-tabs");
+  if (tabBar) {
+    tabBar.classList.toggle("filter-active", filterActive);
+  }
+}
+
+function findFilterInput(container) {
+  for (const input of container.querySelectorAll("input")) {
+    if (input.closest(".row.setting") || input.closest(".cl-admin-tabs")) {
+      continue;
+    }
+    const t = (input.type || "text").toLowerCase();
+    if (t === "text" || t === "search") return input;
+  }
+  return null;
 }
 
 function buildTabsUI() {
-  const container =
-    document.querySelector(".admin-plugin-config-area") ||
-    document.querySelector(".admin-detail");
+  const container = getContainer();
   if (!container) return false;
 
-  // Already injected?
-  if (container.querySelector(".cl-admin-tabs")) return true;
+  // Already injected — just re-apply filter
+  if (container.querySelector(".cl-admin-tabs")) {
+    applyTabFilter();
+    return true;
+  }
 
   const allRows = container.querySelectorAll(".row.setting[data-setting]");
   if (allRows.length < 5) return false;
 
-  // Verify our settings are present
-  const firstTab = TABS[0];
+  // Verify our plugin settings are present
   const hasOurs = Array.from(allRows).some((row) =>
-    firstTab.settings.has(row.getAttribute("data-setting"))
+    TABS[0].settings.has(row.getAttribute("data-setting"))
   );
   if (!hasOurs) return false;
 
-  // Create tab bar
+  // Build tab bar
   const tabBar = document.createElement("div");
   tabBar.className = "cl-admin-tabs";
 
@@ -141,29 +168,84 @@ function buildTabsUI() {
     const btn = document.createElement("button");
     btn.className = "cl-admin-tab" + (tab.id === currentTab ? " active" : "");
     btn.textContent = tab.label;
-    btn.setAttribute("data-tab", tab.id);
+    btn.dataset.tab = tab.id;
     btn.addEventListener("click", () => {
       currentTab = tab.id;
+      filterActive = false;
+
+      // Clear Discourse filter input so it doesn't conflict
+      const fi = findFilterInput(container);
+      if (fi && fi.value) {
+        fi.value = "";
+        fi.dispatchEvent(new Event("input", { bubbles: true }));
+      }
+
       tabBar
         .querySelectorAll(".cl-admin-tab")
         .forEach((b) => b.classList.remove("active"));
       btn.classList.add("active");
-      applyTabFilter(container);
+      applyTabFilter();
     });
     tabBar.appendChild(btn);
   });
 
-  // Insert tab bar before the first setting row
-  const settingsParent = allRows[0].parentNode;
-  settingsParent.insertBefore(tabBar, allRows[0]);
+  // ── Insertion strategy: place tabs as high as possible ──
 
-  // Add class to disable separator borders
+  let inserted = false;
+
+  // Strategy 1: Top of .admin-plugin-config-area__content (above filter bar)
+  const contentArea = container.querySelector(
+    ".admin-plugin-config-area__content"
+  );
+  if (contentArea) {
+    const form = contentArea.querySelector("form");
+    const target = form || contentArea;
+    target.insertBefore(tabBar, target.firstChild);
+    inserted = true;
+  }
+
+  // Strategy 2: Before the filter controls
+  if (!inserted) {
+    const filterArea = container.querySelector(
+      ".admin-site-settings-filter-controls, .setting-filter"
+    );
+    if (filterArea) {
+      filterArea.parentNode.insertBefore(tabBar, filterArea);
+      inserted = true;
+    }
+  }
+
+  // Strategy 3: Before the first setting row (fallback)
+  if (!inserted) {
+    allRows[0].parentNode.insertBefore(tabBar, allRows[0]);
+  }
+
   container.classList.add("cl-tabs-active");
-
-  // Apply initial filter
-  applyTabFilter(container);
+  applyTabFilter();
   return true;
 }
+
+// ── Global filter detection via event delegation ──
+// This survives DOM re-renders because it's on document, not on a specific input
+document.addEventListener(
+  "input",
+  (e) => {
+    if (!isActive) return;
+    const t = e.target;
+    if (!t || !t.closest) return;
+    if (t.closest(".row.setting") || t.closest(".cl-admin-tabs")) return;
+
+    const container = getContainer();
+    if (!container || !container.contains(t)) return;
+
+    const hasText = t.value.trim().length > 0;
+    if (hasText !== filterActive) {
+      filterActive = hasText;
+      applyTabFilter();
+    }
+  },
+  true
+);
 
 export default {
   name: "community-landing-admin-tabs",
@@ -175,6 +257,10 @@ export default {
           url.includes("community-landing") ||
           url.includes("community_landing")
         ) {
+          isActive = true;
+          filterActive = false;
+
+          // Initial injection with retries
           let attempts = 0;
           const tryInject = () => {
             if (buildTabsUI() || attempts > 15) return;
@@ -182,6 +268,28 @@ export default {
             setTimeout(tryInject, 200);
           };
           tryInject();
+
+          // Periodic re-check: re-injects tab bar if Discourse re-renders the DOM
+          if (!recheckTimer) {
+            recheckTimer = setInterval(() => {
+              if (!isActive) {
+                clearInterval(recheckTimer);
+                recheckTimer = null;
+                return;
+              }
+              const c = getContainer();
+              if (c && !c.querySelector(".cl-admin-tabs")) {
+                buildTabsUI();
+              }
+            }, 500);
+          }
+        } else {
+          // Left plugin settings page — clean up
+          isActive = false;
+          if (recheckTimer) {
+            clearInterval(recheckTimer);
+            recheckTimer = null;
+          }
         }
       });
     });

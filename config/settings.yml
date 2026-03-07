@@ -140,6 +140,18 @@ plugins:
   stat_icon_color:
     default: "d4a24e"
     type: color
+  stat_icon_bg_color:
+    default: ""
+    type: string
+  stat_icon_shape:
+    default: "circle"
+    type: enum
+    choices:
+      - circle
+      - rounded
+  stat_counter_color:
+    default: ""
+    type: string
   stat_members_label:
     default: "Members"
     type: string
@@ -310,6 +322,12 @@ plugins:
   groups_count:
     default: 5
     type: integer
+  groups_selected:
+    default: ""
+    type: list
+  groups_card_bg_color:
+    default: ""
+    type: string
   groups_bg_dark:
     default: ""
     type: string
@@ -424,10 +442,3 @@ plugins:
       - solid
       - dashed
       - dotted
-
-  # ══════════════════════════════════════════
-  # Custom CSS (last)
-  # ══════════════════════════════════════════
-  custom_css:
-    default: ""
-    type: text

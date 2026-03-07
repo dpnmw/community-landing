@@ -329,7 +329,7 @@
 .cl-hero__actions { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
 /* ═══════════════════════════════════════════════════════════════════
-   3. PREMIUM STATS — icon + label on one line, counter below
+   3. PREMIUM STATS — icon with bg, label, animated counter
    ═══════════════════════════════════════════════════════════════════ */
 .cl-stats { padding: 2.5rem 0 2rem; }
 
@@ -340,7 +340,7 @@
 @media (min-width: 1024px) { .cl-stats__grid { grid-template-columns: repeat(5, 1fr); } }
 
 .cl-stat-card {
-  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+  display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
   padding: 1.5rem 1rem;
   background: var(--cl-card); border: 1px solid var(--cl-border);
   border-radius: var(--cl-radius); text-align: center;
@@ -348,42 +348,74 @@
 }
 .cl-stat-card:hover { border-color: var(--cl-border-hover); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
 
-/* Icon + Label on same line */
-.cl-stat-card__top {
-  display: flex; align-items: center; gap: 0.4rem;
+/* Icon with background */
+.cl-stat-card__icon-wrap {
+  display: flex; align-items: center; justify-content: center;
+  width: 48px; height: 48px;
+  background: var(--cl-stat-icon-bg);
+  color: var(--cl-stat-icon-color);
+  transition: transform 0.2s ease;
 }
-.cl-stat-card__icon { color: var(--cl-stat-icon-color); display: flex; align-items: center; }
-.cl-stat-card__icon svg { width: 22px; height: 22px; }
+.cl-stat-card:hover .cl-stat-card__icon-wrap { transform: scale(1.08); }
+.cl-stat-card__icon-wrap svg { width: 24px; height: 24px; }
+.cl-stat-icon--circle { border-radius: 50%; }
+.cl-stat-icon--rounded { border-radius: 12px; }
+
 .cl-stat-card__label {
   font-size: 0.78rem; color: var(--cl-muted);
   font-weight: 600;
 }
 
-/* Counter below */
+/* Counter */
 .cl-stat-card__value {
   font-size: 1.75rem; font-weight: 800;
-  color: var(--cl-text-strong); letter-spacing: -0.02em;
+  color: var(--cl-stat-counter-color); letter-spacing: -0.02em;
   line-height: 1;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   4. ABOUT COMMUNITY — full-width gradient card
+   4. ABOUT — split layout: image left on gradient, text right
    ═══════════════════════════════════════════════════════════════════ */
-.cl-about { padding: 1rem 0 2rem; }
+.cl-about { padding: 1.5rem 0 2rem; }
 
 .cl-about__card {
   background: var(--cl-about-gradient);
   border: 1px solid var(--cl-border);
   border-radius: 20px;
-  padding: 2rem 2.5rem;
-  position: relative;
+  overflow: hidden;
   box-shadow: 0 2px 16px rgba(0,0,0,0.04);
   background-size: cover; background-position: center;
+  display: flex; flex-direction: column;
+}
+@media (min-width: 768px) {
+  .cl-about__card { flex-direction: row; min-height: 340px; }
+}
+
+/* Left side — image on gradient */
+.cl-about__left {
+  display: flex; align-items: center; justify-content: center;
+  padding: 2rem;
+  position: relative;
+}
+@media (min-width: 768px) {
+  .cl-about__left { flex: 0 0 40%; max-width: 40%; }
+}
+.cl-about__image {
+  width: 100%; max-width: 280px; height: auto;
+  border-radius: 16px; object-fit: cover;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+  position: relative; z-index: 1;
+}
+
+/* Right side — text content */
+.cl-about__right {
+  flex: 1; padding: 2rem 2.5rem;
+  display: flex; flex-direction: column; justify-content: center;
 }
 
 .cl-about__heading {
   font-size: 1.35rem; font-weight: 800; color: var(--cl-text-strong);
-  margin: 0 0 1rem;
+  margin: 0 0 0.75rem;
 }
 
 .cl-about__quote-mark {
@@ -393,43 +425,32 @@
 
 .cl-about__body {
   color: var(--cl-text); font-size: 0.95rem; line-height: 1.75;
-  margin-bottom: 1rem; max-width: 800px;
+  margin-bottom: 1rem;
 }
 .cl-about__body p { margin: 0 0 0.75rem; }
 .cl-about__body a { color: var(--cl-accent); }
 
 .cl-about__meta {
   display: flex; align-items: center; gap: 0.75rem;
-  padding-top: 1rem; border-top: 1px solid var(--cl-border);
-}
-.cl-about__avatar {
-  width: 44px; height: 44px; border-radius: 50%; object-fit: cover;
-  border: 2px solid var(--cl-border);
+  padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.08);
 }
 .cl-about__meta-text { display: flex; flex-direction: column; }
 .cl-about__author { font-size: 0.88rem; font-weight: 600; color: var(--cl-text-strong); }
 .cl-about__role { font-size: 0.78rem; color: var(--cl-muted); }
 
 /* ═══════════════════════════════════════════════════════════════════
-   5. TRENDING DISCUSSIONS — horizontal scrollable cards
+   5. TRENDING DISCUSSIONS — 4-per-row grid
    ═══════════════════════════════════════════════════════════════════ */
 .cl-topics { padding: 1.5rem 0 2rem; }
 
-.cl-topics__scroll {
-  display: flex; gap: 0.75rem;
-  overflow-x: auto; overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 0.75rem;
-  scrollbar-width: none;
-  cursor: grab;
+.cl-topics__grid {
+  display: grid; grid-template-columns: repeat(1, 1fr); gap: 0.75rem;
 }
-.cl-topics__scroll::-webkit-scrollbar { display: none; }
-.cl-topics__scroll:active { cursor: grabbing; }
+@media (min-width: 480px) { .cl-topics__grid { grid-template-columns: repeat(2, 1fr); } }
+@media (min-width: 768px) { .cl-topics__grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 1024px) { .cl-topics__grid { grid-template-columns: repeat(4, 1fr); } }
 
 .cl-topic-card {
-  flex: 0 0 230px;
-  scroll-snap-align: start;
   display: flex; flex-direction: column;
   padding: 1.15rem 1.25rem;
   background: var(--cl-card);
@@ -439,7 +460,6 @@
   transition: all 0.2s ease;
   min-height: 145px;
 }
-@media (min-width: 640px) { .cl-topic-card { flex: 0 0 250px; } }
 .cl-topic-card:hover { border-color: var(--cl-border-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
 
 .cl-topic-card__cat {
@@ -500,7 +520,7 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   7. COMMUNITY SPACES — large colored icon cards
+   7. COMMUNITY SPACES — colored header cards
    ═══════════════════════════════════════════════════════════════════ */
 .cl-spaces { padding: 1.5rem 0 2rem; }
 
@@ -512,31 +532,50 @@
 @media (min-width: 1024px) { .cl-spaces__grid { grid-template-columns: repeat(5, 1fr); } }
 
 .cl-space-card {
-  display: flex; flex-direction: column; align-items: center; gap: 0.6rem;
-  padding: 1.5rem 1rem 1.25rem;
-  background: var(--cl-card); border: 1px solid var(--cl-border);
+  display: flex; flex-direction: column;
+  background: var(--cl-space-card-bg); border: 1px solid var(--cl-border);
   border-radius: var(--cl-radius);
-  text-decoration: none; text-align: center;
+  text-decoration: none; overflow: hidden;
   transition: all 0.25s ease;
 }
 .cl-space-card:hover { border-color: var(--cl-border-hover); transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
 
+/* Colored header band */
+.cl-space-card__header {
+  background: var(--space-color);
+  padding: 1.25rem 1rem;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.cl-space-card__header::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(0,0,0,0.05));
+  pointer-events: none;
+}
+
 .cl-space-card__icon {
-  width: 64px; height: 64px; border-radius: 16px;
+  width: 52px; height: 52px; border-radius: 14px;
   display: flex; align-items: center; justify-content: center;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  position: relative; z-index: 1;
 }
 .cl-space-card__icon img { width: 100%; height: 100%; object-fit: cover; }
 
 .cl-space-card__letter {
-  font-size: 1.6rem; font-weight: 800; color: #fff;
+  font-size: 1.4rem; font-weight: 800; color: #fff;
   line-height: 1; text-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
+/* Card body */
+.cl-space-card__body {
+  padding: 0.85rem 1rem;
+  display: flex; flex-direction: column; gap: 0.15rem;
+}
 .cl-space-card__name {
-  font-size: 0.85rem; font-weight: 700; color: var(--cl-text-strong);
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+  font-size: 0.82rem; font-weight: 700; color: var(--cl-text-strong);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .cl-space-card__sub { font-size: 0.72rem; color: var(--cl-muted); font-weight: 500; }
 

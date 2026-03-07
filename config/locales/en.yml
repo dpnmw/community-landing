@@ -43,6 +43,9 @@ en:
     # ── 3. Stats Section ──
     stats_title: "━━ ROW 3: PREMIUM STATS ━━ — Full-width row of live community statistics (members, topics, posts, likes, chats) with animated counters and icons. Each card shows icon + label on one line with the counter below. This is the section heading."
     stat_icon_color: "Color for all stat counter icons. Hex value (e.g. #d4a24e)."
+    stat_icon_bg_color: "Background color behind each stat icon. Leave blank for a subtle accent tint."
+    stat_icon_shape: "Shape of the icon background: circle or rounded square."
+    stat_counter_color: "Color for the stat counter numbers. Leave blank for default text color."
     stat_members_label: "Custom label for the Members stat card."
     stat_topics_label: "Custom label for the Topics stat card."
     stat_posts_label: "Custom label for the Posts stat card."
@@ -93,6 +96,8 @@ en:
     groups_enabled: "━━ ROW 7: SPACES ━━ — Show the Community Spaces section: a grid of colorful cards representing your public groups. Each card shows a colored icon (with group's first letter or flair), group name, and member count. Only public, non-automatic groups are shown."
     groups_title: "Heading text above the group cards."
     groups_count: "Number of group cards to display."
+    groups_selected: "Show only specific groups. Enter group names separated by pipes (e.g. designers|developers|artists). Leave blank to auto-select public groups."
+    groups_card_bg_color: "Background color for each space card. Leave blank for default card styling."
     groups_bg_dark: "Background color for the spaces section in dark mode. Leave blank for default."
     groups_bg_light: "Background color for the spaces section in light mode. Leave blank for default."
     groups_min_height: "Minimum height for the spaces section in pixels. Set to 0 for auto height."
@@ -124,6 +129,3 @@ en:
     footer_bg_dark: "Background color for the footer bar in dark mode. Leave blank for default."
     footer_bg_light: "Background color for the footer bar in light mode. Leave blank for default."
     footer_border_style: "Border style at the top of the footer bar."
-
-    # ── Custom CSS ──
-    custom_css: "━━ CUSTOM CSS ━━ — Paste your own CSS rules directly into the landing page. This CSS loads after all other styles, giving it the highest priority. No style tags needed."
