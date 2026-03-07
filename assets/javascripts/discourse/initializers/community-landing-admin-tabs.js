@@ -2,13 +2,14 @@ import { withPluginApi } from "discourse/lib/plugin-api";
 
 const TABS = [
   {
-    id: "general",
-    label: "General",
+    id: "settings",
+    label: "Settings",
     settings: new Set([
       "community_landing_enabled",
       "logo_dark_url", "logo_light_url", "logo_height", "footer_logo_url",
       "accent_color", "accent_hover_color", "dark_bg_color", "light_bg_color",
-      "scroll_animation"
+      "scroll_animation", "staggered_reveal_enabled", "dynamic_background_enabled",
+      "mouse_parallax_enabled", "scroll_progress_enabled"
     ])
   },
   {
@@ -26,6 +27,7 @@ const TABS = [
       "hero_image_urls", "hero_image_max_height",
       "hero_primary_button_label", "hero_primary_button_url",
       "hero_secondary_button_label", "hero_secondary_button_url",
+      "hero_video_url",
       "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style"
     ])
   },
@@ -54,7 +56,7 @@ const TABS = [
     id: "topics",
     label: "Trending",
     settings: new Set([
-      "topics_enabled", "topics_title", "topics_count",
+      "topics_enabled", "topics_title", "topics_count", "topics_card_bg_color",
       "topics_bg_dark", "topics_bg_light", "topics_min_height", "topics_border_style"
     ])
   },
@@ -97,7 +99,7 @@ const TABS = [
   }
 ];
 
-let currentTab = "general";
+let currentTab = "settings";
 let filterActive = false;
 let isActive = false;
 let recheckTimer = null;
@@ -124,9 +126,30 @@ function applyTabFilter() {
     );
   });
 
-  const tabBar = container.querySelector(".cl-admin-tabs");
-  if (tabBar) {
-    tabBar.classList.toggle("filter-active", filterActive);
+  // Update filter-active dimming on whichever tab container exists
+  const nativeTabs = container.querySelector(".admin-plugin-config-area__tabs");
+  if (nativeTabs) {
+    nativeTabs.classList.toggle("cl-filter-active", filterActive);
+  }
+  const standaloneTabs = container.querySelector(".cl-admin-tabs");
+  if (standaloneTabs) {
+    standaloneTabs.classList.toggle("filter-active", filterActive);
+  }
+}
+
+function updateActiveStates(activeId) {
+  const container = getContainer();
+  if (!container) return;
+
+  // Update all our injected tabs
+  container.querySelectorAll(".cl-admin-tab").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tab === activeId);
+  });
+
+  // Update native Settings link if present
+  const nativeLink = container.querySelector(".cl-native-settings-link");
+  if (nativeLink) {
+    nativeLink.classList.toggle("active", activeId === "settings");
   }
 }
 
@@ -141,12 +164,27 @@ function findFilterInput(container) {
   return null;
 }
 
+function handleTabClick(container, tabId) {
+  currentTab = tabId;
+  filterActive = false;
+
+  // Clear Discourse filter input so it doesn't conflict
+  const fi = findFilterInput(container);
+  if (fi && fi.value) {
+    fi.value = "";
+    fi.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+
+  updateActiveStates(tabId);
+  applyTabFilter();
+}
+
 function buildTabsUI() {
   const container = getContainer();
   if (!container) return false;
 
   // Already injected — just re-apply filter
-  if (container.querySelector(".cl-admin-tabs")) {
+  if (container.querySelector(".cl-admin-tab")) {
     applyTabFilter();
     return true;
   }
@@ -160,7 +198,38 @@ function buildTabsUI() {
   );
   if (!hasOurs) return false;
 
-  // Build tab bar
+  // ── Strategy 1: Inject into native Discourse tab bar ──
+  const nativeTabsEl = container.querySelector(".admin-plugin-config-area__tabs");
+  if (nativeTabsEl) {
+    // Find the native "Settings" link and hook into it
+    const nativeLink = nativeTabsEl.querySelector("a");
+    if (nativeLink) {
+      nativeLink.classList.add("cl-native-settings-link", "active");
+      nativeLink.addEventListener("click", (e) => {
+        e.preventDefault();
+        handleTabClick(container, "settings");
+      });
+    }
+
+    // Inject our section tabs into the native bar (skip "settings" — native link handles that)
+    TABS.forEach((tab) => {
+      if (tab.id === "settings") return;
+
+      const btn = document.createElement("button");
+      btn.className = "cl-admin-tab";
+      btn.textContent = tab.label;
+      btn.dataset.tab = tab.id;
+      btn.addEventListener("click", () => handleTabClick(container, tab.id));
+      nativeTabsEl.appendChild(btn);
+    });
+
+    nativeTabsEl.classList.add("cl-tabs-injected");
+    container.classList.add("cl-tabs-active");
+    applyTabFilter();
+    return true;
+  }
+
+  // ── Strategy 2 (fallback): Standalone tab bar for older Discourse ──
   const tabBar = document.createElement("div");
   tabBar.className = "cl-admin-tabs";
 
@@ -169,31 +238,12 @@ function buildTabsUI() {
     btn.className = "cl-admin-tab" + (tab.id === currentTab ? " active" : "");
     btn.textContent = tab.label;
     btn.dataset.tab = tab.id;
-    btn.addEventListener("click", () => {
-      currentTab = tab.id;
-      filterActive = false;
-
-      // Clear Discourse filter input so it doesn't conflict
-      const fi = findFilterInput(container);
-      if (fi && fi.value) {
-        fi.value = "";
-        fi.dispatchEvent(new Event("input", { bubbles: true }));
-      }
-
-      tabBar
-        .querySelectorAll(".cl-admin-tab")
-        .forEach((b) => b.classList.remove("active"));
-      btn.classList.add("active");
-      applyTabFilter();
-    });
+    btn.addEventListener("click", () => handleTabClick(container, tab.id));
     tabBar.appendChild(btn);
   });
 
-  // ── Insertion strategy: place tabs as high as possible ──
-
   let inserted = false;
 
-  // Strategy 1: Top of .admin-plugin-config-area__content (above filter bar)
   const contentArea = container.querySelector(
     ".admin-plugin-config-area__content"
   );
@@ -204,7 +254,6 @@ function buildTabsUI() {
     inserted = true;
   }
 
-  // Strategy 2: Before the filter controls
   if (!inserted) {
     const filterArea = container.querySelector(
       ".admin-site-settings-filter-controls, .setting-filter"
@@ -215,7 +264,6 @@ function buildTabsUI() {
     }
   }
 
-  // Strategy 3: Before the first setting row (fallback)
   if (!inserted) {
     allRows[0].parentNode.insertBefore(tabBar, allRows[0]);
   }
@@ -269,7 +317,7 @@ export default {
           };
           tryInject();
 
-          // Periodic re-check: re-injects tab bar if Discourse re-renders the DOM
+          // Periodic re-check: re-injects tabs if Discourse re-renders the DOM
           if (!recheckTimer) {
             recheckTimer = setInterval(() => {
               if (!isActive) {
@@ -278,7 +326,7 @@ export default {
                 return;
               }
               const c = getContainer();
-              if (c && !c.querySelector(".cl-admin-tabs")) {
+              if (c && !c.querySelector(".cl-admin-tab")) {
                 buildTabsUI();
               }
             }, 500);

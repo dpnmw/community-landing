@@ -1,7 +1,7 @@
 en:
   site_settings:
     # ── Master Switch ──
-    community_landing_enabled: "Enable the branded community landing page. When on, logged-out visitors see a custom welcome page instead of the default Discourse homepage. All sections below are configurable."
+    community_landing_enabled: "Enable the community landing page."
 
     # ── Branding: Logo ──
     logo_dark_url: "━━ BRANDING ━━ — Logo image URL for dark mode. Displayed in the navbar and footer. Leave blank to show the site name as text."

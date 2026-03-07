@@ -9,7 +9,64 @@
   display: none !important;
 }
 
-/* ── Tab Navigation ── */
+/* ── Injected tabs inside native Discourse tab bar ── */
+
+.admin-plugin-config-area__tabs.cl-tabs-injected {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0;
+}
+
+.admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab {
+  padding: 10px 14px;
+  border: none;
+  background: none;
+  color: var(--primary-medium, #888);
+  font-size: 0.875em;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab:hover {
+  color: var(--primary, #333);
+}
+
+.admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab.active {
+  color: var(--tertiary, #0088cc);
+  border-bottom-color: var(--tertiary, #0088cc);
+}
+
+/* Native "Settings" link — match our tab styling when active/inactive */
+.admin-plugin-config-area__tabs.cl-tabs-injected .cl-native-settings-link {
+  transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.admin-plugin-config-area__tabs.cl-tabs-injected .cl-native-settings-link:not(.active) {
+  color: var(--primary-medium, #888);
+  border-bottom-color: transparent;
+}
+
+/* Dimmed state when Discourse filter/search is active */
+.admin-plugin-config-area__tabs.cl-filter-active .cl-admin-tab,
+.admin-plugin-config-area__tabs.cl-filter-active .cl-native-settings-link {
+  opacity: 0.4;
+}
+
+.admin-plugin-config-area__tabs.cl-filter-active .cl-admin-tab.active,
+.admin-plugin-config-area__tabs.cl-filter-active .cl-native-settings-link.active {
+  border-bottom-color: transparent;
+}
+
+/* Dark mode */
+html.dark-scheme .admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab:hover {
+  color: var(--primary, #ddd);
+}
+
+/* ── Standalone tab bar (fallback for older Discourse without native tabs) ── */
 
 .cl-admin-tabs {
   display: flex;
@@ -20,7 +77,7 @@
   border-bottom: 1px solid var(--primary-low, rgba(0, 0, 0, 0.1));
 }
 
-.cl-admin-tab {
+.cl-admin-tabs .cl-admin-tab {
   padding: 10px 14px;
   border: none;
   background: none;
@@ -33,16 +90,15 @@
   transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
 
-.cl-admin-tab:hover {
+.cl-admin-tabs .cl-admin-tab:hover {
   color: var(--primary, #333);
 }
 
-.cl-admin-tab.active {
+.cl-admin-tabs .cl-admin-tab.active {
   color: var(--tertiary, #0088cc);
   border-bottom-color: var(--tertiary, #0088cc);
 }
 
-/* Dimmed state when Discourse filter/search is active */
 .cl-admin-tabs.filter-active .cl-admin-tab {
   opacity: 0.4;
 }
@@ -51,12 +107,11 @@
   border-bottom-color: transparent;
 }
 
-/* Dark mode tabs */
 html.dark-scheme .cl-admin-tabs {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
-html.dark-scheme .cl-admin-tab:hover {
+html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
   color: var(--primary, #ddd);
 }
 
