@@ -25,7 +25,26 @@
   var progressBar = $(".cl-progress-bar");
 
   // ═══════════════════════════════════════════════════════════════════
-  // 2. NAVBAR & SCROLL
+  // 2. HERO IMAGE RANDOM CYCLE
+  // ═══════════════════════════════════════════════════════════════════
+  (function initHeroImage() {
+    var container = $(".cl-hero__image[data-hero-images]");
+    if (!container) return;
+    try {
+      var images = JSON.parse(container.getAttribute("data-hero-images"));
+      if (!images || images.length < 2) return;
+      var img = $(".cl-hero__image-img", container);
+      if (!img) return;
+      var pick = images[Math.floor(Math.random() * images.length)];
+      img.style.opacity = "0";
+      img.src = pick;
+      img.onload = function () { img.style.opacity = ""; };
+      img.onerror = function () { img.src = images[0]; img.style.opacity = ""; };
+    } catch (e) {}
+  })();
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 3. NAVBAR & SCROLL
   // ═══════════════════════════════════════════════════════════════════
   var navbar = $("#cl-navbar");
   if (navbar) {
@@ -53,7 +72,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 3. ENHANCED REVEAL (Staggered)
+  // 4. ENHANCED REVEAL (Staggered)
   // ═══════════════════════════════════════════════════════════════════
   if ("IntersectionObserver" in window) {
     var revealObserver = new IntersectionObserver(function (entries) {
@@ -74,7 +93,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 4. MOUSE PARALLAX
+  // 5. MOUSE PARALLAX
   // ═══════════════════════════════════════════════════════════════════
   var heroImage = $(".cl-hero__image-img");
   var orbs = $$(".cl-orb");
@@ -97,7 +116,7 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 5. STAT COUNTER
+  // 6. STAT COUNTER
   // ═══════════════════════════════════════════════════════════════════
   function animateCount(el) {
     if (el.classList.contains("counted")) return;
@@ -128,6 +147,59 @@
       });
     }, { threshold: 0.2 });
     var sr = $("#cl-stats-row"); if (sr) statsObs.observe(sr);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 7. VIDEO MODAL
+  // ═══════════════════════════════════════════════════════════════════
+  var videoModal = $("#cl-video-modal");
+  var videoPlayer = $("#cl-video-player");
+
+  if (videoModal && videoPlayer) {
+    function parseYouTubeId(url) {
+      var match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?#]+)/);
+      return match ? match[1] : null;
+    }
+
+    function openVideoModal(url) {
+      var ytId = parseYouTubeId(url);
+      if (ytId) {
+        videoPlayer.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+      } else {
+        videoPlayer.innerHTML = '<video src="' + url + '" controls autoplay></video>';
+      }
+      videoModal.classList.add("active");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeVideoModal() {
+      videoModal.classList.remove("active");
+      videoPlayer.innerHTML = "";
+      document.body.style.overflow = "";
+    }
+
+    $$(".cl-hero-play").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var url = btn.getAttribute("data-video-url");
+        if (url) openVideoModal(url);
+      });
+    });
+
+    var closeBtn = $(".cl-video-modal__close", videoModal);
+    if (closeBtn) {
+      closeBtn.addEventListener("click", closeVideoModal);
+    }
+
+    var backdrop = $(".cl-video-modal__backdrop", videoModal);
+    if (backdrop) {
+      backdrop.addEventListener("click", closeVideoModal);
+    }
+
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && videoModal.classList.contains("active")) {
+        closeVideoModal();
+      }
+    });
   }
 
 })();

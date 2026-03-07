@@ -25,12 +25,14 @@ module CommunityLanding
       stat_icon_bg = hex(@s.stat_icon_bg_color.presence) rescue nil
       stat_counter = hex(@s.stat_counter_color.presence) rescue nil
       space_card_bg = hex(@s.groups_card_bg_color.presence) rescue nil
+      topic_card_bg = hex(@s.topics_card_bg_color.presence) rescue nil
       accent_rgb   = hex_to_rgb(accent)
       stat_icon_rgb = hex_to_rgb(stat_icon)
 
       stat_icon_bg_val = stat_icon_bg || "rgba(#{stat_icon_rgb}, 0.1)"
       stat_counter_val = stat_counter || "var(--cl-text-strong)"
       space_card_bg_val = space_card_bg || "var(--cl-card)"
+      topic_card_bg_val = topic_card_bg || "var(--cl-card)"
 
       about_bg_extra = about_bg_img ? ", url('#{about_bg_img}') center/cover no-repeat" : ""
 
@@ -49,6 +51,7 @@ module CommunityLanding
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
   --cl-space-card-bg: #{space_card_bg_val};
+  --cl-topic-card-bg: #{topic_card_bg_val};
   --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
@@ -66,6 +69,7 @@ module CommunityLanding
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
   --cl-space-card-bg: #{space_card_bg_val};
+  --cl-topic-card-bg: #{topic_card_bg_val};
   --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }

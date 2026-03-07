@@ -44,7 +44,9 @@ after_initialize do
             "script-src 'self' 'unsafe-inline'; " \
             "style-src 'self' 'unsafe-inline'; " \
             "img-src 'self' #{base_url} data: https:; " \
-            "font-src 'self' #{base_url}; " \
+            "font-src 'self' #{base_url} https://fonts.gstatic.com; " \
+            "media-src 'self' https:; " \
+            "frame-src https://www.youtube.com https://www.youtube-nocookie.com; " \
             "frame-ancestors 'self'"
       response.headers["Content-Security-Policy"] = csp
 

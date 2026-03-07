@@ -29,6 +29,7 @@ module CommunityLanding
       html << render_app_cta
       html << render_footer_desc
       html << render_footer
+      html << render_video_modal
       html << "<script>\n#{@js}\n</script>\n"
       html << "</body>\n</html>"
       html
@@ -80,12 +81,13 @@ module CommunityLanding
       navbar_bg    = hex(@s.navbar_bg_color) rescue nil
       navbar_border = @s.navbar_border_style rescue "none"
 
-      navbar_data = ""
-      navbar_data << " data-nav-bg=\"#{e(navbar_bg)}\"" if navbar_bg
-      navbar_data << " data-nav-border=\"#{e(navbar_border)}\"" if navbar_border && navbar_border != "none"
+      nav_style_parts = []
+      nav_style_parts << "--cl-nav-bg: #{navbar_bg}" if navbar_bg
+      nav_style_parts << "--cl-nav-border: 1px #{navbar_border} var(--cl-border)" if navbar_border && navbar_border != "none"
+      nav_style = nav_style_parts.any? ? " style=\"#{nav_style_parts.join('; ')}\"" : ""
 
       html = +""
-      html << "<nav class=\"cl-navbar\" id=\"cl-navbar\"#{navbar_data}>\n"
+      html << "<nav class=\"cl-navbar\" id=\"cl-navbar\"#{nav_style}>\n"
       if @s.scroll_progress_enabled
         html << "<div class=\"cl-progress-bar\"></div>\n"
       end
@@ -158,14 +160,31 @@ module CommunityLanding
       html << "</div>\n</div>\n"
 
       hero_image_urls_raw = @s.hero_image_urls.presence
+      hero_video = @s.hero_video_url.presence rescue nil
+      has_images = false
+
       if hero_image_urls_raw
         urls = hero_image_urls_raw.split("|").map(&:strip).reject(&:empty?).first(5)
         if urls.any?
+          has_images = true
           img_max_h = @s.hero_image_max_height rescue 500
           html << "<div class=\"cl-hero__image\" data-hero-images=\"#{e(urls.to_json)}\">\n"
           html << "<img src=\"#{urls.first}\" alt=\"#{e(site_name)}\" class=\"cl-hero__image-img\" style=\"max-height: #{img_max_h}px;\">\n"
+          if hero_video
+            html << "<button class=\"cl-hero-play\" data-video-url=\"#{e(hero_video)}\" aria-label=\"Play video\">"
+            html << "<span class=\"cl-hero-play__icon\">#{Icons::PLAY_SVG}</span>"
+            html << "</button>\n"
+          end
           html << "</div>\n"
         end
+      end
+
+      if hero_video && !has_images
+        html << "<div class=\"cl-hero__image cl-hero__image--video-only\">\n"
+        html << "<button class=\"cl-hero-play\" data-video-url=\"#{e(hero_video)}\" aria-label=\"Play video\">"
+        html << "<span class=\"cl-hero-play__icon\">#{Icons::PLAY_SVG}</span>"
+        html << "</button>\n"
+        html << "</div>\n"
       end
 
       html << "</div></section>\n"
@@ -456,6 +475,20 @@ module CommunityLanding
         "<span class=\"cl-app-badge__label\">#{label}</span>" \
         "</a>\n"
       end
+    end
+
+    def render_video_modal
+      return "" unless (@s.hero_video_url.presence rescue nil)
+
+      html = +""
+      html << "<div class=\"cl-video-modal\" id=\"cl-video-modal\">\n"
+      html << "<div class=\"cl-video-modal__backdrop\"></div>\n"
+      html << "<div class=\"cl-video-modal__content\">\n"
+      html << "<button class=\"cl-video-modal__close\" aria-label=\"Close video\">&times;</button>\n"
+      html << "<div class=\"cl-video-modal__player\" id=\"cl-video-player\"></div>\n"
+      html << "</div>\n"
+      html << "</div>\n"
+      html
     end
 
     def theme_toggle

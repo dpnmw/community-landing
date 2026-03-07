@@ -362,6 +362,18 @@
   padding: 0.55rem 0;
 }
 
+.cl-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: var(--cl-accent);
+  z-index: 1001;
+  transition: width 0.1s linear;
+  border-radius: 0 2px 2px 0;
+}
+
 .cl-navbar__inner {
   max-width: 1200px;
   margin: 0 auto;
@@ -663,6 +675,213 @@
   gap: 1rem;
 }
 
+/* ── Hero Image ── */
+.cl-hero__image {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.cl-hero__image-img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--cl-radius);
+  object-fit: cover;
+  transition: opacity 0.6s ease;
+}
+
+/* ── Hero Background Image (flat mode) ── */
+.cl-hero__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  z-index: 0;
+  opacity: 0.25;
+}
+
+.cl-hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, var(--cl-bg));
+}
+
+/* ── Hero Card Mode ── */
+.cl-hero--card .cl-hero__inner {
+  background: var(--cl-card);
+  border: 1px solid var(--cl-border);
+  border-radius: var(--cl-radius);
+  padding: 3rem 2.5rem;
+  backdrop-filter: var(--cl-blur);
+  -webkit-backdrop-filter: var(--cl-blur);
+  box-shadow: 0 8px 32px var(--cl-shadow);
+  background-size: cover;
+  background-position: center;
+}
+
+@media (min-width: 1024px) {
+  .cl-hero--card .cl-hero__inner {
+    padding: 4rem 3.5rem;
+  }
+}
+
+/* ── Hero Video Play Button ── */
+.cl-hero-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cl-accent);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px var(--cl-accent-glow), 0 0 0 0 var(--cl-accent-glow);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: cl-play-pulse 2s infinite;
+}
+
+.cl-hero-play:hover {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: var(--cl-accent-hover);
+  box-shadow: 0 12px 40px var(--cl-accent-glow);
+}
+
+.cl-hero-play__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+}
+
+.cl-hero-play__icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+@keyframes cl-play-pulse {
+  0%, 100% { box-shadow: 0 8px 32px var(--cl-accent-glow), 0 0 0 0 var(--cl-accent-glow); }
+  50% { box-shadow: 0 8px 32px var(--cl-accent-glow), 0 0 0 16px rgba(212, 162, 78, 0); }
+}
+
+.cl-hero__image--video-only {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  position: relative;
+}
+
+.cl-hero__image--video-only .cl-hero-play {
+  position: relative;
+  top: auto;
+  left: auto;
+  transform: none;
+  width: 100px;
+  height: 100px;
+}
+
+.cl-hero__image--video-only .cl-hero-play:hover {
+  transform: scale(1.1);
+}
+
+.cl-hero__image--video-only .cl-hero-play__icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+/* ── Video Modal / Lightbox ── */
+.cl-video-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+}
+
+.cl-video-modal.active {
+  display: flex;
+}
+
+.cl-video-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.cl-video-modal__content {
+  position: relative;
+  z-index: 1;
+  width: 90vw;
+  max-width: 960px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--cl-radius);
+  overflow: hidden;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+}
+
+.cl-video-modal__close {
+  position: absolute;
+  top: -48px;
+  right: 0;
+  z-index: 2;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.cl-video-modal__close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.cl-video-modal__player {
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.cl-video-modal__player iframe,
+.cl-video-modal__player video {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .cl-video-modal__content {
+    width: 95vw;
+    border-radius: var(--cl-radius-sm);
+  }
+
+  .cl-video-modal__close {
+    top: -44px;
+    right: 4px;
+  }
+}
+
 /* ═══════════════════════════════════════════════════════════════════
    3. PREMIUM STATS — icon with bg, label, animated counter
    ═══════════════════════════════════════════════════════════════════ */
@@ -909,7 +1128,7 @@
   display: flex;
   flex-direction: column;
   padding: 1.5rem;
-  background: var(--cl-card);
+  background: var(--cl-topic-card-bg, var(--cl-card));
   border: 1px solid var(--cl-border);
   border-radius: var(--cl-radius);
   text-decoration: none;
@@ -983,56 +1202,67 @@
    6. TOP CREATORS — pill badges
    ═══════════════════════════════════════════════════════════════════ */
 .cl-creators {
-  padding: 1.5rem 0 2rem;
+  padding: 2.5rem 0 3rem;
 }
 
 .cl-creators__list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 1rem;
 }
 
 .cl-creator-pill {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.35rem 0.85rem 0.35rem 0.35rem;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem 0.6rem 0.6rem;
   background: var(--cl-card);
   border: 1px solid var(--cl-border);
   border-radius: 50px;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: var(--cl-blur);
+  -webkit-backdrop-filter: var(--cl-blur);
 }
 
 .cl-creator-pill:hover {
   border-color: var(--cl-border-hover);
   background: var(--cl-accent-subtle);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px var(--cl-shadow);
 }
 
 .cl-creator-pill__avatar {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid var(--cl-border);
+  transition: border-color 0.3s ease;
+}
+
+.cl-creator-pill:hover .cl-creator-pill__avatar {
+  border-color: var(--cl-accent);
 }
 
 .cl-creator-pill__name {
-  font-size: 0.82rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--cl-text-strong);
   white-space: nowrap;
 }
 
 .cl-creator-pill__count {
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   color: var(--cl-accent);
   white-space: nowrap;
-  font-weight: 700;
+  font-weight: 800;
   margin-left: auto;
-  padding-left: 0.4rem;
-  min-width: 1.2em;
+  padding: 0.15rem 0.6rem;
+  min-width: 1.5em;
   text-align: center;
+  background: var(--cl-accent-subtle);
+  border-radius: 50px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1434,5 +1664,9 @@
   .cl-anim {
     opacity: 1;
     transform: none;
+  }
+
+  .cl-hero-play {
+    animation: none;
   }
 }
