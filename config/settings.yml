@@ -41,7 +41,7 @@ plugins:
     type: color
 
   # ══════════════════════════════════════════
-  # Scroll Animations
+  # Scroll Animations & Effects
   # ══════════════════════════════════════════
   scroll_animation:
     default: "fade_up"
@@ -54,6 +54,22 @@ plugins:
       - zoom_in
       - flip_up
       - none
+  
+  staggered_reveal_enabled:
+    default: true
+    type: bool
+  
+  dynamic_background_enabled:
+    default: true
+    type: bool
+
+  mouse_parallax_enabled:
+    default: true
+    type: bool
+
+  scroll_progress_enabled:
+    default: true
+    type: bool
 
   # ══════════════════════════════════════════
   # 1. Navbar

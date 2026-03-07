@@ -16,6 +16,9 @@ module CommunityLanding
       html = +""
       html << render_head
       html << "<body class=\"cl-body\">\n"
+      if @s.dynamic_background_enabled
+        html << "<div class=\"cl-orb-container\"><div class=\"cl-orb cl-orb--1\"></div><div class=\"cl-orb cl-orb--2\"></div></div>\n"
+      end
       html << render_navbar
       html << render_hero
       html << render_stats
@@ -42,8 +45,14 @@ module CommunityLanding
       og_logo    = logo_dark_url || logo_light_url
 
       html = +""
-      html << "<!DOCTYPE html>\n<html lang=\"en\" data-scroll-anim=\"#{e(anim_class)}\">\n<head>\n"
+      html << "<!DOCTYPE html>\n<html lang=\"en\""
+      html << " data-scroll-anim=\"#{e(anim_class)}\""
+      html << " data-parallax=\"#{@s.mouse_parallax_enabled}\""
+      html << ">\n<head>\n"
       html << "<meta charset=\"UTF-8\">\n"
+      html << "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n"
+      html << "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n"
+      html << "<link href=\"https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap\" rel=\"stylesheet\">\n"
       html << "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n"
       html << "<meta name=\"color-scheme\" content=\"dark light\">\n"
       html << "<title>#{e(@s.hero_title)} | #{e(site_name)}</title>\n"
@@ -76,7 +85,11 @@ module CommunityLanding
       navbar_data << " data-nav-border=\"#{e(navbar_border)}\"" if navbar_border && navbar_border != "none"
 
       html = +""
-      html << "<nav class=\"cl-navbar\" id=\"cl-navbar\"#{navbar_data}><div class=\"cl-navbar__inner\">\n"
+      html << "<nav class=\"cl-navbar\" id=\"cl-navbar\"#{navbar_data}>\n"
+      if @s.scroll_progress_enabled
+        html << "<div class=\"cl-progress-bar\"></div>\n"
+      end
+      html << "<div class=\"cl-navbar__inner\">\n"
       html << "<div class=\"cl-navbar__left\">"
       html << "<a href=\"/\" class=\"cl-navbar__brand\">"
       if has_logo?
@@ -234,7 +247,8 @@ module CommunityLanding
       html = +""
       html << "<section class=\"cl-topics cl-anim\" id=\"cl-topics\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(@s.topics_title)}</h2>\n"
-      html << "<div class=\"cl-topics__grid\">\n"
+      stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
+      html << "<div class=\"cl-topics__grid#{stagger_class}\">\n"
 
       topics.each do |topic|
         topic_likes   = topic.like_count rescue 0
@@ -296,7 +310,8 @@ module CommunityLanding
       html = +""
       html << "<section class=\"cl-spaces cl-anim\" id=\"cl-groups\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(@s.groups_title)}</h2>\n"
-      html << "<div class=\"cl-spaces__grid\">\n"
+      stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
+      html << "<div class=\"cl-spaces__grid#{stagger_class}\">\n"
 
       groups.each do |group|
         display_name = group.full_name.presence || group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)

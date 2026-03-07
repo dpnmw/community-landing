@@ -1,7 +1,3 @@
-// ═══════════════════════════════════════════════════════════════════
-// Community Landing v2.1 — JS
-// Theme, scroll animations, stat counters, smooth horizontal drag
-// ═══════════════════════════════════════════════════════════════════
 (function () {
   "use strict";
 
@@ -9,64 +5,39 @@
   function $$(s, c) { return Array.from((c || document).querySelectorAll(s)); }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 1. THEME DETECTION + TOGGLE
+  // 1. THEME & PROGRESS BAR
   // ═══════════════════════════════════════════════════════════════════
   (function initTheme() {
     var stored = localStorage.getItem("cl-theme");
-    if (stored) {
-      document.documentElement.setAttribute("data-theme", stored);
-    }
+    if (stored) document.documentElement.setAttribute("data-theme", stored);
   })();
 
   $$(".cl-theme-toggle").forEach(function (btn) {
     btn.addEventListener("click", function () {
       var current = document.documentElement.getAttribute("data-theme");
-      var isDark;
-
-      if (current) {
-        isDark = current === "dark";
-      } else {
-        isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      }
-
+      var isDark = current ? (current === "dark") : window.matchMedia("(prefers-color-scheme: dark)").matches;
       var next = isDark ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", next);
       localStorage.setItem("cl-theme", next);
     });
   });
 
-  // ═══════════════════════════════════════════════════════════════════
-  // 2. RANDOM HERO IMAGE
-  // ═══════════════════════════════════════════════════════════════════
-  (function initHeroImage() {
-    var container = $(".cl-hero__image[data-hero-images]");
-    if (!container) return;
-    try {
-      var images = JSON.parse(container.getAttribute("data-hero-images"));
-      if (!images || images.length < 2) return;
-      var img = $(".cl-hero__image-img", container);
-      if (!img) return;
-      var pick = images[Math.floor(Math.random() * images.length)];
-      img.style.opacity = "0";
-      img.src = pick;
-      img.onload = function () { img.style.opacity = ""; img.classList.add("loaded"); };
-      img.onerror = function () { img.src = images[0]; img.style.opacity = ""; img.classList.add("loaded"); };
-    } catch (e) { /* invalid JSON */ }
-  })();
+  var progressBar = $(".cl-progress-bar");
 
   // ═══════════════════════════════════════════════════════════════════
-  // 3. NAVBAR SCROLL
+  // 2. NAVBAR & SCROLL
   // ═══════════════════════════════════════════════════════════════════
   var navbar = $("#cl-navbar");
   if (navbar) {
-    // Apply custom navbar bg/border from data attributes
-    var navBg = navbar.getAttribute("data-nav-bg");
-    var navBorder = navbar.getAttribute("data-nav-border");
-    if (navBg) navbar.style.setProperty("--cl-nav-bg", navBg);
-    if (navBorder) navbar.style.setProperty("--cl-nav-border", "1px " + navBorder + " var(--cl-border)");
-
     var onScroll = function () {
-      navbar.classList.toggle("scrolled", window.scrollY > 50);
+      var scrolled = window.scrollY;
+      navbar.classList.toggle("scrolled", scrolled > 50);
+
+      if (progressBar) {
+        var winHeight = document.documentElement.scrollHeight - window.innerHeight;
+        var progress = (scrolled / winHeight) * 100;
+        progressBar.style.width = progress + "%";
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
@@ -79,62 +50,71 @@
       hamburger.classList.toggle("active");
       navLinks.classList.toggle("open");
     });
-    $$("a, button", navLinks).forEach(function (el) {
-      el.addEventListener("click", function () {
-        hamburger.classList.remove("active");
-        navLinks.classList.remove("open");
-      });
-    });
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 4. SCROLL REVEAL ANIMATIONS (supports configurable anim types)
+  // 3. ENHANCED REVEAL (Staggered)
   // ═══════════════════════════════════════════════════════════════════
-  var animType = document.documentElement.getAttribute("data-scroll-anim") || "fade_up";
-
-  if (animType !== "none" && "IntersectionObserver" in window) {
-    var revealObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible");
-            revealObserver.unobserve(entry.target);
+  if ("IntersectionObserver" in window) {
+    var revealObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          if (entry.target.classList.contains("cl-stagger")) {
+            $$("> *", entry.target).forEach(function (child, i) {
+              child.style.transitionDelay = (i * 0.1) + "s";
+            });
           }
-        });
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -30px 0px" }
-    );
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
-    $$(".cl-anim").forEach(function (el) {
-      revealObserver.observe(el);
-    });
-  } else {
-    // No animation — make everything visible immediately
-    $$(".cl-anim").forEach(function (el) {
-      el.classList.add("visible");
-    });
+    $$(".cl-anim, .cl-stagger").forEach(function (el) { revealObserver.observe(el); });
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  // 5. STAT COUNTER ANIMATION
+  // 4. MOUSE PARALLAX
   // ═══════════════════════════════════════════════════════════════════
-  function formatNumber(n) { return n.toLocaleString("en-US"); }
+  var heroImage = $(".cl-hero__image-img");
+  var orbs = $$(".cl-orb");
+  var parallaxEnabled = document.documentElement.getAttribute("data-parallax") === "true";
 
+  if (parallaxEnabled && window.innerWidth > 1024) {
+    window.addEventListener("mousemove", function (e) {
+      var x = (e.clientX / window.innerWidth - 0.5) * 2;
+      var y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      if (heroImage) {
+        heroImage.style.transform = "rotateY(" + (x * 10) + "deg) rotateX(" + (-y * 10) + "deg) translate(" + (x * 20) + "px, " + (y * 20) + "px)";
+      }
+
+      orbs.forEach(function (orb, i) {
+        var factor = (i + 1) * 15;
+        orb.style.transform = "translate(" + (x * factor) + "px, " + (y * factor) + "px)";
+      });
+    }, { passive: true });
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 5. STAT COUNTER
+  // ═══════════════════════════════════════════════════════════════════
   function animateCount(el) {
     if (el.classList.contains("counted")) return;
     el.classList.add("counted");
     var target = parseInt(el.getAttribute("data-count"), 10);
-    if (isNaN(target) || target === 0) { el.textContent = "0"; return; }
+    if (isNaN(target) || target === 0) return;
 
-    var duration = 1800;
+    var duration = 2000;
     var start = null;
-    function ease(t) { return 1 - Math.pow(1 - t, 4); }
+    var ease = function (t) { return 1 - Math.pow(1 - t, 4); };
+
     function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / duration, 1);
-      el.textContent = formatNumber(Math.floor(target * ease(p)));
+      el.textContent = Math.floor(target * ease(p)).toLocaleString();
       if (p < 1) requestAnimationFrame(step);
-      else el.textContent = formatNumber(target);
+      else el.textContent = target.toLocaleString();
     }
     requestAnimationFrame(step);
   }
@@ -144,19 +124,10 @@
       entries.forEach(function (e) {
         if (e.isIntersecting) {
           $$("[data-count]", e.target).forEach(animateCount);
-          if (e.target.hasAttribute("data-count")) animateCount(e.target);
         }
       });
     }, { threshold: 0.2 });
-
     var sr = $("#cl-stats-row"); if (sr) statsObs.observe(sr);
   }
-
-  // ═══════════════════════════════════════════════════════════════════
-  // 6. APP BADGE DETECTION
-  // ═══════════════════════════════════════════════════════════════════
-  var ua = navigator.userAgent || "";
-  if (/iPhone|iPad|iPod/.test(ua)) $$(".cl-app-badge--ios").forEach(function (e) { e.classList.add("highlighted"); });
-  else if (/Android/.test(ua)) $$(".cl-app-badge--android").forEach(function (e) { e.classList.add("highlighted"); });
 
 })();
