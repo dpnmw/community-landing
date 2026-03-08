@@ -862,6 +862,8 @@ const CONDITIONAL_TOGGLES = [
 ];
 
 function applyConditionalVisibility(container) {
+  const tab = TABS.find((t) => t.id === currentTab);
+
   CONDITIONAL_TOGGLES.forEach((group) => {
     const toggleRow = container.querySelector(
       `.row.setting[data-setting="${group.toggle}"]`
@@ -873,12 +875,17 @@ function applyConditionalVisibility(container) {
 
     group.whenOff.forEach((name) => {
       const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
-      if (row) row.classList.toggle("cl-tab-hidden", isOn);
+      if (!row) return;
+      // Only unhide if this setting belongs to the current tab
+      const inTab = tab && tab.settings.has(name);
+      row.classList.toggle("cl-tab-hidden", !inTab || isOn);
     });
 
     group.whenOn.forEach((name) => {
       const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
-      if (row) row.classList.toggle("cl-tab-hidden", !isOn);
+      if (!row) return;
+      const inTab = tab && tab.settings.has(name);
+      row.classList.toggle("cl-tab-hidden", !inTab || !isOn);
     });
   });
 

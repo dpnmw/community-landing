@@ -128,7 +128,10 @@
 /* ── Smooth Scroll ── */
 html {
   scroll-behavior: smooth;
-  overflow-x: hidden;
+}
+
+html, .cl-body {
+  max-width: 100vw;
 }
 
 /* ── Focus-visible Accessibility ── */
@@ -543,13 +546,17 @@ html {
 .cl-navbar__mobile-menu {
   display: none;
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   background: var(--cl-bg);
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 1.25rem;
-  z-index: 1000;
+  z-index: 999;
 }
 
 .cl-navbar__mobile-menu.open {
@@ -2143,6 +2150,10 @@ html {
    MOBILE — tighter padding, no horizontal overflow
    ═══════════════════════════════════════════════════════════════════ */
 @media (max-width: 767px) {
+  .cl-orb-container {
+    display: none;
+  }
+
   .cl-container {
     padding: 0 1rem;
   }

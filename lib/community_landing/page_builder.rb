@@ -188,13 +188,13 @@ module CommunityLanding
       html << "</div>"
 
       html << "<button class=\"cl-navbar__hamburger\" id=\"cl-hamburger\" aria-label=\"Toggle menu\"><span></span><span></span><span></span></button>\n"
+      html << "</div></nav>\n"
       html << "<div class=\"cl-navbar__mobile-menu\" id=\"cl-nav-links\">\n"
       html << theme_toggle
       html << render_social_icons
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{button_with_icon(signin_label)}</a>\n"
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{button_with_icon(join_label)}</a>\n"
-      html << "</div>"
-      html << "</div></nav>\n"
+      html << "</div>\n"
       html
     end
 
