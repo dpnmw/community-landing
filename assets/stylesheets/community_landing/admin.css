@@ -82,35 +82,74 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
   color: var(--primary, #ddd);
 }
 
-/* ── Merged dark/light color pairs (wrapper approach) ── */
+/* ── Merged dark/light color pairs (CSS-only, no DOM moves) ── */
 
-.cl-merge-wrapper {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-  padding-bottom: 20px;
-}
-
-.cl-merge-wrapper > .row.setting {
-  flex: 1;
-  min-width: 0;
+.cl-tabs-active .row.setting.cl-merged-dark {
+  float: left;
+  width: calc(50% - 8px);
+  margin-right: 16px;
   padding-bottom: 0 !important;
   margin-bottom: 0 !important;
 }
 
+.cl-tabs-active .row.setting.cl-merged-light {
+  float: left;
+  width: calc(50% - 8px);
+  padding-bottom: 0 !important;
+  margin-bottom: 20px !important;
+}
+
 /* Hide the light row's label + description — dark row's label covers both */
-.cl-merge-wrapper > .cl-merged-light > .setting-label {
+.cl-tabs-active .row.setting.cl-merged-light > .setting-label {
   display: none;
 }
 
-.cl-merge-wrapper > .cl-merged-light .desc {
+.cl-tabs-active .row.setting.cl-merged-light .desc {
   display: none;
 }
 
 /* Light row's value area fills the full width since label is hidden */
-.cl-tabs-active .cl-merge-wrapper > .cl-merged-light > .setting-value {
+.cl-tabs-active .row.setting.cl-merged-light > .setting-value {
   width: 100%;
   float: none;
+}
+
+/* Dark row: label + value stack vertically inside the half-width */
+.cl-tabs-active .row.setting.cl-merged-dark > .setting-label {
+  float: none;
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.cl-tabs-active .row.setting.cl-merged-dark > .setting-value {
+  float: none;
+  width: 100%;
+  padding-right: 0;
+}
+
+/* Controls (reset/undo) inside merged rows — inline after the color picker */
+.cl-tabs-active .row.setting.cl-merged-dark > .setting-controls,
+.cl-tabs-active .row.setting.cl-merged-light > .setting-controls {
+  float: none;
+  display: inline-block;
+  margin-top: 4px;
+}
+
+/* Clearfix after the light row to restore normal flow */
+.cl-tabs-active .row.setting.cl-merged-light::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+
+/* Insert a clear break after each pair to prevent stacking issues */
+.cl-tabs-active .row.setting.cl-merged-light + .row.setting:not(.cl-merged-light) {
+  clear: both;
+}
+
+/* Also clear when a merged-light is followed by anything else */
+.cl-tabs-active .cl-merged-light + *:not(.cl-merged-light):not(.cl-tab-hidden) {
+  clear: both;
 }
 
 .cl-color-col__label {
@@ -124,12 +163,14 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 }
 
 @media (max-width: 767px) {
-  .cl-merge-wrapper {
-    flex-direction: column;
-    gap: 0;
+  .cl-tabs-active .row.setting.cl-merged-dark,
+  .cl-tabs-active .row.setting.cl-merged-light {
+    float: none;
+    width: 100%;
+    margin-right: 0;
   }
 
-  .cl-merge-wrapper > .cl-merged-light > .setting-label {
+  .cl-tabs-active .row.setting.cl-merged-light > .setting-label {
     display: none;
   }
 }
@@ -174,7 +215,10 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="android_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="app_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="social_"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="footer_"] {
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="footer_"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="google_"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="title_font"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="fontawesome_enabled"] {
   margin-bottom: 20px;
 }
 
@@ -185,6 +229,8 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="logo_dark_url"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="accent_color"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="google_font_name"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="fontawesome_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="social_twitter_url"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],
@@ -208,6 +254,8 @@ html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="m
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="logo_dark_url"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="accent_color"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="google_font_name"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="fontawesome_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="social_twitter_url"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],
@@ -298,13 +346,15 @@ html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="f
 }
 
 .cl-tabs-active .row.setting .desc,
+.cl-tabs-active .row.setting .cl-desc,
 .cl-tabs-active .row.setting .validation-error {
   padding-top: 3px;
   font-size: var(--font-down-1);
   line-height: var(--line-height-large);
 }
 
-.cl-tabs-active .row.setting .desc {
+.cl-tabs-active .row.setting .desc,
+.cl-tabs-active .row.setting .cl-desc {
   color: var(--primary-medium);
 }
 

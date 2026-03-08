@@ -68,9 +68,18 @@ module CommunityLanding
       html << " data-parallax=\"#{@s.mouse_parallax_enabled}\""
       html << ">\n<head>\n"
       html << "<meta charset=\"UTF-8\">\n"
+      body_font  = (@s.google_font_name.presence rescue nil) || "Outfit"
+      title_font = (@s.title_font_name.presence rescue nil)
+      font_families = [body_font]
+      font_families << title_font if title_font && title_font != body_font
+      font_params = font_families.map { |f| "family=#{f.gsub(' ', '+')}:wght@400;500;600;700;800;900" }.join("&")
+
       html << "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n"
       html << "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n"
-      html << "<link href=\"https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap\" rel=\"stylesheet\">\n"
+      html << "<link href=\"https://fonts.googleapis.com/css2?#{font_params}&display=swap\" rel=\"stylesheet\">\n"
+      if @s.fontawesome_enabled rescue false
+        html << "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css\" crossorigin=\"anonymous\">\n"
+      end
       html << "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n"
       html << "<meta name=\"color-scheme\" content=\"dark light\">\n"
 
@@ -112,6 +121,17 @@ module CommunityLanding
       html << "<style>\n#{@css}\n</style>\n"
       html << @styles.color_overrides
       html << @styles.section_backgrounds
+
+      # Font overrides
+      font_css = +""
+      font_css << ":root { --cl-font-body: \"#{body_font}\", sans-serif;"
+      if title_font
+        font_css << " --cl-font-title: \"#{title_font}\", serif;"
+      else
+        font_css << " --cl-font-title: var(--cl-font-body);"
+      end
+      font_css << " }\n"
+      html << "<style>#{font_css}</style>\n"
 
       # Custom CSS (injected last so it can override everything)
       custom_css = @s.custom_css.presence rescue nil
@@ -159,10 +179,10 @@ module CommunityLanding
       html << theme_toggle
       html << render_social_icons
       if signin_enabled
-        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{button_with_icon(signin_label, :navbar_signin_icon, :navbar_signin_icon_position)}</a>\n"
       end
       if join_enabled
-        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{e(join_label)}</a>\n"
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{button_with_icon(join_label, :navbar_join_icon, :navbar_join_icon_position)}</a>\n"
       end
       html << "</div>"
 
@@ -170,8 +190,8 @@ module CommunityLanding
       html << "<div class=\"cl-navbar__mobile-menu\" id=\"cl-nav-links\">\n"
       html << theme_toggle
       html << render_social_icons
-      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
-      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{e(join_label)}</a>\n"
+      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{button_with_icon(signin_label, :navbar_signin_icon, :navbar_signin_icon_position)}</a>\n"
+      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{button_with_icon(join_label, :navbar_join_icon, :navbar_join_icon_position)}</a>\n"
       html << "</div>"
       html << "</div></nav>\n"
       html
@@ -214,9 +234,9 @@ module CommunityLanding
         parts << "#{e(before.join(' '))} " if before.any?
         parts << "<span class=\"cl-hero__title-accent\">#{e(accent)}</span>"
         parts << " #{e(after.join(' '))}" if after.any?
-        html << "<h1 class=\"cl-hero__title\">#{parts}</h1>\n"
+        html << "<h1 class=\"cl-hero__title\"#{title_style(:hero_title_size)}>#{parts}</h1>\n"
       else
-        html << "<h1 class=\"cl-hero__title\"><span class=\"cl-hero__title-accent\">#{e(@s.hero_title)}</span></h1>\n"
+        html << "<h1 class=\"cl-hero__title\"#{title_style(:hero_title_size)}><span class=\"cl-hero__title-accent\">#{e(@s.hero_title)}</span></h1>\n"
       end
 
       html << "<p class=\"cl-hero__subtitle\">#{e(@s.hero_subtitle)}</p>\n"
@@ -230,8 +250,8 @@ module CommunityLanding
 
       if primary_on || secondary_on
         html << "<div class=\"cl-hero__actions\">\n"
-        html << "<a href=\"#{primary_url}\" class=\"cl-btn cl-btn--primary cl-btn--lg\">#{e(primary_label)}</a>\n" if primary_on
-        html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{e(secondary_label)}</a>\n" if secondary_on
+        html << "<a href=\"#{primary_url}\" class=\"cl-btn cl-btn--primary cl-btn--lg\">#{button_with_icon(primary_label, :hero_primary_button_icon, :hero_primary_button_icon_position)}</a>\n" if primary_on
+        html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{button_with_icon(secondary_label, :hero_secondary_button_icon, :hero_secondary_button_icon_position)}</a>\n" if secondary_on
         html << "</div>\n"
       end
 
@@ -321,7 +341,7 @@ module CommunityLanding
 
       html = +""
       html << "<section class=\"cl-stats cl-anim\" id=\"cl-stats-row\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(stats_title)}</h2>\n" if show_title
+      html << "<h2 class=\"cl-section-title\"#{title_style(:stats_title_size)}>#{e(stats_title)}</h2>\n" if show_title
       html << "<div class=\"cl-stats__grid\">\n"
       html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape, card_style, round_nums, show_labels)
       html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape, card_style, round_nums, show_labels)
@@ -359,7 +379,7 @@ module CommunityLanding
 
       # Right side — text content
       html << "<div class=\"cl-about__right\">\n"
-      html << "<h2 class=\"cl-about__heading\">#{e(about_heading)}</h2>\n" if about_heading_on
+      html << "<h2 class=\"cl-about__heading\"#{title_style(:about_title_size)}>#{e(about_heading)}</h2>\n" if about_heading_on
       html << Icons::QUOTE_SVG
       html << "<div class=\"cl-about__body\">#{about_body}</div>\n" if about_body.present?
       html << "<div class=\"cl-about__meta\">\n"
@@ -379,11 +399,19 @@ module CommunityLanding
       return "" unless (@s.participation_enabled rescue true)
 
       contributors = @data[:contributors]
-      return "" unless contributors&.length.to_i > 3
+      hero_contributors_on = (@s.contributors_enabled rescue false)
 
-      # Positions 4–10: users with a public bio
-      bio_max   = (@s.participation_bio_max_length rescue 150).to_i
-      candidates = contributors[3..9] || []
+      if hero_contributors_on
+        # Hero shows top 3, participation shows 4–10
+        return "" unless contributors&.length.to_i > 3
+        candidates = contributors[3..9] || []
+      else
+        # Hero contributors disabled, participation shows 1–10
+        return "" unless contributors&.any?
+        candidates = contributors[0..9] || []
+      end
+
+      bio_max = (@s.participation_bio_max_length rescue 150).to_i
       users_with_bio = candidates.select { |u| u.user_profile&.bio_excerpt.present? rescue false }
       return "" if users_with_bio.empty?
 
@@ -396,7 +424,7 @@ module CommunityLanding
 
       html = +""
       html << "<section class=\"cl-participation cl-anim\" id=\"cl-participation\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(title_text)}</h2>\n" if show_title
+      html << "<h2 class=\"cl-section-title\"#{title_style(:participation_title_size)}>#{e(title_text)}</h2>\n" if show_title
       stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
       html << "<div class=\"cl-participation__grid#{stagger_class}\">\n"
 
@@ -437,7 +465,7 @@ module CommunityLanding
 
       html = +""
       html << "<section class=\"cl-topics cl-anim\" id=\"cl-topics\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(@s.topics_title)}</h2>\n" if show_title
+      html << "<h2 class=\"cl-section-title\"#{title_style(:topics_title_size)}>#{e(@s.topics_title)}</h2>\n" if show_title
       stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
       html << "<div class=\"cl-topics__grid#{stagger_class}\">\n"
 
@@ -477,57 +505,76 @@ module CommunityLanding
 
       html = +""
       html << "<section class=\"cl-spaces cl-anim\" id=\"cl-groups\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(@s.groups_title)}</h2>\n" if show_title
 
-      layout_class = (has_groups && faq_on) ? "cl-spaces__split" : "cl-spaces__full"
-      html << "<div class=\"#{layout_class}\">\n"
+      if has_groups && faq_on
+        # ── Split layout: both titles at same level ──
+        html << "<div class=\"cl-spaces__split\">\n"
 
-      # ── Left: Groups Grid ──
-      if has_groups
-        stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
-        html << "<div class=\"cl-spaces__left\">\n"
-        html << "<div class=\"cl-spaces__grid#{stagger_class}\">\n"
+        # Left column: Groups
+        html << "<div class=\"cl-spaces__col\">\n"
+        html << "<h2 class=\"cl-section-title\"#{title_style(:groups_title_size)}>#{e(@s.groups_title)}</h2>\n" if show_title
+        html << render_groups_grid(groups, show_desc, desc_max)
+        html << "</div>\n"
 
-        groups.each do |group|
-          display_name = group.full_name.presence || group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)
-          hue   = group.name.bytes.sum % 360
-          sat   = 55 + (group.name.bytes.first.to_i % 15)
-          light = 45 + (group.name.bytes.last.to_i % 12)
-          icon_color = "hsl(#{hue}, #{sat}%, #{light}%)"
+        # Right column: FAQ
+        html << "<div class=\"cl-spaces__col\">\n"
+        html << render_faq
+        html << "</div>\n"
 
-          # Group description from bio_raw
-          desc_text = nil
-          if show_desc
-            raw_bio = (group.bio_raw.to_s.strip rescue "")
-            if raw_bio.present?
-              plain = raw_bio.gsub(/<[^>]*>/, "").strip
-              desc_text = plain.length > desc_max ? "#{plain[0...desc_max]}..." : plain
-            end
-          end
-
-          html << "<a href=\"#{login_url}\" class=\"cl-space-card\" style=\"--space-color: #{icon_color}\">\n"
-          html << "<div class=\"cl-space-card__icon\">"
-          if group.flair_url.present?
-            html << "<img src=\"#{group.flair_url}\" alt=\"\">"
-          else
-            html << "<span class=\"cl-space-card__letter\">#{group.name[0].upcase}</span>"
-          end
-          html << "</div>\n"
-          html << "<div class=\"cl-space-card__body\">\n"
-          html << "<span class=\"cl-space-card__name\">#{e(display_name)}</span>\n"
-          html << "<span class=\"cl-space-card__sub\">#{group.user_count} members</span>\n"
-          html << "<p class=\"cl-space-card__desc\">#{e(desc_text)}</p>\n" if desc_text
-          html << "</div>\n"
-          html << "</a>\n"
-        end
-
-        html << "</div>\n</div>\n"
+        html << "</div>\n"
+      elsif has_groups
+        # ── Groups only (full width) ──
+        html << "<h2 class=\"cl-section-title\"#{title_style(:groups_title_size)}>#{e(@s.groups_title)}</h2>\n" if show_title
+        html << "<div class=\"cl-spaces__full\">\n"
+        html << render_groups_grid(groups, show_desc, desc_max)
+        html << "</div>\n"
+      else
+        # ── FAQ only (full width) ──
+        html << render_faq
       end
 
-      # ── Right: FAQ Accordion ──
-      html << render_faq if faq_on
+      html << "</div></section>\n"
+      html
+    end
 
-      html << "</div>\n</div></section>\n"
+    def render_groups_grid(groups, show_desc, desc_max)
+      stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
+      html = +""
+      html << "<div class=\"cl-spaces__grid#{stagger_class}\">\n"
+
+      groups.each do |group|
+        display_name = group.full_name.presence || group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)
+        hue   = group.name.bytes.sum % 360
+        sat   = 55 + (group.name.bytes.first.to_i % 15)
+        light = 45 + (group.name.bytes.last.to_i % 12)
+        icon_color = "hsl(#{hue}, #{sat}%, #{light}%)"
+
+        desc_text = nil
+        if show_desc
+          raw_bio = (group.bio_raw.to_s.strip rescue "")
+          if raw_bio.present?
+            plain = raw_bio.gsub(/<[^>]*>/, "").strip
+            desc_text = plain.length > desc_max ? "#{plain[0...desc_max]}..." : plain
+          end
+        end
+
+        html << "<a href=\"#{login_url}\" class=\"cl-space-card\" style=\"--space-color: #{icon_color}\">\n"
+        html << "<div class=\"cl-space-card__icon\">"
+        if group.flair_url.present?
+          html << "<img src=\"#{group.flair_url}\" alt=\"\">"
+        else
+          html << "<span class=\"cl-space-card__letter\">#{group.name[0].upcase}</span>"
+        end
+        html << "</div>\n"
+        html << "<div class=\"cl-space-card__body\">\n"
+        html << "<span class=\"cl-space-card__name\">#{e(display_name)}</span>\n"
+        html << "<span class=\"cl-space-card__sub\">#{group.user_count} members</span>\n"
+        html << "<p class=\"cl-space-card__desc\">#{e(desc_text)}</p>\n" if desc_text
+        html << "</div>\n"
+        html << "</a>\n"
+      end
+
+      html << "</div>\n"
       html
     end
 
@@ -537,8 +584,8 @@ module CommunityLanding
       faq_raw      = @s.faq_items.presence rescue nil
 
       html = +""
+      html << "<h2 class=\"cl-section-title\"#{title_style(:faq_title_size)}>#{e(faq_title)}</h2>\n" if faq_title_on
       html << "<div class=\"cl-faq\">\n"
-      html << "<h3 class=\"cl-faq__title\">#{e(faq_title)}</h3>\n" if faq_title_on
 
       if faq_raw
         begin
@@ -547,7 +594,7 @@ module CommunityLanding
             q = item["q"].to_s
             a = item["a"].to_s
             next if q.blank?
-            html << "<details class=\"cl-faq__item\" data-faq-exclusive>\n"
+            html << "<details class=\"cl-faq__card\" data-faq-exclusive>\n"
             html << "<summary class=\"cl-faq__question\">#{e(q)}</summary>\n"
             html << "<div class=\"cl-faq__answer\">#{a}</div>\n"
             html << "</details>\n"
@@ -577,7 +624,7 @@ module CommunityLanding
       html = +""
       html << "<section class=\"cl-app-cta cl-anim\" id=\"cl-app-cta\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<div class=\"cl-app-cta__inner\">\n<div class=\"cl-app-cta__content\">\n"
-      html << "<h2 class=\"cl-app-cta__headline\">#{e(@s.app_cta_headline)}</h2>\n"
+      html << "<h2 class=\"cl-app-cta__headline\"#{title_style(:app_cta_title_size)}>#{e(@s.app_cta_headline)}</h2>\n"
       html << "<p class=\"cl-app-cta__subtext\">#{e(@s.app_cta_subtext)}</p>\n" if @s.app_cta_subtext.present?
       html << "<div class=\"cl-app-cta__badges\">\n"
 
@@ -756,6 +803,21 @@ module CommunityLanding
 
     def logo_height
       @logo_height ||= (@s.logo_height rescue 30)
+    end
+
+    def title_style(setting_name)
+      size = (@s.public_send(setting_name) rescue 0).to_i
+      size > 0 ? " style=\"font-size: #{size}px\"" : ""
+    end
+
+    def button_with_icon(label, icon_setting, position_setting)
+      icon_name = (@s.public_send(icon_setting).presence rescue nil)
+      fa_enabled = (@s.fontawesome_enabled rescue false)
+      return e(label) unless icon_name && fa_enabled
+
+      position = (@s.public_send(position_setting) rescue "before")
+      icon_html = "<i class=\"fa-solid fa-#{e(icon_name)}\"></i>"
+      position == "after" ? "#{e(label)} #{icon_html}" : "#{icon_html} #{e(label)}"
     end
   end
 end

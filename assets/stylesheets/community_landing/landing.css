@@ -100,7 +100,7 @@
   padding: 0;
   background: var(--cl-bg);
   color: var(--cl-text);
-  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: var(--cl-font-body, 'Outfit'), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
@@ -177,7 +177,7 @@ html {
   position: absolute;
   border-radius: 50%;
   filter: blur(100px);
-  opacity: 0.5;
+  opacity: var(--cl-orb-opacity, 0.5);
   animation: cl-orb-float 20s infinite alternate ease-in-out;
 }
 
@@ -223,6 +223,7 @@ html {
 .cl-section-title {
   font-size: 1.6rem;
   font-weight: 800;
+  font-family: var(--cl-font-title, var(--cl-font-body, 'Outfit')), sans-serif;
   color: var(--cl-text-strong);
   margin: 0 0 2.5rem;
   letter-spacing: -0.02em;
@@ -378,6 +379,11 @@ html {
 .cl-btn--lg {
   padding: 1rem 2.5rem;
   font-size: 1.05rem;
+}
+
+/* FontAwesome icon spacing inside buttons */
+.cl-btn i.fa-solid {
+  margin: 0 0.35em;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -731,6 +737,7 @@ html {
 .cl-hero__title {
   font-size: clamp(2.5rem, 8vw, 4.5rem);
   font-weight: 900;
+  font-family: var(--cl-font-title, var(--cl-font-body, 'Outfit')), sans-serif;
   color: var(--cl-hero-text);
   margin: 0 0 1.5rem;
   line-height: 0.95;
@@ -1552,6 +1559,15 @@ html {
   min-height: 400px;
 }
 
+.cl-spaces__col {
+  display: flex;
+  flex-direction: column;
+}
+
+.cl-spaces__col .cl-section-title {
+  font-size: 1.3rem;
+}
+
 .cl-spaces__full {
   display: block;
 }
@@ -1663,26 +1679,28 @@ html {
   overflow: hidden;
 }
 
-/* ── FAQ Accordion ── */
+/* ── FAQ Card Accordion ── */
 .cl-faq {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 0.6rem;
 }
 
-.cl-faq__title {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--cl-text-strong);
-  margin: 0 0 1rem;
+.cl-faq__card {
+  background: var(--cl-faq-card-bg, var(--cl-card));
+  border: 1px solid var(--cl-border);
+  border-radius: var(--cl-radius-sm);
+  padding: 0 1.2rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.cl-faq__item {
-  border-bottom: 1px solid var(--cl-border);
+.cl-faq__card:hover {
+  border-color: var(--cl-border-hover);
 }
 
-.cl-faq__item:first-of-type {
-  border-top: 1px solid var(--cl-border);
+.cl-faq__card[open] {
+  border-color: var(--cl-border-hover);
+  box-shadow: 0 4px 16px var(--cl-shadow);
 }
 
 .cl-faq__question {
@@ -1719,7 +1737,7 @@ html {
   transition: transform 0.3s ease, border-color 0.2s;
 }
 
-.cl-faq__item[open] > .cl-faq__question::after {
+.cl-faq__card[open] > .cl-faq__question::after {
   transform: translateY(-30%) rotate(-135deg);
   border-color: var(--cl-accent);
 }
@@ -1930,7 +1948,6 @@ html {
   color: var(--cl-muted);
   font-size: 0.88rem;
   line-height: 1.7;
-  max-width: 700px;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

@@ -8,7 +8,7 @@ module CommunityLanding
 
       # Top contributors
       data[:contributors] = begin
-        if s.contributors_enabled
+        if s.contributors_enabled || (s.participation_enabled rescue true)
           User
             .joins(:posts)
             .includes(:user_profile)

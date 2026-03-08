@@ -11,7 +11,7 @@ plugins:
   # ══════════════════════════════════════════
   section_order:
     default: "hero|stats|about|participation|topics|groups|app_cta"
-    type: string
+    type: list
 
   # ══════════════════════════════════════════
   # Custom CSS
@@ -67,8 +67,16 @@ plugins:
     default: "06060f"
     type: color
   light_bg_color:
-    default: "faf6f0"
+    default: "F2F4F7"
     type: color
+  orb_color:
+    default: ""
+    type: color
+  orb_opacity:
+    default: 50
+    type: integer
+    min: 0
+    max: 100
 
   # ══════════════════════════════════════════
   # Scroll Animations & Effects
@@ -99,6 +107,23 @@ plugins:
 
   scroll_progress_enabled:
     default: true
+    type: bool
+
+  # ══════════════════════════════════════════
+  # Fonts
+  # ══════════════════════════════════════════
+  google_font_name:
+    default: "Outfit"
+    type: string
+  title_font_name:
+    default: ""
+    type: string
+
+  # ══════════════════════════════════════════
+  # Icons (FontAwesome)
+  # ══════════════════════════════════════════
+  fontawesome_enabled:
+    default: false
     type: bool
 
   # ══════════════════════════════════════════
@@ -157,6 +182,24 @@ plugins:
   social_github_url:
     default: ""
     type: string
+  navbar_signin_icon:
+    default: ""
+    type: string
+  navbar_signin_icon_position:
+    default: "before"
+    type: enum
+    choices:
+      - before
+      - after
+  navbar_join_icon:
+    default: ""
+    type: string
+  navbar_join_icon_position:
+    default: "before"
+    type: enum
+    choices:
+      - before
+      - after
 
   # ══════════════════════════════════════════
   # 2. Hero Section
@@ -169,6 +212,11 @@ plugins:
     type: integer
     min: 0
     max: 50
+  hero_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 120
   hero_subtitle:
     default: "Are you ready to start your creative journey?"
     type: string
@@ -207,6 +255,24 @@ plugins:
   hero_secondary_button_url:
     default: "/login"
     type: string
+  hero_primary_button_icon:
+    default: ""
+    type: string
+  hero_primary_button_icon_position:
+    default: "before"
+    type: enum
+    choices:
+      - before
+      - after
+  hero_secondary_button_icon:
+    default: ""
+    type: string
+  hero_secondary_button_icon_position:
+    default: "before"
+    type: enum
+    choices:
+      - before
+      - after
   hero_primary_btn_color_dark:
     default: ""
     type: color
@@ -338,6 +404,11 @@ plugins:
       - solid
       - dashed
       - dotted
+  stats_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 80
 
   # ══════════════════════════════════════════
   # 4. About Community Section
@@ -391,6 +462,11 @@ plugins:
       - solid
       - dashed
       - dotted
+  about_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 80
 
   # ══════════════════════════════════════════
   # 5. Trending Discussions Section
@@ -432,6 +508,11 @@ plugins:
       - solid
       - dashed
       - dotted
+  topics_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 80
 
   # ══════════════════════════════════════════
   # 6. Hero Creators (Top 3 in Hero)
@@ -469,7 +550,7 @@ plugins:
     default: ""
     type: color
   contributors_days:
-    default: 90
+    default: 30
     type: integer
   contributors_count:
     default: 10
@@ -520,6 +601,11 @@ plugins:
       - solid
       - dashed
       - dotted
+  participation_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 80
 
   # ══════════════════════════════════════════
   # 7. Community Spaces Section
@@ -572,6 +658,11 @@ plugins:
     type: integer
     min: 30
     max: 500
+  groups_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 80
 
   # ══════════════════════════════════════════
   # 7b. FAQ Accordion
@@ -588,6 +679,17 @@ plugins:
   faq_items:
     default: '[{"q":"What is this community about?","a":"A creative community focused on sharing knowledge and building together."},{"q":"How do I join?","a":"Click the Get Started button to create your free account."},{"q":"Is it free?","a":"Yes! Basic membership is completely free."}]'
     type: text_area
+  faq_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 80
+  faq_card_bg_dark:
+    default: ""
+    type: color
+  faq_card_bg_light:
+    default: ""
+    type: color
 
   # ══════════════════════════════════════════
   # 8. App Download CTA Section
@@ -665,6 +767,11 @@ plugins:
       - solid
       - dashed
       - dotted
+  app_cta_title_size:
+    default: 0
+    type: integer
+    min: 0
+    max: 80
 
   # ══════════════════════════════════════════
   # 9. Footer

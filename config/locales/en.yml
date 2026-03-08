@@ -4,7 +4,7 @@ en:
     community_landing_enabled: "Enable the community landing page."
 
     # ── Layout ──
-    section_order: "━━ LAYOUT ━━ — Order of content sections, pipe-separated. IDs: hero, stats, about, participation, topics, groups, app_cta. Navbar and footer are always fixed."
+    section_order: "━━ LAYOUT ━━ — Order of content sections. Use the arrows to reorder. Available sections: hero, stats, about, participation, topics, groups, app_cta. Navbar and footer are always fixed."
 
     # ── Custom CSS ──
     custom_css: "━━ CUSTOM CSS ━━ — Raw CSS injected after all plugin styles. Use for overrides and tweaks. No style tags needed."
@@ -26,9 +26,18 @@ en:
     accent_hover_color: "Accent color on hover states. Should be slightly lighter or darker than the primary accent. Hex value."
     dark_bg_color: "Overall page background color for dark mode. Hex value."
     light_bg_color: "Overall page background color for light mode. Hex value."
+    orb_color: "Color of the decorative background orbs. Leave blank to use the accent color."
+    orb_opacity: "Opacity of the background orbs (0–100). Default: 50."
 
     # ── Scroll Animations ──
     scroll_animation: "━━ SCROLL ANIMATIONS ━━ — How sections animate into view on scroll. Options: fade_up, fade_in, slide_left, slide_right, zoom_in, flip_up, or none."
+
+    # ── Fonts ──
+    google_font_name: "━━ FONTS ━━ — Google Font family name for body text. Must match exact Google Fonts name (e.g. 'Inter', 'Poppins'). Default: Outfit."
+    title_font_name: "Separate Google Font for section titles and headings. Leave blank to use the body font. Must match exact Google Fonts name."
+
+    # ── Icons ──
+    fontawesome_enabled: "━━ ICONS ━━ — Enable FontAwesome 6 Free icons. Loads the icon library from CDN for use on buttons."
 
     # ── 1. Navbar ──
     navbar_signin_label: "━━ ROW 1: NAVBAR ━━ — Fixed navigation bar at the top with logo, theme toggle, sign-in link, and join button. This setting controls the sign-in link text."
@@ -47,9 +56,14 @@ en:
     social_youtube_url: "YouTube channel URL. Leave blank to hide."
     social_tiktok_url: "TikTok profile URL. Leave blank to hide."
     social_github_url: "GitHub organization or profile URL. Leave blank to hide."
+    navbar_signin_icon: "FontAwesome icon name for the sign-in button (e.g. 'right-to-bracket'). Leave blank for no icon. Requires FontAwesome enabled."
+    navbar_signin_icon_position: "Show the icon before or after the sign-in button label."
+    navbar_join_icon: "FontAwesome icon name for the join button (e.g. 'user-plus'). Leave blank for no icon. Requires FontAwesome enabled."
+    navbar_join_icon_position: "Show the icon before or after the join button label."
 
     # ── 2. Hero Section ──
     hero_title: "━━ ROW 2: HERO ━━ — Large welcome area at the top with headline, subtitle, CTA buttons, and optional imagery. This is the main headline text."
+    hero_title_size: "Hero title font size in pixels. 0 = use default responsive size."
     hero_accent_word: "Which word in the title gets the accent shimmer animation. 0 = last word (default). 1 = first word, 2 = second word, etc."
     hero_subtitle: "Supporting text below the hero headline. Describe your community's purpose or value proposition."
     hero_card_enabled: "Display the hero content inside a rounded card container with border and shadow. When off, the hero uses a flat full-width layout."
@@ -63,6 +77,10 @@ en:
     hero_secondary_button_enabled: "Show the secondary CTA button in the hero section."
     hero_secondary_button_label: "Text on the secondary (outlined) CTA button."
     hero_secondary_button_url: "URL the secondary button links to."
+    hero_primary_button_icon: "FontAwesome icon name for the primary hero button (e.g. 'rocket', 'arrow-right'). Leave blank for no icon."
+    hero_primary_button_icon_position: "Show the icon before or after the primary button label."
+    hero_secondary_button_icon: "FontAwesome icon name for the secondary hero button. Leave blank for no icon."
+    hero_secondary_button_icon_position: "Show the icon before or after the secondary button label."
     hero_primary_btn_color_dark: "Primary button background color. Dark (left) and light (right) pickers. Leave blank for accent color."
     hero_primary_btn_color_light: "Light mode background for the primary button."
     hero_secondary_btn_color_dark: "Secondary button background color. Dark (left) and light (right) pickers. Leave blank for default glass style."
@@ -100,6 +118,7 @@ en:
     stats_bg_light: "Light mode background for the stats section."
     stats_min_height: "Minimum height for the stats section in pixels. Set to 0 for auto height."
     stats_border_style: "Border style at the bottom of the stats section."
+    stats_title_size: "Stats section title font size in pixels. 0 = use default."
 
     # ── 4. About Section ──
     about_enabled: "━━ ROW 4: ABOUT ━━ — Show the About section: a card with bold heading, decorative quote icon, community description, and author attribution (avatar, name, role)."
@@ -116,6 +135,7 @@ en:
     about_bg_light: "Light mode background for the about section."
     about_min_height: "Minimum height for the about section in pixels. Set to 0 for auto height."
     about_border_style: "Border style at the bottom of the about section."
+    about_title_size: "About section heading font size in pixels. 0 = use default."
 
     # ── 5. Trending Discussions ──
     topics_enabled: "━━ ROW 5: TRENDING ━━ — Show the Trending Discussions section: a horizontally scrollable row of topic cards showing the most active discussions. Each card displays category badge, title, reply count, and like count — all live data. Supports drag-to-scroll and native swipe."
@@ -128,6 +148,7 @@ en:
     topics_bg_light: "Light mode background for the trending section."
     topics_min_height: "Minimum height for the trending section in pixels. Set to 0 for auto height."
     topics_border_style: "Border style at the bottom of the trending section."
+    topics_title_size: "Trending section title font size in pixels. 0 = use default."
 
     # ── 6. Hero Creators ──
     contributors_enabled: "Show top 3 creators in the hero section with gold, silver, and bronze rank badges."
@@ -154,6 +175,7 @@ en:
     participation_bg_light: "Light mode background for the participation section."
     participation_min_height: "Minimum height for the participation section in pixels. Set to 0 for auto height."
     participation_border_style: "Border style at the bottom of the participation section."
+    participation_title_size: "Participation section title font size in pixels. 0 = use default."
 
     # ── 7. Community Spaces ──
     groups_enabled: "━━ ROW 7: SPACES ━━ — Show the Community Spaces section: a grid of colorful cards representing your public groups. Each card shows a colored icon (with group's first letter or flair), group name, and member count. Only public, non-automatic groups are shown."
@@ -169,12 +191,16 @@ en:
     groups_border_style: "Border style at the bottom of the spaces section."
     groups_show_description: "Show group description text (from the group's bio) below the group name on each card."
     groups_description_max_length: "Maximum characters for group description text (30–500). Longer descriptions are truncated."
+    groups_title_size: "Spaces section title font size in pixels. 0 = use default."
 
     # ── 7b. FAQ Accordion ──
     faq_enabled: "━━ FAQ ACCORDION ━━ — Show an FAQ accordion alongside the Spaces section. Only one item opens at a time."
     faq_title_enabled: "Show a heading above the FAQ accordion."
     faq_title: "Heading text above the FAQ accordion."
     faq_items: 'FAQ items as a JSON array. Format: [{"q":"Question","a":"Answer"}]. HTML is supported in answers.'
+    faq_title_size: "FAQ section title font size in pixels. 0 = use default."
+    faq_card_bg_dark: "FAQ card background color (dark mode). Leave blank for default card styling."
+    faq_card_bg_light: "FAQ card background color (light mode). Leave blank for default."
 
     # ── 8. App Download CTA ──
     show_app_ctas: "━━ ROW 8: APP CTA ━━ — Show the App Download CTA: a gradient banner promoting your mobile app with headline, subtitle, download badges (App Store / Google Play), and optional promotional image. Requires at least one app store URL."
@@ -197,6 +223,7 @@ en:
     app_cta_bg_light: "Light mode background for the app CTA section."
     app_cta_min_height: "Minimum height for the app CTA section in pixels. Set to 0 for auto height."
     app_cta_border_style: "Border style at the bottom of the app CTA section."
+    app_cta_title_size: "App CTA headline font size in pixels. 0 = use default."
 
     # ── 9. Footer ──
     footer_description: "━━ ROW 9: FOOTER ━━ — Bottom of the page with logo, navigation links, copyright, and optional description. This adds a description paragraph above the footer bar."

@@ -51,11 +51,18 @@ module CommunityLanding
       topic_card_light    = safe_hex(:topics_card_bg_light)
       space_card_dark     = safe_hex(:groups_card_bg_dark)
       space_card_light    = safe_hex(:groups_card_bg_light)
+      faq_card_dark       = safe_hex(:faq_card_bg_dark)
+      faq_card_light      = safe_hex(:faq_card_bg_light)
       part_card_dark      = safe_hex(:participation_card_bg_dark)
       part_card_light     = safe_hex(:participation_card_bg_light)
       part_icon_color     = safe_hex(:participation_icon_color)
 
+      orb_color     = safe_hex(:orb_color)
+      orb_opacity   = [[@s.orb_opacity.to_i, 0].max, 100].min rescue 50
+      orb_opacity   = 50 if orb_opacity == 0 && (@s.orb_opacity.to_s.strip.empty? rescue true)
+
       accent_rgb    = hex_to_rgb(accent)
+      orb_rgb       = orb_color ? hex_to_rgb(orb_color) : accent_rgb
       stat_icon_rgb = hex_to_rgb(stat_icon)
 
       stat_icon_bg_val = stat_icon_bg || "rgba(#{stat_icon_rgb}, 0.1)"
@@ -108,7 +115,9 @@ module CommunityLanding
   --cl-hero-bg: #{dark_bg};
   --cl-gradient-text: linear-gradient(135deg, #{accent_hover}, #{accent}, #{accent_hover});
   --cl-border-hover: rgba(#{accent_rgb}, 0.25);
-  --cl-orb-1: rgba(#{accent_rgb}, 0.12);
+  --cl-orb-1: rgba(#{orb_rgb}, 0.12);
+  --cl-orb-2: rgba(#{orb_rgb}, 0.08);
+  --cl-orb-opacity: #{orb_opacity / 100.0};
   --cl-stat-icon-color: #{stat_icon};
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
@@ -119,6 +128,7 @@ module CommunityLanding
   --cl-about-card-bg: #{about_dark_css};
   --cl-participation-card-bg: #{part_card_dark || 'var(--cl-card)'};
   --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+  --cl-faq-card-bg: #{faq_card_dark || 'var(--cl-card)'};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1_dark}, #{app_g2_dark}, #{app_g3_dark});#{dark_extras}
 }
 [data-theme=\"light\"] {
@@ -130,7 +140,9 @@ module CommunityLanding
   --cl-hero-bg: #{light_bg};
   --cl-gradient-text: linear-gradient(135deg, #{accent}, #{accent_hover}, #{accent});
   --cl-border-hover: rgba(#{accent_rgb}, 0.3);
-  --cl-orb-1: rgba(#{accent_rgb}, 0.08);
+  --cl-orb-1: rgba(#{orb_rgb}, 0.08);
+  --cl-orb-2: rgba(#{orb_rgb}, 0.05);
+  --cl-orb-opacity: #{orb_opacity / 100.0};
   --cl-stat-icon-color: #{stat_icon};
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
@@ -141,6 +153,7 @@ module CommunityLanding
   --cl-about-card-bg: #{about_light_css};
   --cl-participation-card-bg: #{part_card_light || part_card_dark || 'var(--cl-card)'};
   --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+  --cl-faq-card-bg: #{faq_card_light || faq_card_dark || 'var(--cl-card)'};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
 }
 @media (prefers-color-scheme: light) {
@@ -153,7 +166,9 @@ module CommunityLanding
     --cl-hero-bg: #{light_bg};
     --cl-gradient-text: linear-gradient(135deg, #{accent}, #{accent_hover}, #{accent});
     --cl-border-hover: rgba(#{accent_rgb}, 0.3);
-    --cl-orb-1: rgba(#{accent_rgb}, 0.08);
+    --cl-orb-1: rgba(#{orb_rgb}, 0.08);
+    --cl-orb-2: rgba(#{orb_rgb}, 0.05);
+    --cl-orb-opacity: #{orb_opacity / 100.0};
     --cl-stat-icon-color: #{stat_icon};
     --cl-stat-card-bg: #{stat_card_light || stat_card_dark || 'var(--cl-card)'};
     --cl-space-card-bg: #{space_card_light || space_card_dark || 'var(--cl-card)'};
@@ -161,6 +176,7 @@ module CommunityLanding
     --cl-about-card-bg: #{about_light_css};
     --cl-participation-card-bg: #{part_card_light || part_card_dark || 'var(--cl-card)'};
     --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+    --cl-faq-card-bg: #{faq_card_light || faq_card_dark || 'var(--cl-card)'};
     --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
   }
 }

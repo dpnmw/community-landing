@@ -42,10 +42,10 @@ after_initialize do
       base_url = Discourse.base_url
       csp = "default-src 'self' #{base_url}; " \
             "script-src 'self' 'unsafe-inline'; " \
-            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; " \
-            "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; " \
+            "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " \
+            "style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " \
             "img-src 'self' #{base_url} data: https:; " \
-            "font-src 'self' #{base_url} https://fonts.gstatic.com; " \
+            "font-src 'self' #{base_url} https://fonts.gstatic.com https://cdnjs.cloudflare.com; " \
             "media-src 'self' https:; " \
             "connect-src 'self' #{base_url}; " \
             "frame-src https://www.youtube.com https://www.youtube-nocookie.com; " \
