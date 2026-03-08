@@ -80,7 +80,10 @@ plugins:
   navbar_signin_enabled:
     default: true
     type: bool
-  navbar_signin_color:
+  navbar_signin_color_dark:
+    default: ""
+    type: color
+  navbar_signin_color_light:
     default: ""
     type: color
   navbar_join_label:
@@ -89,7 +92,10 @@ plugins:
   navbar_join_enabled:
     default: true
     type: bool
-  navbar_join_color:
+  navbar_join_color_dark:
+    default: ""
+    type: color
+  navbar_join_color_light:
     default: ""
     type: color
   navbar_bg_color:
@@ -124,11 +130,6 @@ plugins:
   hero_image_first:
     default: false
     type: bool
-  hero_content_width:
-    default: 50
-    type: integer
-    min: 20
-    max: 80
   hero_background_image_url:
     default: ""
     type: string
@@ -158,6 +159,18 @@ plugins:
   hero_secondary_button_url:
     default: "/login"
     type: string
+  hero_primary_btn_color_dark:
+    default: ""
+    type: color
+  hero_primary_btn_color_light:
+    default: ""
+    type: color
+  hero_secondary_btn_color_dark:
+    default: ""
+    type: color
+  hero_secondary_btn_color_light:
+    default: ""
+    type: color
   hero_video_url:
     default: ""
     type: string
@@ -252,6 +265,12 @@ plugins:
   stat_round_numbers:
     default: false
     type: bool
+  stat_card_bg_dark:
+    default: ""
+    type: color
+  stat_card_bg_light:
+    default: ""
+    type: color
   stats_bg_dark:
     default: ""
     type: color
@@ -296,7 +315,10 @@ plugins:
   about_image_url:
     default: ""
     type: string
-  about_card_color:
+  about_card_color_dark:
+    default: ""
+    type: color
+  about_card_color_light:
     default: ""
     type: color
   about_background_image_url:
@@ -337,7 +359,10 @@ plugins:
   topics_count:
     default: 5
     type: integer
-  topics_card_bg_color:
+  topics_card_bg_dark:
+    default: ""
+    type: color
+  topics_card_bg_light:
     default: ""
     type: color
   topics_bg_dark:
@@ -389,7 +414,10 @@ plugins:
     type: integer
     min: 200
     max: 600
-  contributors_pill_bg_color:
+  contributors_pill_bg_dark:
+    default: ""
+    type: color
+  contributors_pill_bg_light:
     default: ""
     type: color
   contributors_days:
@@ -417,7 +445,10 @@ plugins:
   groups_selected:
     default: ""
     type: list
-  groups_card_bg_color:
+  groups_card_bg_dark:
+    default: ""
+    type: color
+  groups_card_bg_light:
     default: ""
     type: color
   groups_bg_dark:

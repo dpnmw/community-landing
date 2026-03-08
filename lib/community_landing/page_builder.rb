@@ -102,18 +102,14 @@ module CommunityLanding
 
       signin_enabled = @s.navbar_signin_enabled rescue true
       join_enabled   = @s.navbar_join_enabled rescue true
-      signin_color   = hex(@s.navbar_signin_color) rescue nil
-      join_color     = hex(@s.navbar_join_color) rescue nil
 
       html << "<div class=\"cl-navbar__right\">"
       html << theme_toggle
       if signin_enabled
-        signin_style = signin_color ? " style=\"color: #{signin_color}; border-color: #{signin_color}\"" : ""
-        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\"#{signin_style}>#{e(signin_label)}</a>\n"
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
       end
       if join_enabled
-        join_style = join_color ? " style=\"background: #{join_color}; border-color: #{join_color}\"" : ""
-        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\"#{join_style}>#{e(join_label)}</a>\n"
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{e(join_label)}</a>\n"
       end
       html << "</div>"
 
@@ -135,7 +131,6 @@ module CommunityLanding
       hero_bg_img = @s.hero_background_image_url.presence
       hero_border = @s.hero_border_style rescue "none"
       hero_min_h  = @s.hero_min_height rescue 0
-      content_w   = @s.hero_content_width rescue 50
       site_name   = @s.title
 
       html = +""
@@ -144,7 +139,6 @@ module CommunityLanding
       hero_style_parts << "background-image: url('#{hero_bg_img}');" if hero_bg_img
       hero_style_parts << "border-bottom: 1px #{hero_border} var(--cl-border);" if hero_border.present? && hero_border != "none"
       hero_style_parts << "min-height: #{hero_min_h}px;" if hero_min_h.to_i > 0
-      hero_style_parts << "--cl-hero-content-w: #{content_w.to_i}%;" if content_w.to_i != 50
       hero_attr = hero_style_parts.any? ? " style=\"#{hero_style_parts.join(' ')}\"" : ""
       hero_classes = "cl-hero"
       hero_classes << " cl-hero--card" if hero_card
@@ -161,7 +155,7 @@ module CommunityLanding
         target = accent_idx > 0 ? [accent_idx - 1, title_words.length - 1].min : title_words.length - 1
         before = title_words[0...target]
         accent = title_words[target]
-        after  = title_words[(target + 1)..]
+        after  = title_words[(target + 1)..-1] || []
         parts = +""
         parts << "#{e(before.join(' '))} " if before.any?
         parts << "<span class=\"cl-hero__title-accent\">#{e(accent)}</span>"
@@ -198,7 +192,6 @@ module CommunityLanding
         show_count_label = @s.contributors_count_label_enabled rescue true
         alignment = @s.contributors_alignment rescue "center"
         pill_max_w = @s.contributors_pill_max_width rescue 340
-        pill_bg = hex(@s.contributors_pill_bg_color) rescue nil
 
         align_class = alignment == "left" ? " cl-hero__creators--left" : ""
         html << "<div class=\"cl-hero__creators#{align_class}\">\n"
@@ -210,7 +203,6 @@ module CommunityLanding
           count_prefix = show_count_label && count_label.present? ? "#{e(count_label)} " : ""
           pill_style_parts = ["--rank-color: #{rank_color}"]
           pill_style_parts << "max-width: #{pill_max_w}px" if pill_max_w.to_i != 340
-          pill_style_parts << "background: #{pill_bg}" if pill_bg
           html << "<a href=\"#{login_url}\" class=\"cl-creator-pill cl-creator-pill--rank-#{idx + 1}\" style=\"#{pill_style_parts.join('; ')}\">\n"
           html << "<span class=\"cl-creator-pill__rank\">Ranked ##{idx + 1}</span>\n"
           html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-creator-pill__avatar\" loading=\"lazy\">\n"

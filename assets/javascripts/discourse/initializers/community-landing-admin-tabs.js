@@ -16,8 +16,10 @@ const TABS = [
     id: "navbar",
     label: "Navbar",
     settings: new Set([
-      "navbar_signin_label", "navbar_signin_enabled", "navbar_signin_color",
-      "navbar_join_label", "navbar_join_enabled", "navbar_join_color",
+      "navbar_signin_label", "navbar_signin_enabled",
+      "navbar_signin_color_dark", "navbar_signin_color_light",
+      "navbar_join_label", "navbar_join_enabled",
+      "navbar_join_color_dark", "navbar_join_color_light",
       "navbar_bg_color", "navbar_border_style"
     ])
   },
@@ -26,16 +28,19 @@ const TABS = [
     label: "Hero",
     settings: new Set([
       "hero_title", "hero_accent_word", "hero_subtitle",
-      "hero_card_enabled", "hero_image_first", "hero_content_width",
+      "hero_card_enabled", "hero_image_first",
       "hero_background_image_url", "hero_image_urls", "hero_image_max_height",
       "hero_primary_button_enabled", "hero_primary_button_label", "hero_primary_button_url",
       "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",
+      "hero_primary_btn_color_dark", "hero_primary_btn_color_light",
+      "hero_secondary_btn_color_dark", "hero_secondary_btn_color_light",
       "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
       "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style",
       "hero_card_bg_dark", "hero_card_bg_light", "hero_card_opacity",
       "contributors_enabled", "contributors_title", "contributors_title_enabled",
       "contributors_count_label", "contributors_count_label_enabled",
-      "contributors_alignment", "contributors_pill_max_width", "contributors_pill_bg_color",
+      "contributors_alignment", "contributors_pill_max_width",
+      "contributors_pill_bg_dark", "contributors_pill_bg_light",
       "contributors_days", "contributors_count"
     ])
   },
@@ -48,6 +53,7 @@ const TABS = [
       "stat_icon_color", "stat_icon_bg_color", "stat_icon_shape", "stat_counter_color",
       "stat_members_label", "stat_topics_label", "stat_posts_label",
       "stat_likes_label", "stat_chats_label", "stat_round_numbers",
+      "stat_card_bg_dark", "stat_card_bg_light",
       "stats_bg_dark", "stats_bg_light", "stats_min_height", "stats_border_style"
     ])
   },
@@ -57,7 +63,8 @@ const TABS = [
     settings: new Set([
       "about_enabled", "about_heading_enabled", "about_heading",
       "about_title", "about_role", "about_body", "about_image_url",
-      "about_card_color", "about_background_image_url",
+      "about_card_color_dark", "about_card_color_light",
+      "about_background_image_url",
       "about_bg_dark", "about_bg_light", "about_min_height", "about_border_style"
     ])
   },
@@ -66,7 +73,7 @@ const TABS = [
     label: "Trending",
     settings: new Set([
       "topics_enabled", "topics_title_enabled", "topics_title", "topics_count",
-      "topics_card_bg_color",
+      "topics_card_bg_dark", "topics_card_bg_light",
       "topics_bg_dark", "topics_bg_light", "topics_min_height", "topics_border_style"
     ])
   },
@@ -75,7 +82,8 @@ const TABS = [
     label: "Spaces",
     settings: new Set([
       "groups_enabled", "groups_title_enabled", "groups_title", "groups_count",
-      "groups_selected", "groups_card_bg_color",
+      "groups_selected",
+      "groups_card_bg_dark", "groups_card_bg_light",
       "groups_bg_dark", "groups_bg_light", "groups_min_height", "groups_border_style"
     ])
   },
@@ -102,15 +110,32 @@ const TABS = [
   }
 ];
 
-// Dark/light background pairs — light row gets merged into dark row
+// Dark/light color pairs — light row gets merged into dark row (same-row display)
 const BG_PAIRS = [
+  // Navbar
+  ["navbar_signin_color_dark", "navbar_signin_color_light"],
+  ["navbar_join_color_dark", "navbar_join_color_light"],
+  // Hero
+  ["hero_primary_btn_color_dark", "hero_primary_btn_color_light"],
+  ["hero_secondary_btn_color_dark", "hero_secondary_btn_color_light"],
   ["hero_bg_dark", "hero_bg_light"],
   ["hero_card_bg_dark", "hero_card_bg_light"],
+  ["contributors_pill_bg_dark", "contributors_pill_bg_light"],
+  // Stats
+  ["stat_card_bg_dark", "stat_card_bg_light"],
   ["stats_bg_dark", "stats_bg_light"],
+  // About
+  ["about_card_color_dark", "about_card_color_light"],
   ["about_bg_dark", "about_bg_light"],
+  // Trending
+  ["topics_card_bg_dark", "topics_card_bg_light"],
   ["topics_bg_dark", "topics_bg_light"],
+  // Spaces
+  ["groups_card_bg_dark", "groups_card_bg_light"],
   ["groups_bg_dark", "groups_bg_light"],
+  // App CTA
   ["app_cta_bg_dark", "app_cta_bg_light"],
+  // Footer
   ["footer_bg_dark", "footer_bg_light"],
 ];
 

@@ -15,37 +15,74 @@ module CommunityLanding
       dark_bg      = hex(@s.dark_bg_color) || "#06060f"
       light_bg     = hex(@s.light_bg_color) || "#faf6f0"
       stat_icon    = hex(@s.stat_icon_color) || accent
-      about_card   = hex(@s.about_card_color.presence) rescue nil
       about_bg_img = @s.about_background_image_url.presence
       app_g1       = hex(@s.app_cta_gradient_start) || accent
       app_g2       = hex(@s.app_cta_gradient_mid) || accent_hover
       app_g3       = hex(@s.app_cta_gradient_end) || accent_hover
       stat_icon_bg = hex(@s.stat_icon_bg_color.presence) rescue nil
       stat_counter = hex(@s.stat_counter_color.presence) rescue nil
-      space_card_bg = hex(@s.groups_card_bg_color.presence) rescue nil
-      topic_card_bg = hex(@s.topics_card_bg_color.presence) rescue nil
-      video_btn_bg  = hex(@s.hero_video_button_color.presence) rescue nil
+      video_btn_bg = hex(@s.hero_video_button_color.presence) rescue nil
+
+      # Hero card bg (hex + opacity → rgba)
       hero_card_dark  = hex(@s.hero_card_bg_dark.presence) rescue nil
       hero_card_light = hex(@s.hero_card_bg_light.presence) rescue nil
       hero_card_opacity = [[@s.hero_card_opacity.to_s.to_f, 0].max, 1].min rescue 0.85
       hero_card_opacity = 0.85 if hero_card_opacity == 0.0 && (@s.hero_card_opacity.to_s.strip.empty? rescue true)
-      accent_rgb   = hex_to_rgb(accent)
+
+      # Dark/light element colors
+      navbar_signin_dark  = safe_hex(:navbar_signin_color_dark)
+      navbar_signin_light = safe_hex(:navbar_signin_color_light)
+      navbar_join_dark    = safe_hex(:navbar_join_color_dark)
+      navbar_join_light   = safe_hex(:navbar_join_color_light)
+      primary_btn_dark    = safe_hex(:hero_primary_btn_color_dark)
+      primary_btn_light   = safe_hex(:hero_primary_btn_color_light)
+      secondary_btn_dark  = safe_hex(:hero_secondary_btn_color_dark)
+      secondary_btn_light = safe_hex(:hero_secondary_btn_color_light)
+      pill_bg_dark        = safe_hex(:contributors_pill_bg_dark)
+      pill_bg_light       = safe_hex(:contributors_pill_bg_light)
+      stat_card_dark      = safe_hex(:stat_card_bg_dark)
+      stat_card_light     = safe_hex(:stat_card_bg_light)
+      about_card_dark     = safe_hex(:about_card_color_dark)
+      about_card_light    = safe_hex(:about_card_color_light)
+      topic_card_dark     = safe_hex(:topics_card_bg_dark)
+      topic_card_light    = safe_hex(:topics_card_bg_light)
+      space_card_dark     = safe_hex(:groups_card_bg_dark)
+      space_card_light    = safe_hex(:groups_card_bg_light)
+
+      accent_rgb    = hex_to_rgb(accent)
       stat_icon_rgb = hex_to_rgb(stat_icon)
 
       stat_icon_bg_val = stat_icon_bg || "rgba(#{stat_icon_rgb}, 0.1)"
       stat_counter_val = stat_counter || "var(--cl-text-strong)"
-      space_card_bg_val = space_card_bg || "var(--cl-card)"
-      topic_card_bg_val = topic_card_bg || "var(--cl-card)"
 
-      # Hero card bg: convert hex + opacity to rgba
-      hero_card_dark_rgb = hero_card_dark ? hex_to_rgb(hero_card_dark) : "12, 12, 25"
+      # Hero card bg rgba
+      hero_card_dark_rgb  = hero_card_dark ? hex_to_rgb(hero_card_dark) : "12, 12, 25"
       hero_card_light_rgb = hero_card_light ? hex_to_rgb(hero_card_light) : "255, 255, 255"
-      hero_card_dark_val = "rgba(#{hero_card_dark_rgb}, #{hero_card_opacity})"
+      hero_card_dark_val  = "rgba(#{hero_card_dark_rgb}, #{hero_card_opacity})"
       hero_card_light_val = "rgba(#{hero_card_light_rgb}, #{hero_card_opacity})"
 
-      about_card_val = about_card || "var(--cl-card)"
-      about_card_css = about_bg_img ? "#{about_card_val}, url('#{about_bg_img}') center/cover no-repeat" : about_card_val
-      video_btn_line = video_btn_bg ? "\n  --cl-video-btn-bg: #{video_btn_bg};" : ""
+      # About card with optional background image
+      about_dark_val  = about_card_dark || "var(--cl-card)"
+      about_light_val = about_card_light || "var(--cl-card)"
+      about_dark_css  = about_bg_img ? "#{about_dark_val}, url('#{about_bg_img}') center/cover no-repeat" : about_dark_val
+      about_light_css = about_bg_img ? "#{about_light_val}, url('#{about_bg_img}') center/cover no-repeat" : about_light_val
+
+      # Build optional lines (only emitted when a custom color is set)
+      dark_extras = +""
+      dark_extras << "\n  --cl-navbar-signin-color: #{navbar_signin_dark};" if navbar_signin_dark
+      dark_extras << "\n  --cl-navbar-join-bg: #{navbar_join_dark};" if navbar_join_dark
+      dark_extras << "\n  --cl-primary-btn-bg: #{primary_btn_dark};" if primary_btn_dark
+      dark_extras << "\n  --cl-secondary-btn-bg: #{secondary_btn_dark};" if secondary_btn_dark
+      dark_extras << "\n  --cl-pill-bg: #{pill_bg_dark};" if pill_bg_dark
+      dark_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};" if video_btn_bg
+
+      light_extras = +""
+      light_extras << "\n  --cl-navbar-signin-color: #{navbar_signin_light || navbar_signin_dark};" if navbar_signin_light || navbar_signin_dark
+      light_extras << "\n  --cl-navbar-join-bg: #{navbar_join_light || navbar_join_dark};" if navbar_join_light || navbar_join_dark
+      light_extras << "\n  --cl-primary-btn-bg: #{primary_btn_light || primary_btn_dark};" if primary_btn_light || primary_btn_dark
+      light_extras << "\n  --cl-secondary-btn-bg: #{secondary_btn_light || secondary_btn_dark};" if secondary_btn_light || secondary_btn_dark
+      light_extras << "\n  --cl-pill-bg: #{pill_bg_light || pill_bg_dark};" if pill_bg_light || pill_bg_dark
+      light_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};" if video_btn_bg
 
       "<style>
 :root, [data-theme=\"dark\"] {
@@ -61,11 +98,12 @@ module CommunityLanding
   --cl-stat-icon-color: #{stat_icon};
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
-  --cl-space-card-bg: #{space_card_bg_val};
-  --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
+  --cl-stat-card-bg: #{stat_card_dark || 'var(--cl-card)'};
+  --cl-space-card-bg: #{space_card_dark || 'var(--cl-card)'};
+  --cl-topic-card-bg: #{topic_card_dark || 'var(--cl-card)'};
   --cl-hero-card-bg: #{hero_card_dark_val};
-  --cl-about-card-bg: #{about_card_css};
-  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
+  --cl-about-card-bg: #{about_dark_css};
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});#{dark_extras}
 }
 [data-theme=\"light\"] {
   --cl-accent: #{accent};
@@ -80,11 +118,12 @@ module CommunityLanding
   --cl-stat-icon-color: #{stat_icon};
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
-  --cl-space-card-bg: #{space_card_bg_val};
-  --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
+  --cl-stat-card-bg: #{stat_card_light || stat_card_dark || 'var(--cl-card)'};
+  --cl-space-card-bg: #{space_card_light || space_card_dark || 'var(--cl-card)'};
+  --cl-topic-card-bg: #{topic_card_light || topic_card_dark || 'var(--cl-card)'};
   --cl-hero-card-bg: #{hero_card_light_val};
-  --cl-about-card-bg: #{about_card_css};
-  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
+  --cl-about-card-bg: #{about_light_css};
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});#{light_extras}
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme=\"dark\"]) {
@@ -98,8 +137,11 @@ module CommunityLanding
     --cl-border-hover: rgba(#{accent_rgb}, 0.3);
     --cl-orb-1: rgba(#{accent_rgb}, 0.08);
     --cl-stat-icon-color: #{stat_icon};
-    --cl-about-card-bg: #{about_card_css};
-    --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
+    --cl-stat-card-bg: #{stat_card_light || stat_card_dark || 'var(--cl-card)'};
+    --cl-space-card-bg: #{space_card_light || space_card_dark || 'var(--cl-card)'};
+    --cl-topic-card-bg: #{topic_card_light || topic_card_dark || 'var(--cl-card)'};
+    --cl-about-card-bg: #{about_light_css};
+    --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});#{light_extras}
   }
 }
 </style>\n"

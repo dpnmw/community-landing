@@ -310,19 +310,20 @@
 }
 
 .cl-btn--primary {
-  background: var(--cl-accent);
+  background: var(--cl-primary-btn-bg, var(--cl-accent));
   color: #fff;
   box-shadow: 0 4px 15px var(--cl-accent-glow);
 }
 
 .cl-btn--primary:hover {
-  background: var(--cl-accent-hover);
+  background: var(--cl-primary-btn-bg, var(--cl-accent-hover));
+  filter: brightness(1.1);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px var(--cl-accent-glow);
 }
 
 .cl-btn--ghost {
-  background: var(--cl-glass);
+  background: var(--cl-secondary-btn-bg, var(--cl-glass));
   color: var(--cl-text-strong);
   border: 1px solid var(--cl-glass-border);
   backdrop-filter: var(--cl-blur);
@@ -330,7 +331,7 @@
 }
 
 .cl-btn--ghost:hover {
-  background: var(--cl-accent-subtle);
+  background: var(--cl-secondary-btn-bg, var(--cl-accent-subtle));
   border-color: var(--cl-accent);
   transform: translateY(-2px);
 }
@@ -499,21 +500,23 @@
 }
 
 .cl-navbar__link.cl-btn--primary {
-  background: var(--cl-accent);
+  background: var(--cl-navbar-join-bg, var(--cl-accent));
   color: #fff;
 }
 
 .cl-navbar__link.cl-btn--primary:hover {
-  background: var(--cl-accent-hover);
+  background: var(--cl-navbar-join-bg, var(--cl-accent-hover));
+  filter: brightness(1.1);
 }
 
 .cl-navbar__link.cl-btn--ghost {
-  border: 1px solid var(--cl-border);
+  border: 1px solid var(--cl-navbar-signin-color, var(--cl-border));
+  color: var(--cl-navbar-signin-color, var(--cl-text-strong));
 }
 
 .cl-navbar__link.cl-btn--ghost:hover {
   background: var(--cl-accent-subtle);
-  border-color: var(--cl-border-hover);
+  border-color: var(--cl-navbar-signin-color, var(--cl-border-hover));
 }
 
 /* Theme Toggle */
@@ -635,18 +638,6 @@
 .cl-hero__content {
   flex: 1;
   text-align: left;
-}
-
-@media (min-width: 1024px) {
-  .cl-hero__content {
-    flex: 0 0 var(--cl-hero-content-w, 50%);
-    max-width: var(--cl-hero-content-w, 50%);
-  }
-
-  .cl-hero__image {
-    flex: 1;
-    min-width: 0;
-  }
 }
 
 .cl-hero__title {
@@ -946,7 +937,7 @@
   align-items: center;
   gap: 0.75rem;
   padding: 1rem 1.25rem;
-  background: var(--cl-card);
+  background: var(--cl-stat-card-bg, var(--cl-card));
   border: 1px solid var(--cl-border);
   border-radius: var(--cl-radius-sm);
   backdrop-filter: var(--cl-blur);
@@ -1287,7 +1278,7 @@
   padding: 0.6rem 1.25rem 0.6rem 0.6rem;
   width: 100%;
   max-width: 340px;
-  background: var(--cl-card);
+  background: var(--cl-pill-bg, var(--cl-card));
   border: 1px solid var(--cl-border);
   border-radius: 14px;
   text-decoration: none;
