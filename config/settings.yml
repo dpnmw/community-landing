@@ -743,22 +743,22 @@ plugins:
     default: "Available free on iOS and Android"
     type: string
   app_cta_gradient_start_dark:
-    default: "d4a24e"
+    default: "1a1a2e"
     type: color
   app_cta_gradient_start_light:
-    default: ""
+    default: "e8edf3"
     type: color
   app_cta_gradient_mid_dark:
-    default: "c4922e"
+    default: "16213e"
     type: color
   app_cta_gradient_mid_light:
-    default: ""
+    default: "dce3ed"
     type: color
   app_cta_gradient_end_dark:
-    default: "b8862e"
+    default: "0f3460"
     type: color
   app_cta_gradient_end_light:
-    default: ""
+    default: "cdd8e8"
     type: color
   app_cta_image_url:
     default: ""
