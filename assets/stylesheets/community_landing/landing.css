@@ -58,7 +58,7 @@
   --cl-orb-1: rgba(196, 146, 46, 0.08);
   --cl-orb-2: rgba(100, 150, 255, 0.05);
   --cl-gradient-text: linear-gradient(135deg, #c4922e, #a3711d, #c4922e);
-  --cl-scrolled-nav: rgba(250, 249, 246, 0.85);
+  --cl-scrolled-nav: rgba(255, 255, 255, 0.85);
   --cl-about-card-bg: linear-gradient(135deg, #fdfcf9, #f9f8f4, #fdfcf9);
   --cl-app-gradient: linear-gradient(135deg, #c4922e, #b3811d, #a3711d);
   --cl-blur: blur(16px);
@@ -87,7 +87,7 @@
     --cl-glass-border: rgba(0, 0, 0, 0.05);
     --cl-orb-1: rgba(212, 162, 78, 0.08);
     --cl-gradient-text: linear-gradient(135deg, #d4a24e, #b8862e, #d4a24e);
-    --cl-scrolled-nav: rgba(250, 246, 240, 0.95);
+    --cl-scrolled-nav: rgba(255, 255, 255, 0.95);
     --cl-about-card-bg: linear-gradient(135deg, #fdf6ec, #fef9f0, #fdf6ec);
     --cl-app-gradient: linear-gradient(135deg, #d4a24e, #c4922e, #b8862e);
     color-scheme: light;

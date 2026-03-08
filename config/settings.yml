@@ -804,7 +804,7 @@ plugins:
     default: ""
     type: color
   footer_bg_light:
-    default: ""
+    default: "#ffffff"
     type: color
   footer_border_style:
     default: "solid"

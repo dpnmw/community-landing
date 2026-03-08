@@ -959,7 +959,7 @@ function getCsrfToken() {
 async function uploadFile(file) {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("type", "site_setting");
+  formData.append("upload_type", "site_setting");
   formData.append("for_site_setting", "true");
   formData.append("synchronous_uploads", "true");
 
