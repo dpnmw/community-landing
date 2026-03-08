@@ -395,11 +395,9 @@ html {
   top: 0;
   left: 0;
   width: 100%;
-  max-width: 100vw;
   z-index: 1000;
   padding: 0.85rem 0;
   transition: all 0.3s ease;
-  overflow: hidden;
 }
 
 .cl-navbar.scrolled {
@@ -2149,6 +2147,11 @@ html {
     padding: 0 1rem;
   }
 
+  .cl-hero {
+    padding: 6rem 0 2rem;
+    min-height: auto;
+  }
+
   .cl-hero__inner {
     padding: 0 1rem;
   }
@@ -2157,12 +2160,40 @@ html {
     padding: 0 1rem;
   }
 
+  .cl-stats {
+    padding: 1.5rem 0 1rem;
+  }
+
+  .cl-stat-card:hover {
+    transform: none;
+  }
+
+  .cl-about {
+    padding: 1rem 0 1.5rem;
+  }
+
   .cl-about__left {
     padding: 1.25rem 1rem;
   }
 
   .cl-about__right {
     padding: 1.25rem 1.25rem;
+  }
+
+  .cl-participation {
+    padding: 2rem 0;
+  }
+
+  .cl-topics {
+    padding: 1rem 0 1.5rem;
+  }
+
+  .cl-spaces {
+    padding: 1.5rem 0 2rem;
+  }
+
+  .cl-app-cta {
+    padding: 1.5rem 0;
   }
 
   .cl-app-cta__inner {

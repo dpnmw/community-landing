@@ -74,7 +74,7 @@ const DESCRIPTIONS = {
   hero_background_image_url: "Full-bleed background image behind the hero. In card mode, fills the card with overlay.",
   hero_image_url: "Single hero image displayed on the right side of the hero. Use the upload button or paste a URL.",
   hero_multiple_images_enabled: "Enable multiple hero images (up to 5) that rotate randomly on each page load. Disables the single image upload.",
-  hero_image_urls: "Images for the right side of the hero. One URL per line, up to 5. One is shown randomly per page load.",
+  hero_image_urls: "Images for the right side of the hero. Paste a URL and click Create to add. Up to 5 — one is shown randomly per page load.",
   hero_image_max_height: "Maximum height for the hero image in pixels (100–1200).",
   hero_primary_button_enabled: "Show the primary CTA button in the hero.",
   hero_primary_button_label: "Primary button text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'rocket | Get Started').",
@@ -86,6 +86,8 @@ const DESCRIPTIONS = {
   hero_primary_btn_color_light: "Primary button background for light mode.",
   hero_secondary_btn_color_dark: "Secondary button background for dark mode. Leave blank for glass style.",
   hero_secondary_btn_color_light: "Secondary button background for light mode.",
+  hero_video_upload: "Upload a video file to Discourse. Check your site's allowed file types and maximum file size in site settings before uploading.",
+  hero_video_url_enabled: "Use an external video URL instead of uploading a file.",
   hero_video_url: "Hero video URL (MP4 or YouTube). Play button opens a lightbox modal.",
   hero_video_button_color: "Custom color for the video play button. Leave blank for accent color.",
   hero_video_blur_on_hover: "Blur the hero image when hovering the play button.",
@@ -288,7 +290,8 @@ const TABS = [
       "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",
       "hero_primary_btn_color_dark", "hero_primary_btn_color_light",
       "hero_secondary_btn_color_dark", "hero_secondary_btn_color_light",
-      "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
+      "hero_video_upload", "hero_video_url_enabled", "hero_video_url",
+      "hero_video_button_color", "hero_video_blur_on_hover",
       "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style",
       "hero_card_bg_dark", "hero_card_bg_light", "hero_card_opacity",
       "contributors_enabled", "contributors_title", "contributors_title_enabled",
@@ -419,6 +422,7 @@ const IMAGE_UPLOAD_SETTINGS = {
   footer_logo_url:             { label: "Upload Logo", multi: false },
   hero_background_image_url:   { label: "Upload Image", multi: false },
   hero_image_url:              { label: "Upload Image", multi: false },
+  hero_video_upload:           { label: "Upload Video", multi: false, accept: "video/*" },
   about_image_url:             { label: "Upload Image", multi: false },
   about_background_image_url:  { label: "Upload Image", multi: false },
   ios_app_badge_image_url:     { label: "Upload Badge", multi: false },
@@ -513,10 +517,10 @@ function handleTabClick(container, tabId) {
   clearDisabledNotice(container);
   updateActiveStates(tabId);
   applyTabFilter();
-  applyHeroImageVisibility(container);
+  applyConditionalVisibility(container);
   injectUploadButtons();
   updateDisabledNotice(container);
-  listenForHeroImageToggle(container);
+  listenForConditionalToggles(container);
 }
 
 /**
@@ -765,10 +769,10 @@ function buildTabsUI() {
     cleanBooleanLabels();
     injectUploadButtons();
     applyTabFilter();
-    applyHeroImageVisibility(container);
+    applyConditionalVisibility(container);
     updateDisabledNotice(container);
     listenForEnableToggles(container);
-    listenForHeroImageToggle(container);
+    listenForConditionalToggles(container);
     return true;
   }
 
@@ -816,10 +820,10 @@ function buildTabsUI() {
   cleanBooleanLabels();
   injectUploadButtons();
   applyTabFilter();
-  applyHeroImageVisibility(container);
+  applyConditionalVisibility(container);
   updateDisabledNotice(container);
   listenForEnableToggles(container);
-  listenForHeroImageToggle(container);
+  listenForConditionalToggles(container);
   return true;
 }
 
@@ -843,43 +847,98 @@ function listenForEnableToggles(container) {
 
 // ── Conditional Visibility: Hero Single vs Multi Image ──
 
-const HERO_IMAGE_CONDITIONAL = {
-  toggle: "hero_multiple_images_enabled",
-  whenOff: ["hero_image_url"],      // single image with upload button
-  whenOn:  ["hero_image_urls"],     // multi-image textarea (paste URLs)
-};
+// Toggle groups: each toggle shows one set of settings and hides the other.
+const CONDITIONAL_TOGGLES = [
+  {
+    toggle: "hero_multiple_images_enabled",
+    whenOff: ["hero_image_url"],
+    whenOn:  ["hero_image_urls"],
+  },
+  {
+    toggle: "hero_video_url_enabled",
+    whenOff: ["hero_video_upload"],
+    whenOn:  ["hero_video_url"],
+  },
+];
 
-function applyHeroImageVisibility(container) {
-  const toggleRow = container.querySelector(
-    `.row.setting[data-setting="${HERO_IMAGE_CONDITIONAL.toggle}"]`
-  );
-  if (!toggleRow) return;
+function applyConditionalVisibility(container) {
+  CONDITIONAL_TOGGLES.forEach((group) => {
+    const toggleRow = container.querySelector(
+      `.row.setting[data-setting="${group.toggle}"]`
+    );
+    if (!toggleRow) return;
 
-  const cb = toggleRow.querySelector('input[type="checkbox"]');
-  const multiEnabled = cb ? cb.checked : false;
+    const cb = toggleRow.querySelector('input[type="checkbox"]');
+    const isOn = cb ? cb.checked : false;
 
-  HERO_IMAGE_CONDITIONAL.whenOff.forEach((name) => {
-    const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
-    if (row) row.classList.toggle("cl-tab-hidden", multiEnabled);
+    group.whenOff.forEach((name) => {
+      const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
+      if (row) row.classList.toggle("cl-tab-hidden", isOn);
+    });
+
+    group.whenOn.forEach((name) => {
+      const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
+      if (row) row.classList.toggle("cl-tab-hidden", !isOn);
+    });
   });
 
-  HERO_IMAGE_CONDITIONAL.whenOn.forEach((name) => {
-    const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
-    if (row) row.classList.toggle("cl-tab-hidden", !multiEnabled);
-  });
+  // Check if file attachments are allowed for video upload toggle
+  injectVideoUploadNotice(container);
 }
 
-function listenForHeroImageToggle(container) {
+function injectVideoUploadNotice(container) {
   const toggleRow = container.querySelector(
-    `.row.setting[data-setting="${HERO_IMAGE_CONDITIONAL.toggle}"]`
+    '.row.setting[data-setting="hero_video_upload"]'
   );
   if (!toggleRow) return;
+  if (toggleRow.dataset.clVideoNoticeInjected) return;
+  toggleRow.dataset.clVideoNoticeInjected = "1";
 
-  const cb = toggleRow.querySelector('input[type="checkbox"]');
-  if (!cb || cb.dataset.clHeroToggleListening) return;
-  cb.dataset.clHeroToggleListening = "1";
-  cb.addEventListener("change", () => {
-    applyHeroImageVisibility(container);
+  // Check Discourse site settings for file attachment support
+  const siteSettings = window.Discourse && window.Discourse.SiteSettings;
+  const authorizedExtensions = (
+    (siteSettings && siteSettings.authorized_extensions) || ""
+  ).toLowerCase();
+  const attachmentsAllowed =
+    authorizedExtensions.includes("mp4") ||
+    authorizedExtensions.includes("webm") ||
+    authorizedExtensions.includes("mov") ||
+    authorizedExtensions.includes("*");
+
+  const notice = document.createElement("div");
+  notice.className = "cl-upload-notice";
+
+  if (!attachmentsAllowed) {
+    notice.classList.add("cl-upload-notice--warn");
+    notice.textContent =
+      "Video file uploads require video extensions (mp4, webm, mov) to be added to your site\u2019s authorized extensions in Settings \u2192 Files.";
+    // Disable the upload button if injected
+    const uploadBtn = toggleRow.querySelector(".cl-upload-btn");
+    if (uploadBtn) uploadBtn.disabled = true;
+  } else {
+    const maxSize = siteSettings && siteSettings.max_attachment_size_kb;
+    const maxMB = maxSize ? (maxSize / 1024).toFixed(0) : "?";
+    notice.textContent =
+      `Check allowed video file types and max upload size (${maxMB} MB) in Settings \u2192 Files before uploading.`;
+  }
+
+  const valueDiv = toggleRow.querySelector(".setting-value") || toggleRow;
+  valueDiv.appendChild(notice);
+}
+
+function listenForConditionalToggles(container) {
+  CONDITIONAL_TOGGLES.forEach((group) => {
+    const toggleRow = container.querySelector(
+      `.row.setting[data-setting="${group.toggle}"]`
+    );
+    if (!toggleRow) return;
+
+    const cb = toggleRow.querySelector('input[type="checkbox"]');
+    if (!cb || cb.dataset.clConditionalListening) return;
+    cb.dataset.clConditionalListening = "1";
+    cb.addEventListener("change", () => {
+      applyConditionalVisibility(container);
+    });
   });
 }
 
@@ -1112,7 +1171,7 @@ function injectUploadButtons() {
     btn.addEventListener("click", () => {
       const fileInput = document.createElement("input");
       fileInput.type = "file";
-      fileInput.accept = "image/*";
+      fileInput.accept = cfg.accept || "image/*";
       fileInput.style.display = "none";
       document.body.appendChild(fileInput);
 

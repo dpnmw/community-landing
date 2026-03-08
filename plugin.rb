@@ -82,19 +82,19 @@ after_initialize do
     requires_plugin CommunityLanding::PLUGIN_NAME
     before_action :ensure_admin
 
-    ALLOWED_IMAGE_SETTINGS = %w[
+    ALLOWED_UPLOAD_SETTINGS = %w[
       og_image_url favicon_url logo_dark_url logo_light_url footer_logo_url
-      hero_background_image_url hero_image_urls about_image_url
+      hero_background_image_url hero_image_url hero_image_urls about_image_url
       about_background_image_url ios_app_badge_image_url
       android_app_badge_image_url app_cta_image_url
-      splits_background_image_url
+      splits_background_image_url hero_video_upload
     ].freeze
 
     # POST /community-landing/admin/pin-upload
     def pin_upload
       upload = Upload.find(params[:upload_id])
       setting_name = params[:setting_name].to_s
-      raise Discourse::InvalidParameters unless ALLOWED_IMAGE_SETTINGS.include?(setting_name)
+      raise Discourse::InvalidParameters unless ALLOWED_UPLOAD_SETTINGS.include?(setting_name)
 
       key = "upload_pin_#{setting_name}"
       existing = PluginStore.get("community-landing", key)

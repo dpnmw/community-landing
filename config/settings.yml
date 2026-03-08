@@ -222,7 +222,7 @@ plugins:
     type: bool
   hero_image_urls:
     default: ""
-    type: text_area
+    type: list
   hero_image_max_height:
     default: 500
     type: integer
@@ -258,6 +258,12 @@ plugins:
   hero_secondary_btn_color_light:
     default: ""
     type: color
+  hero_video_upload:
+    default: ""
+    type: string
+  hero_video_url_enabled:
+    default: false
+    type: bool
   hero_video_url:
     default: ""
     type: string
