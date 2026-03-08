@@ -179,10 +179,10 @@ module CommunityLanding
       html << theme_toggle
       html << render_social_icons
       if signin_enabled
-        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{button_with_icon(signin_label, :navbar_signin_icon, :navbar_signin_icon_position)}</a>\n"
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{button_with_icon(signin_label)}</a>\n"
       end
       if join_enabled
-        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{button_with_icon(join_label, :navbar_join_icon, :navbar_join_icon_position)}</a>\n"
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{button_with_icon(join_label)}</a>\n"
       end
       html << "</div>"
 
@@ -190,8 +190,8 @@ module CommunityLanding
       html << "<div class=\"cl-navbar__mobile-menu\" id=\"cl-nav-links\">\n"
       html << theme_toggle
       html << render_social_icons
-      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{button_with_icon(signin_label, :navbar_signin_icon, :navbar_signin_icon_position)}</a>\n"
-      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{button_with_icon(join_label, :navbar_join_icon, :navbar_join_icon_position)}</a>\n"
+      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{button_with_icon(signin_label)}</a>\n"
+      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{button_with_icon(join_label)}</a>\n"
       html << "</div>"
       html << "</div></nav>\n"
       html
@@ -250,8 +250,8 @@ module CommunityLanding
 
       if primary_on || secondary_on
         html << "<div class=\"cl-hero__actions\">\n"
-        html << "<a href=\"#{primary_url}\" class=\"cl-btn cl-btn--primary cl-btn--lg\">#{button_with_icon(primary_label, :hero_primary_button_icon, :hero_primary_button_icon_position)}</a>\n" if primary_on
-        html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{button_with_icon(secondary_label, :hero_secondary_button_icon, :hero_secondary_button_icon_position)}</a>\n" if secondary_on
+        html << "<a href=\"#{primary_url}\" class=\"cl-btn cl-btn--primary cl-btn--lg\">#{button_with_icon(primary_label)}</a>\n" if primary_on
+        html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{button_with_icon(secondary_label)}</a>\n" if secondary_on
         html << "</div>\n"
       end
 
@@ -297,7 +297,7 @@ module CommunityLanding
       has_images = false
 
       if hero_image_urls_raw
-        urls = hero_image_urls_raw.split("|").map(&:strip).reject(&:empty?).first(5)
+        urls = hero_image_urls_raw.split(/[|\n\r]+/).map(&:strip).reject(&:empty?).first(5)
         if urls.any?
           has_images = true
           img_max_h = @s.hero_image_max_height rescue 500
@@ -341,7 +341,7 @@ module CommunityLanding
 
       html = +""
       html << "<section class=\"cl-stats cl-anim\" id=\"cl-stats-row\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\"#{title_style(:stats_title_size)}>#{e(stats_title)}</h2>\n" if show_title
+      html << "<h2 class=\"cl-section-title\"#{title_style(:stats_title_size)}>#{button_with_icon(stats_title)}</h2>\n" if show_title
       html << "<div class=\"cl-stats__grid\">\n"
       html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape, card_style, round_nums, show_labels)
       html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape, card_style, round_nums, show_labels)
@@ -379,7 +379,7 @@ module CommunityLanding
 
       # Right side — text content
       html << "<div class=\"cl-about__right\">\n"
-      html << "<h2 class=\"cl-about__heading\"#{title_style(:about_title_size)}>#{e(about_heading)}</h2>\n" if about_heading_on
+      html << "<h2 class=\"cl-about__heading\"#{title_style(:about_title_size)}>#{button_with_icon(about_heading)}</h2>\n" if about_heading_on
       html << Icons::QUOTE_SVG
       html << "<div class=\"cl-about__body\">#{about_body}</div>\n" if about_body.present?
       html << "<div class=\"cl-about__meta\">\n"
@@ -419,9 +419,14 @@ module CommunityLanding
       title_text  = @s.participation_title.presence || "Participation"
       border      = @s.participation_border_style rescue "none"
       min_h       = @s.participation_min_height rescue 0
+
+      topics_label = @s.participation_topics_label.presence || "Topics"
+      posts_label  = @s.participation_posts_label.presence || "Posts"
+      likes_label  = @s.participation_likes_label.presence || "Likes"
+
       html = +""
       html << "<section class=\"cl-participation cl-anim\" id=\"cl-participation\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\"#{title_style(:participation_title_size)}>#{e(title_text)}</h2>\n" if show_title
+      html << "<h2 class=\"cl-section-title\"#{title_style(:participation_title_size)}>#{button_with_icon(title_text)}</h2>\n" if show_title
       stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
       html << "<div class=\"cl-participation__grid#{stagger_class}\">\n"
 
@@ -442,9 +447,9 @@ module CommunityLanding
         html << "<p class=\"cl-participation-card__bio\">#{e(bio_text)}</p>\n"
         html << "</div>\n"
         html << "<div class=\"cl-participation-card__stats\">\n"
-        html << "<div class=\"cl-participation-stat\"><span class=\"cl-participation-stat__value\">#{topic_count}</span><span class=\"cl-participation-stat__label\">Topics</span></div>\n"
-        html << "<div class=\"cl-participation-stat\"><span class=\"cl-participation-stat__value\">#{post_count}</span><span class=\"cl-participation-stat__label\">Posts</span></div>\n"
-        html << "<div class=\"cl-participation-stat\"><span class=\"cl-participation-stat__value\">#{likes_received}</span><span class=\"cl-participation-stat__label\">Likes</span></div>\n"
+        html << participation_stat(topic_count, topics_label, Icons::PART_TOPICS_SVG)
+        html << participation_stat(post_count, posts_label, Icons::PART_POSTS_SVG)
+        html << participation_stat(likes_received, likes_label, Icons::PART_LIKES_SVG)
         html << "</div>\n"
         html << "<div class=\"cl-participation-card__footer\">\n"
         html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-participation-card__avatar\" loading=\"lazy\">\n"
@@ -473,7 +478,7 @@ module CommunityLanding
 
       html = +""
       html << "<section class=\"cl-topics cl-anim\" id=\"cl-topics\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\"#{title_style(:topics_title_size)}>#{e(@s.topics_title)}</h2>\n" if show_title
+      html << "<h2 class=\"cl-section-title\"#{title_style(:topics_title_size)}>#{button_with_icon(@s.topics_title)}</h2>\n" if show_title
       stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
       html << "<div class=\"cl-topics__grid#{stagger_class}\">\n"
 
@@ -505,14 +510,16 @@ module CommunityLanding
 
       return "" unless has_groups || faq_on
 
-      border     = @s.groups_border_style rescue "none"
-      min_h      = @s.groups_min_height rescue 0
       show_title = @s.groups_title_enabled rescue true
       show_desc  = @s.groups_show_description rescue true
       desc_max   = (@s.groups_description_max_length rescue 100).to_i
 
       html = +""
-      html << "<section class=\"cl-spaces cl-anim\" id=\"cl-groups\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
+      groups_bg_img = (@s.splits_background_image_url.presence rescue nil)
+      section_style_parts = []
+      section_style_parts << "background: url('#{groups_bg_img}') center/cover no-repeat;" if groups_bg_img
+      section_attr = section_style_parts.any? ? " style=\"#{section_style_parts.join(' ')}\"" : ""
+      html << "<section class=\"cl-spaces cl-anim\" id=\"cl-splits\"#{section_attr}><div class=\"cl-container\">\n"
 
       if has_groups && faq_on
         # ── Split layout: both titles at same level ──
@@ -520,7 +527,7 @@ module CommunityLanding
 
         # Left column: Groups
         html << "<div class=\"cl-spaces__col\">\n"
-        html << "<h2 class=\"cl-section-title\"#{title_style(:groups_title_size)}>#{e(@s.groups_title)}</h2>\n" if show_title
+        html << "<h2 class=\"cl-section-title\"#{title_style(:groups_title_size)}>#{button_with_icon(@s.groups_title)}</h2>\n" if show_title
         html << render_groups_grid(groups, show_desc, desc_max)
         html << "</div>\n"
 
@@ -532,7 +539,7 @@ module CommunityLanding
         html << "</div>\n"
       elsif has_groups
         # ── Groups only (full width) ──
-        html << "<h2 class=\"cl-section-title\"#{title_style(:groups_title_size)}>#{e(@s.groups_title)}</h2>\n" if show_title
+        html << "<h2 class=\"cl-section-title\"#{title_style(:groups_title_size)}>#{button_with_icon(@s.groups_title)}</h2>\n" if show_title
         html << "<div class=\"cl-spaces__full\">\n"
         html << render_groups_grid(groups, show_desc, desc_max)
         html << "</div>\n"
@@ -592,7 +599,7 @@ module CommunityLanding
       faq_raw      = @s.faq_items.presence rescue nil
 
       html = +""
-      html << "<h2 class=\"cl-section-title\"#{title_style(:faq_title_size)}>#{e(faq_title)}</h2>\n" if faq_title_on
+      html << "<h2 class=\"cl-section-title\"#{title_style(:faq_title_size)}>#{button_with_icon(faq_title)}</h2>\n" if faq_title_on
       html << "<div class=\"cl-faq\">\n"
 
       if faq_raw
@@ -632,7 +639,7 @@ module CommunityLanding
       html = +""
       html << "<section class=\"cl-app-cta cl-anim\" id=\"cl-app-cta\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<div class=\"cl-app-cta__inner\">\n<div class=\"cl-app-cta__content\">\n"
-      html << "<h2 class=\"cl-app-cta__headline\"#{title_style(:app_cta_title_size)}>#{e(@s.app_cta_headline)}</h2>\n"
+      html << "<h2 class=\"cl-app-cta__headline\"#{title_style(:app_cta_title_size)}>#{button_with_icon(@s.app_cta_headline)}</h2>\n"
       html << "<p class=\"cl-app-cta__subtext\">#{e(@s.app_cta_subtext)}</p>\n" if @s.app_cta_subtext.present?
       html << "<div class=\"cl-app-cta__badges\">\n"
 
@@ -818,14 +825,50 @@ module CommunityLanding
       size > 0 ? " style=\"font-size: #{size}px\"" : ""
     end
 
-    def button_with_icon(label, icon_setting, position_setting)
-      icon_name = (@s.public_send(icon_setting).presence rescue nil)
+    def participation_stat(count, raw_label, default_svg)
       fa_enabled = (@s.fontawesome_enabled rescue false)
-      return e(label) unless icon_name && fa_enabled
+      # Parse "icon | Label" format — if present, use FA icon instead of default SVG
+      if fa_enabled && raw_label.include?("|")
+        parts = raw_label.split("|", 2).map(&:strip)
+        left, right = parts
+        if left.match?(/\A[\w-]+\z/) && left.length < 30
+          icon_html = "<i class=\"fa-solid fa-#{e(left)} cl-participation-stat__icon\"></i>"
+          label = right
+        elsif right.match?(/\A[\w-]+\z/) && right.length < 30
+          icon_html = "<i class=\"fa-solid fa-#{e(right)} cl-participation-stat__icon\"></i>"
+          label = left
+        else
+          icon_html = default_svg
+          label = raw_label
+        end
+      else
+        icon_html = default_svg
+        label = raw_label
+      end
+      "<div class=\"cl-participation-stat\">" \
+        "<span class=\"cl-participation-stat__value\">#{icon_html}#{count}</span>" \
+        "<span class=\"cl-participation-stat__label\">#{e(label)}</span>" \
+        "</div>\n"
+    end
 
-      position = (@s.public_send(position_setting) rescue "before")
-      icon_html = "<i class=\"fa-solid fa-#{e(icon_name)}\"></i>"
-      position == "after" ? "#{e(label)} #{icon_html}" : "#{icon_html} #{e(label)}"
+    def button_with_icon(raw_label)
+      fa_enabled = (@s.fontawesome_enabled rescue false)
+      return e(raw_label) unless fa_enabled && raw_label.include?("|")
+
+      parts = raw_label.split("|", 2).map(&:strip)
+      # Try to detect which side is the icon name (no spaces, short) vs label text
+      left, right = parts
+      if left.match?(/\A[\w-]+\z/) && left.length < 30
+        # "iconname | Label" — icon before
+        icon_html = "<i class=\"fa-solid fa-#{e(left)}\"></i>"
+        "#{icon_html} #{e(right)}"
+      elsif right.match?(/\A[\w-]+\z/) && right.length < 30
+        # "Label | iconname" — icon after
+        icon_html = "<i class=\"fa-solid fa-#{e(right)}\"></i>"
+        "#{e(left)} #{icon_html}"
+      else
+        e(raw_label)
+      end
     end
   end
 end

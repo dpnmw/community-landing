@@ -182,24 +182,6 @@ plugins:
   social_github_url:
     default: ""
     type: string
-  navbar_signin_icon:
-    default: ""
-    type: string
-  navbar_signin_icon_position:
-    default: "before"
-    type: enum
-    choices:
-      - before
-      - after
-  navbar_join_icon:
-    default: ""
-    type: string
-  navbar_join_icon_position:
-    default: "before"
-    type: enum
-    choices:
-      - before
-      - after
 
   # ══════════════════════════════════════════
   # 2. Hero Section
@@ -231,7 +213,7 @@ plugins:
     type: string
   hero_image_urls:
     default: ""
-    type: list
+    type: text_area
   hero_image_max_height:
     default: 500
     type: integer
@@ -255,24 +237,6 @@ plugins:
   hero_secondary_button_url:
     default: "/login"
     type: string
-  hero_primary_button_icon:
-    default: ""
-    type: string
-  hero_primary_button_icon_position:
-    default: "before"
-    type: enum
-    choices:
-      - before
-      - after
-  hero_secondary_button_icon:
-    default: ""
-    type: string
-  hero_secondary_button_icon_position:
-    default: "before"
-    type: enum
-    choices:
-      - before
-      - after
   hero_primary_btn_color_dark:
     default: ""
     type: color
@@ -606,6 +570,15 @@ plugins:
     type: integer
     min: 0
     max: 80
+  participation_topics_label:
+    default: "Topics"
+    type: string
+  participation_posts_label:
+    default: "Posts"
+    type: string
+  participation_likes_label:
+    default: "Likes"
+    type: string
   participation_stat_color:
     default: ""
     type: color
@@ -646,25 +619,9 @@ plugins:
   groups_card_bg_light:
     default: ""
     type: color
-  groups_bg_dark:
+  splits_background_image_url:
     default: ""
-    type: color
-  groups_bg_light:
-    default: ""
-    type: color
-  groups_min_height:
-    default: 0
-    type: integer
-    min: 0
-    max: 2000
-  groups_border_style:
-    default: "none"
-    type: enum
-    choices:
-      - none
-      - solid
-      - dashed
-      - dotted
+    type: string
   groups_show_description:
     default: true
     type: bool
@@ -787,6 +744,18 @@ plugins:
     type: integer
     min: 0
     max: 80
+  app_cta_headline_color_dark:
+    default: ""
+    type: color
+  app_cta_headline_color_light:
+    default: ""
+    type: color
+  app_cta_subtext_color_dark:
+    default: ""
+    type: color
+  app_cta_subtext_color_light:
+    default: ""
+    type: color
 
   # ══════════════════════════════════════════
   # 9. Footer

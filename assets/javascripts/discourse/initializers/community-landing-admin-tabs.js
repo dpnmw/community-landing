@@ -46,20 +46,16 @@ const DESCRIPTIONS = {
   fontawesome_enabled: "Load FontAwesome 6 Free icons from CDN for use on buttons.",
 
   // ── Navbar ──
-  navbar_signin_label: "Text for the sign-in link in the navbar.",
+  navbar_signin_label: "Sign-in link text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'right-to-bracket | Sign In').",
   navbar_signin_enabled: "Show the sign-in link in the navbar.",
   navbar_signin_color_dark: "Sign-in link color for dark mode. Leave blank for default.",
   navbar_signin_color_light: "Sign-in link color for light mode.",
-  navbar_join_label: "Text for the join/register CTA button in the navbar.",
+  navbar_join_label: "Join button text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'user-plus | Get Started').",
   navbar_join_enabled: "Show the join/register button in the navbar.",
   navbar_join_color_dark: "Join button background color for dark mode. Leave blank for accent color.",
   navbar_join_color_light: "Join button background color for light mode.",
   navbar_bg_color: "Custom navbar background when scrolled. Leave blank for frosted glass effect.",
   navbar_border_style: "Border style at the bottom of the navbar when scrolled.",
-  navbar_signin_icon: "FontAwesome icon name for sign-in (e.g. 'right-to-bracket'). Requires FontAwesome enabled.",
-  navbar_signin_icon_position: "Show the sign-in icon before or after the label.",
-  navbar_join_icon: "FontAwesome icon name for join button (e.g. 'user-plus'). Requires FontAwesome enabled.",
-  navbar_join_icon_position: "Show the join icon before or after the label.",
   social_twitter_url: "Twitter / X profile URL. Leave blank to hide. Icons appear in navbar before auth buttons.",
   social_facebook_url: "Facebook page or profile URL. Leave blank to hide.",
   social_instagram_url: "Instagram profile URL. Leave blank to hide.",
@@ -75,18 +71,14 @@ const DESCRIPTIONS = {
   hero_card_enabled: "Display hero content inside a rounded card with border and shadow.",
   hero_image_first: "Show hero image above text on mobile / left on desktop. Off = text first.",
   hero_background_image_url: "Full-bleed background image behind the hero. In card mode, fills the card with overlay.",
-  hero_image_urls: "Images for the right side of the hero. Up to 5 URLs — one shown randomly per page load.",
+  hero_image_urls: "Images for the right side of the hero. One URL per line, up to 5. One is shown randomly per page load. Use the Add Image button or paste URLs.",
   hero_image_max_height: "Maximum height for the hero image in pixels (100–1200).",
   hero_primary_button_enabled: "Show the primary CTA button in the hero.",
-  hero_primary_button_label: "Text on the primary (filled, accent-colored) CTA button.",
+  hero_primary_button_label: "Primary button text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'rocket | Get Started').",
   hero_primary_button_url: "URL the primary button links to. Relative path or absolute URL.",
   hero_secondary_button_enabled: "Show the secondary CTA button in the hero.",
-  hero_secondary_button_label: "Text on the secondary (outlined) CTA button.",
+  hero_secondary_button_label: "Secondary button text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'arrow-right | Learn More').",
   hero_secondary_button_url: "URL the secondary button links to.",
-  hero_primary_button_icon: "FontAwesome icon for primary button (e.g. 'rocket'). Leave blank for no icon.",
-  hero_primary_button_icon_position: "Show the primary button icon before or after the label.",
-  hero_secondary_button_icon: "FontAwesome icon for secondary button. Leave blank for no icon.",
-  hero_secondary_button_icon_position: "Show the secondary button icon before or after the label.",
   hero_primary_btn_color_dark: "Primary button background for dark mode. Leave blank for accent color.",
   hero_primary_btn_color_light: "Primary button background for light mode.",
   hero_secondary_btn_color_dark: "Secondary button background for dark mode. Leave blank for glass style.",
@@ -118,7 +110,7 @@ const DESCRIPTIONS = {
   // ── Participation ──
   participation_enabled: "Show Participation section: testimonial cards with leaderboard bios (positions 4–10).",
   participation_title_enabled: "Show heading above participation cards.",
-  participation_title: "Heading text above participation cards.",
+  participation_title: "Heading text above participation cards. Use 'icon | Title' for FA icon (e.g. 'users | Participation').",
   participation_bio_max_length: "Max characters from each user's bio (50–500). Longer bios are truncated.",
   participation_icon_color: "Color for the decorative quote icon and avatar border. Leave blank for accent color.",
   participation_card_bg_dark: "Participation card background for dark mode.",
@@ -128,6 +120,9 @@ const DESCRIPTIONS = {
   participation_min_height: "Minimum section height in pixels. 0 = auto.",
   participation_border_style: "Border style at the bottom of the section.",
   participation_title_size: "Section title font size in pixels. 0 = use default.",
+  participation_topics_label: "Label for the Topics stat. Use 'icon | Label' for FA icon (e.g. 'file-lines | Topics'). Default SVG used when no icon specified.",
+  participation_posts_label: "Label for the Posts stat. Use 'icon | Label' for FA icon (e.g. 'comment | Posts'). Default SVG used when no icon specified.",
+  participation_likes_label: "Label for the Likes stat. Use 'icon | Label' for FA icon (e.g. 'heart | Likes'). Default SVG used when no icon specified.",
   participation_stat_color: "Color for stat numbers (Topics, Posts, Likes). Leave blank for default text color.",
   participation_stat_label_color: "Color for stat labels below the numbers. Leave blank for muted text.",
   participation_bio_color: "Color for the bio excerpt text. Leave blank for default text color.",
@@ -138,7 +133,7 @@ const DESCRIPTIONS = {
   stats_enabled: "Show the stats section with live community counters.",
   stat_labels_enabled: "Show text labels below stat counters (e.g. 'Members'). Off = numbers and icons only.",
   stats_title_enabled: "Show section heading above the stats row.",
-  stats_title: "Section heading text above the stats.",
+  stats_title: "Section heading text above the stats. Use 'icon | Title' for FA icon (e.g. 'chart-bar | Premium Stats').",
   stats_title_size: "Stats title font size in pixels. 0 = use default.",
   stat_card_style: "Stat card style: rectangle, rounded, pill, or minimal (no background).",
   stat_icon_color: "Color for stat counter icons.",
@@ -161,7 +156,7 @@ const DESCRIPTIONS = {
   // ── About ──
   about_enabled: "Show the About section: card with heading, quote icon, description, and author attribution.",
   about_heading_enabled: "Show the bold heading at the top of the About card.",
-  about_heading: "Heading text at the top of the About card (e.g. 'About Community').",
+  about_heading: "Heading text at the top of the About card. Use 'icon | Title' for FA icon (e.g. 'info-circle | About Community').",
   about_title: "Author or community name in the card's bottom attribution.",
   about_title_size: "About heading font size in pixels. 0 = use default.",
   about_role: "Subtitle below author name (e.g. 'Community Manager'). Blank = site name.",
@@ -178,7 +173,7 @@ const DESCRIPTIONS = {
   // ── Trending ──
   topics_enabled: "Show Trending Discussions: scrollable row of active topic cards with live data.",
   topics_title_enabled: "Show heading above the topic cards.",
-  topics_title: "Heading text above the topic cards.",
+  topics_title: "Heading text above the topic cards. Use 'icon | Title' for FA icon (e.g. 'fire | Trending Discussions').",
   topics_title_size: "Trending title font size in pixels. 0 = use default.",
   topics_count: "Number of trending topic cards to display.",
   topics_card_bg_dark: "Topic card background for dark mode.",
@@ -191,7 +186,7 @@ const DESCRIPTIONS = {
   // ── Spaces ──
   groups_enabled: "Show Community Spaces: grid of group cards with icon, name, and member count.",
   groups_title_enabled: "Show heading above group cards.",
-  groups_title: "Heading text above group cards.",
+  groups_title: "Heading text above group cards. Use 'icon | Title' for FA icon (e.g. 'layer-group | Community Spaces').",
   groups_title_size: "Spaces title font size in pixels. 0 = use default.",
   groups_count: "Number of group cards to display.",
   groups_selected: "Show only specific groups. Enter names separated by pipes (e.g. designers|developers). Blank = auto-select.",
@@ -199,15 +194,12 @@ const DESCRIPTIONS = {
   groups_description_max_length: "Max characters for group descriptions (30–500). Longer text is truncated.",
   groups_card_bg_dark: "Space card background for dark mode.",
   groups_card_bg_light: "Space card background for light mode.",
-  groups_bg_dark: "Section background for dark mode. Leave blank for default.",
-  groups_bg_light: "Section background for light mode.",
-  groups_min_height: "Minimum section height in pixels. 0 = auto.",
-  groups_border_style: "Border style at the bottom of the spaces section.",
+  splits_background_image_url: "Background image for the splits section (Groups + FAQ row).",
 
   // ── FAQ ──
   faq_enabled: "Show FAQ accordion alongside the Spaces section. One item opens at a time.",
   faq_title_enabled: "Show heading above the FAQ accordion.",
-  faq_title: "Heading text above the FAQ.",
+  faq_title: "Heading text above the FAQ. Use 'icon | Title' for FA icon (e.g. 'circle-question | FAQ').",
   faq_title_size: "FAQ title font size in pixels. 0 = use default.",
   faq_items: 'FAQ items as JSON array: [{\"q\":\"Question\",\"a\":\"Answer\"}]. HTML supported in answers.',
   faq_card_bg_dark: "FAQ card background for dark mode.",
@@ -221,7 +213,7 @@ const DESCRIPTIONS = {
   android_app_badge_image_url: "Custom Android badge image. Leave blank for default.",
   app_badge_height: "Badge height in pixels (30–80).",
   app_badge_style: "Badge border-radius: rounded, pill, or square.",
-  app_cta_headline: "Bold headline in the app download banner.",
+  app_cta_headline: "Bold headline in the app download banner. Use 'icon | Title' for FA icon (e.g. 'mobile-screen | Get the App').",
   app_cta_title_size: "App CTA headline font size in pixels. 0 = use default.",
   app_cta_subtext: "Supporting text below the headline.",
   app_cta_gradient_start_dark: "Gradient start color for dark mode. Leave blank for accent.",
@@ -231,6 +223,10 @@ const DESCRIPTIONS = {
   app_cta_gradient_end_dark: "Gradient end color for dark mode.",
   app_cta_gradient_end_light: "Gradient end color for light mode.",
   app_cta_image_url: "Promo image on the right (e.g. phone mockup). PNG for transparent bg.",
+  app_cta_headline_color_dark: "Headline text color for dark mode. Default: white.",
+  app_cta_headline_color_light: "Headline text color for light mode. Default: dark navy.",
+  app_cta_subtext_color_dark: "Subtext color for dark mode. Default: white at 75%.",
+  app_cta_subtext_color_light: "Subtext color for light mode. Default: dark navy at 70%.",
   app_cta_bg_dark: "Section background for dark mode. Leave blank for default.",
   app_cta_bg_light: "Section background for light mode.",
   app_cta_min_height: "Minimum section height in pixels. 0 = auto.",
@@ -269,8 +265,6 @@ const TABS = [
       "navbar_signin_color_dark", "navbar_signin_color_light",
       "navbar_join_label", "navbar_join_enabled",
       "navbar_join_color_dark", "navbar_join_color_light",
-      "navbar_signin_icon", "navbar_signin_icon_position",
-      "navbar_join_icon", "navbar_join_icon_position",
       "navbar_bg_color", "navbar_border_style",
       "social_twitter_url", "social_facebook_url", "social_instagram_url",
       "social_youtube_url", "social_tiktok_url", "social_github_url"
@@ -284,9 +278,7 @@ const TABS = [
       "hero_card_enabled", "hero_image_first",
       "hero_background_image_url", "hero_image_urls", "hero_image_max_height",
       "hero_primary_button_enabled", "hero_primary_button_label", "hero_primary_button_url",
-      "hero_primary_button_icon", "hero_primary_button_icon_position",
       "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",
-      "hero_secondary_button_icon", "hero_secondary_button_icon_position",
       "hero_primary_btn_color_dark", "hero_primary_btn_color_light",
       "hero_secondary_btn_color_dark", "hero_secondary_btn_color_light",
       "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
@@ -306,6 +298,7 @@ const TABS = [
       "participation_enabled", "participation_title_enabled",
       "participation_title", "participation_title_size",
       "participation_bio_max_length",
+      "participation_topics_label", "participation_posts_label", "participation_likes_label",
       "participation_icon_color",
       "participation_card_bg_dark", "participation_card_bg_light",
       "participation_bg_dark", "participation_bg_light",
@@ -357,7 +350,7 @@ const TABS = [
       "groups_count", "groups_selected",
       "groups_show_description", "groups_description_max_length",
       "groups_card_bg_dark", "groups_card_bg_light",
-      "groups_bg_dark", "groups_bg_light", "groups_min_height", "groups_border_style"
+      "splits_background_image_url"
     ])
   },
   {
@@ -381,6 +374,8 @@ const TABS = [
       "app_cta_gradient_mid_dark", "app_cta_gradient_mid_light",
       "app_cta_gradient_end_dark", "app_cta_gradient_end_light",
       "app_cta_image_url",
+      "app_cta_headline_color_dark", "app_cta_headline_color_light",
+      "app_cta_subtext_color_dark", "app_cta_subtext_color_light",
       "app_cta_bg_dark", "app_cta_bg_light", "app_cta_min_height", "app_cta_border_style"
     ])
   },
@@ -428,6 +423,7 @@ const IMAGE_UPLOAD_SETTINGS = {
   ios_app_badge_image_url:     { label: "Upload Badge", multi: false },
   android_app_badge_image_url: { label: "Upload Badge", multi: false },
   app_cta_image_url:           { label: "Upload Image", multi: false },
+  splits_background_image_url: { label: "Upload Image", multi: false },
 };
 
 let currentTab = "settings";
@@ -848,7 +844,8 @@ function getCsrfToken() {
 async function uploadFile(file) {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("type", "composer");
+  formData.append("type", "site_setting");
+  formData.append("for_site_setting", "true");
   formData.append("synchronous_uploads", "true");
 
   const response = await fetch("/uploads.json", {
@@ -880,28 +877,21 @@ async function pinUpload(uploadId, settingName) {
 }
 
 function setSettingValue(row, newValue, multi) {
-  // For list-type settings (hero_image_urls), Discourse renders a .values .value-list
-  // or a plain text input. Try the text input first.
   const input =
-    row.querySelector('.setting-value input[type="text"]') ||
-    row.querySelector(".setting-value textarea");
+    row.querySelector(".setting-value textarea") ||
+    row.querySelector('.setting-value input[type="text"]');
   if (!input) return;
 
   if (multi) {
+    // hero_image_urls is a textarea — append URL on a new line
     const current = input.value.trim();
-    input.value = current ? current + "|" + newValue : newValue;
+    input.value = current ? current + "\n" + newValue : newValue;
   } else {
     input.value = newValue;
   }
 
-  // Dispatch events so Discourse's admin UI picks up the change
   input.dispatchEvent(new Event("input", { bubbles: true }));
   input.dispatchEvent(new Event("change", { bubbles: true }));
-
-  // Some Discourse admin UIs require a keydown Enter to register
-  input.dispatchEvent(
-    new KeyboardEvent("keydown", { key: "Enter", keyCode: 13, bubbles: true })
-  );
 }
 
 function updatePreviewThumbnail(wrapper, settingName) {

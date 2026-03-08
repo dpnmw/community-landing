@@ -61,6 +61,10 @@ module CommunityLanding
       part_bio_color      = safe_hex(:participation_bio_color)
       part_name_color     = safe_hex(:participation_name_color)
       part_meta_color     = safe_hex(:participation_meta_color)
+      cta_headline_dark   = safe_hex(:app_cta_headline_color_dark)
+      cta_headline_light  = safe_hex(:app_cta_headline_color_light)
+      cta_subtext_dark    = safe_hex(:app_cta_subtext_color_dark)
+      cta_subtext_light   = safe_hex(:app_cta_subtext_color_light)
 
       orb_color     = safe_hex(:orb_color)
       orb_opacity   = [[@s.orb_opacity.to_i, 0].max, 100].min rescue 50
@@ -139,7 +143,9 @@ module CommunityLanding
   --cl-participation-name-color: #{part_name_color || 'var(--cl-text-strong)'};
   --cl-participation-meta-color: #{part_meta_color || 'var(--cl-participation-icon-color)'};
   --cl-faq-card-bg: #{faq_card_dark || 'var(--cl-card)'};
-  --cl-app-gradient: linear-gradient(135deg, #{app_g1_dark}, #{app_g2_dark}, #{app_g3_dark});#{dark_extras}
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1_dark}, #{app_g2_dark}, #{app_g3_dark});
+  --cl-cta-headline-color: #{cta_headline_dark || '#ffffff'};
+  --cl-cta-subtext-color: #{cta_subtext_dark || 'rgba(255, 255, 255, 0.75)'};#{dark_extras}
 }
 [data-theme=\"light\"] {
   --cl-accent: #{accent};
@@ -169,7 +175,9 @@ module CommunityLanding
   --cl-participation-name-color: #{part_name_color || 'var(--cl-text-strong)'};
   --cl-participation-meta-color: #{part_meta_color || 'var(--cl-participation-icon-color)'};
   --cl-faq-card-bg: #{faq_card_light || faq_card_dark || 'var(--cl-card)'};
-  --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});
+  --cl-cta-headline-color: #{cta_headline_light || '#1a1a2e'};
+  --cl-cta-subtext-color: #{cta_subtext_light || 'rgba(26, 26, 46, 0.7)'};#{light_extras}
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme=\"dark\"]) {
@@ -197,7 +205,9 @@ module CommunityLanding
     --cl-participation-name-color: #{part_name_color || 'var(--cl-text-strong)'};
     --cl-participation-meta-color: #{part_meta_color || 'var(--cl-participation-icon-color)'};
     --cl-faq-card-bg: #{faq_card_light || faq_card_dark || 'var(--cl-card)'};
-    --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
+    --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});
+    --cl-cta-headline-color: #{cta_headline_light || '#1a1a2e'};
+    --cl-cta-subtext-color: #{cta_subtext_light || 'rgba(26, 26, 46, 0.7)'};#{light_extras}
   }
 }
 </style>\n"
@@ -212,7 +222,6 @@ module CommunityLanding
         ["#cl-about",        safe_hex(:about_bg_dark),        safe_hex(:about_bg_light)],
         ["#cl-participation", safe_hex(:participation_bg_dark), safe_hex(:participation_bg_light)],
         ["#cl-topics",       safe_hex(:topics_bg_dark),       safe_hex(:topics_bg_light)],
-        ["#cl-groups",       safe_hex(:groups_bg_dark),       safe_hex(:groups_bg_light)],
         ["#cl-app-cta",      safe_hex(:app_cta_bg_dark),      safe_hex(:app_cta_bg_light)],
         ["#cl-footer",       safe_hex(:footer_bg_dark),       safe_hex(:footer_bg_light)],
       ]
