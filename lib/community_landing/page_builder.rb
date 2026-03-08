@@ -315,7 +315,9 @@ module CommunityLanding
         if urls.any?
           has_images = true
           img_max_h = @s.hero_image_max_height rescue 500
-          html << "<div class=\"cl-hero__image\" data-hero-images=\"#{e(urls.to_json)}\">\n"
+          img_weight = (@s.hero_image_weight rescue 1).to_i.clamp(1, 3)
+          img_style = img_weight > 1 ? " style=\"flex: #{img_weight}\"" : ""
+          html << "<div class=\"cl-hero__image\"#{img_style} data-hero-images=\"#{e(urls.to_json)}\">\n"
           html << "<img src=\"#{urls.first}\" alt=\"#{e(site_name)}\" class=\"cl-hero__image-img\" style=\"max-height: #{img_max_h}px;\">\n"
           if hero_video
             html << "<button class=\"cl-hero-play\" data-video-url=\"#{e(hero_video)}\"#{blur_attr} aria-label=\"Play video\">"

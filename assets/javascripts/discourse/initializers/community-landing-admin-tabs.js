@@ -1,4 +1,4 @@
-// community-landing-admin-tabs v2.5.0
+// community-landing-admin-tabs v2.6.1
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 // Setting descriptions — injected into the admin DOM since the newer
@@ -71,6 +71,7 @@ const DESCRIPTIONS = {
   hero_subtitle: "Supporting text below the headline. Describe your community's purpose.",
   hero_card_enabled: "Display hero content inside a rounded card with border and shadow.",
   hero_image_first: "Show hero image above text on mobile / left on desktop. Off = text first.",
+  hero_image_weight: "Image size weight (1–3). Higher values give the image more space relative to the text. Default: 1 (equal).",
   hero_background_image_url: "Full-bleed background image behind the hero. In card mode, fills the card with overlay.",
   hero_image_url: "Single hero image displayed on the right side of the hero. Use the upload button or paste a URL.",
   hero_multiple_images_enabled: "Enable multiple hero images (up to 5) that rotate randomly on each page load. Disables the single image upload.",
@@ -284,7 +285,7 @@ const TABS = [
     label: "Hero",
     settings: new Set([
       "hero_title", "hero_accent_word", "hero_subtitle", "hero_title_size",
-      "hero_card_enabled", "hero_image_first",
+      "hero_card_enabled", "hero_image_first", "hero_image_weight",
       "hero_background_image_url", "hero_image_url", "hero_multiple_images_enabled", "hero_image_urls", "hero_image_max_height",
       "hero_primary_button_enabled", "hero_primary_button_label", "hero_primary_button_url",
       "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",

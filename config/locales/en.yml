@@ -65,6 +65,7 @@ en:
     hero_subtitle: "Supporting text below the hero headline. Describe your community's purpose or value proposition."
     hero_card_enabled: "Display the hero content inside a rounded card container with border and shadow. When off, the hero uses a flat full-width layout."
     hero_image_first: "Show the hero image above the text on mobile and to the left on desktop. When off, text appears first (default)."
+    hero_image_weight: "Image size weight (1–3). Higher values give the image more space relative to the text. Default: 1 (equal split)."
     hero_background_image_url: "Full-bleed background image behind the hero section. In card mode, fills the card with a dark overlay. In flat mode, covers the entire section."
     hero_image_url: "Single hero image displayed on the right side of the hero. Use the upload button or paste a URL."
     hero_multiple_images_enabled: "Enable multiple hero images (up to 5) that rotate randomly on each page load. Disables the single image upload."
