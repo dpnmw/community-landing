@@ -165,8 +165,9 @@ module CommunityLanding
       html << "<div class=\"cl-navbar__inner\">\n"
       html << "<div class=\"cl-navbar__left\">"
       html << "<a href=\"/\" class=\"cl-navbar__brand\">"
+      logo_accent = (@s.logo_use_accent_color rescue false)
       if has_logo?
-        html << render_logo(logo_dark_url, logo_light_url, site_name, "cl-navbar__logo", logo_height)
+        html << render_logo(logo_dark_url, logo_light_url, site_name, "cl-navbar__logo", logo_height, accent: logo_accent)
       else
         html << "<span class=\"cl-navbar__site-name\">#{e(site_name)}</span>"
       end
@@ -291,13 +292,22 @@ module CommunityLanding
 
       html << "</div>\n"
 
-      hero_image_urls_raw = (@s.hero_image_urls.presence rescue nil)
+      hero_multi = (@s.hero_multiple_images_enabled rescue false)
+      if hero_multi
+        hero_image_urls_raw = (@s.hero_image_urls.presence rescue nil)
+      else
+        hero_image_urls_raw = (@s.hero_image_url.presence rescue nil)
+      end
       hero_video = (@s.hero_video_url.presence rescue nil)
       blur_attr = (@s.hero_video_blur_on_hover rescue true) ? " data-blur-hover=\"true\"" : ""
       has_images = false
 
       if hero_image_urls_raw
-        urls = hero_image_urls_raw.split(/[|\n\r]+/).map(&:strip).reject(&:empty?).first(5)
+        if hero_multi
+          urls = hero_image_urls_raw.split(/[|\n\r]+/).map(&:strip).reject(&:empty?).first(5)
+        else
+          urls = [hero_image_urls_raw.strip]
+        end
         if urls.any?
           has_images = true
           img_max_h = @s.hero_image_max_height rescue 500
@@ -685,10 +695,11 @@ module CommunityLanding
       html << "<div class=\"cl-footer__brand\">"
 
       flogo = @s.footer_logo_url.presence
+      footer_accent = (@s.logo_use_accent_color rescue false)
       if flogo
-        html << "<img src=\"#{flogo}\" alt=\"#{e(site_name)}\" class=\"cl-footer__logo\" style=\"height: #{logo_height}px;\">"
+        html << logo_img(flogo, site_name, "cl-footer__logo", logo_height, accent: footer_accent)
       elsif has_logo?
-        html << render_logo(logo_dark_url, logo_light_url, site_name, "cl-footer__logo", logo_height)
+        html << render_logo(logo_dark_url, logo_light_url, site_name, "cl-footer__logo", logo_height, accent: footer_accent)
       else
         html << "<span class=\"cl-footer__site-name\">#{e(site_name)}</span>"
       end

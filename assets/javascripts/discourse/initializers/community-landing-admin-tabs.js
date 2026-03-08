@@ -21,6 +21,7 @@ const DESCRIPTIONS = {
   logo_dark_url: "Logo image URL for dark mode. Shown in navbar and footer. Leave blank to show site name as text.",
   logo_light_url: "Logo image URL for light mode. If not set, the dark logo is used for both themes.",
   logo_height: "Logo height in pixels (16–80). Applies to both navbar and footer logos.",
+  logo_use_accent_color: "Tint the logo to match the accent color. Works best with monochrome SVG or PNG logos.",
   footer_logo_url: "Override logo for the footer only. If not set, the navbar logo is reused.",
 
   // ── Colors ──
@@ -71,7 +72,9 @@ const DESCRIPTIONS = {
   hero_card_enabled: "Display hero content inside a rounded card with border and shadow.",
   hero_image_first: "Show hero image above text on mobile / left on desktop. Off = text first.",
   hero_background_image_url: "Full-bleed background image behind the hero. In card mode, fills the card with overlay.",
-  hero_image_urls: "Images for the right side of the hero. One URL per line, up to 5. One is shown randomly per page load. Use the Add Image button or paste URLs.",
+  hero_image_url: "Single hero image displayed on the right side of the hero. Use the upload button or paste a URL.",
+  hero_multiple_images_enabled: "Enable multiple hero images (up to 5) that rotate randomly on each page load. Disables the single image upload.",
+  hero_image_urls: "Images for the right side of the hero. One URL per line, up to 5. One is shown randomly per page load.",
   hero_image_max_height: "Maximum height for the hero image in pixels (100–1200).",
   hero_primary_button_enabled: "Show the primary CTA button in the hero.",
   hero_primary_button_label: "Primary button text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'rocket | Get Started').",
@@ -253,7 +256,7 @@ const TABS = [
       "community_landing_enabled",
       "section_order", "custom_css",
       "meta_description", "og_image_url", "favicon_url", "json_ld_enabled",
-      "logo_dark_url", "logo_light_url", "logo_height", "footer_logo_url",
+      "logo_dark_url", "logo_light_url", "logo_height", "logo_use_accent_color", "footer_logo_url",
       "accent_color", "accent_hover_color", "dark_bg_color", "light_bg_color",
       "orb_color", "orb_opacity",
       "scroll_animation", "staggered_reveal_enabled", "dynamic_background_enabled",
@@ -280,7 +283,7 @@ const TABS = [
     settings: new Set([
       "hero_title", "hero_accent_word", "hero_subtitle", "hero_title_size",
       "hero_card_enabled", "hero_image_first",
-      "hero_background_image_url", "hero_image_urls", "hero_image_max_height",
+      "hero_background_image_url", "hero_image_url", "hero_multiple_images_enabled", "hero_image_urls", "hero_image_max_height",
       "hero_primary_button_enabled", "hero_primary_button_label", "hero_primary_button_url",
       "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",
       "hero_primary_btn_color_dark", "hero_primary_btn_color_light",
@@ -415,7 +418,7 @@ const IMAGE_UPLOAD_SETTINGS = {
   logo_light_url:              { label: "Upload Logo", multi: false },
   footer_logo_url:             { label: "Upload Logo", multi: false },
   hero_background_image_url:   { label: "Upload Image", multi: false },
-  hero_image_urls:             { label: "Add Image", multi: true },
+  hero_image_url:              { label: "Upload Image", multi: false },
   about_image_url:             { label: "Upload Image", multi: false },
   about_background_image_url:  { label: "Upload Image", multi: false },
   ios_app_badge_image_url:     { label: "Upload Badge", multi: false },
@@ -510,8 +513,10 @@ function handleTabClick(container, tabId) {
   clearDisabledNotice(container);
   updateActiveStates(tabId);
   applyTabFilter();
+  applyHeroImageVisibility(container);
   injectUploadButtons();
   updateDisabledNotice(container);
+  listenForHeroImageToggle(container);
 }
 
 /**
@@ -760,8 +765,10 @@ function buildTabsUI() {
     cleanBooleanLabels();
     injectUploadButtons();
     applyTabFilter();
+    applyHeroImageVisibility(container);
     updateDisabledNotice(container);
     listenForEnableToggles(container);
+    listenForHeroImageToggle(container);
     return true;
   }
 
@@ -809,8 +816,10 @@ function buildTabsUI() {
   cleanBooleanLabels();
   injectUploadButtons();
   applyTabFilter();
+  applyHeroImageVisibility(container);
   updateDisabledNotice(container);
   listenForEnableToggles(container);
+  listenForHeroImageToggle(container);
   return true;
 }
 
@@ -829,6 +838,48 @@ function listenForEnableToggles(container) {
       clearDisabledNotice(container);
       updateDisabledNotice(container);
     });
+  });
+}
+
+// ── Conditional Visibility: Hero Single vs Multi Image ──
+
+const HERO_IMAGE_CONDITIONAL = {
+  toggle: "hero_multiple_images_enabled",
+  whenOff: ["hero_image_url"],      // single image with upload button
+  whenOn:  ["hero_image_urls"],     // multi-image textarea (paste URLs)
+};
+
+function applyHeroImageVisibility(container) {
+  const toggleRow = container.querySelector(
+    `.row.setting[data-setting="${HERO_IMAGE_CONDITIONAL.toggle}"]`
+  );
+  if (!toggleRow) return;
+
+  const cb = toggleRow.querySelector('input[type="checkbox"]');
+  const multiEnabled = cb ? cb.checked : false;
+
+  HERO_IMAGE_CONDITIONAL.whenOff.forEach((name) => {
+    const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
+    if (row) row.classList.toggle("cl-tab-hidden", multiEnabled);
+  });
+
+  HERO_IMAGE_CONDITIONAL.whenOn.forEach((name) => {
+    const row = container.querySelector(`.row.setting[data-setting="${name}"]`);
+    if (row) row.classList.toggle("cl-tab-hidden", !multiEnabled);
+  });
+}
+
+function listenForHeroImageToggle(container) {
+  const toggleRow = container.querySelector(
+    `.row.setting[data-setting="${HERO_IMAGE_CONDITIONAL.toggle}"]`
+  );
+  if (!toggleRow) return;
+
+  const cb = toggleRow.querySelector('input[type="checkbox"]');
+  if (!cb || cb.dataset.clHeroToggleListening) return;
+  cb.dataset.clHeroToggleListening = "1";
+  cb.addEventListener("change", () => {
+    applyHeroImageVisibility(container);
   });
 }
 

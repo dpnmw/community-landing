@@ -27,16 +27,20 @@ module CommunityLanding
       parts.any? ? " style=\"#{parts.join(' ')}\"" : ""
     end
 
-    def logo_img(url, alt, css_class, height)
-      "<img src=\"#{url}\" alt=\"#{e(alt)}\" class=\"#{css_class}\" style=\"height: #{height}px;\">"
+    def logo_img(url, alt, css_class, height, accent: false)
+      if accent
+        "<span class=\"#{css_class} cl-logo--accent\" style=\"height: #{height}px; -webkit-mask-image: url('#{url}'); mask-image: url('#{url}');\"><img src=\"#{url}\" alt=\"#{e(alt)}\" style=\"height: #{height}px; visibility: hidden;\"></span>"
+      else
+        "<img src=\"#{url}\" alt=\"#{e(alt)}\" class=\"#{css_class}\" style=\"height: #{height}px;\">"
+      end
     end
 
-    def render_logo(dark_url, light_url, site_name, base_class, height)
+    def render_logo(dark_url, light_url, site_name, base_class, height, accent: false)
       if dark_url && light_url
-        logo_img(dark_url, site_name, "#{base_class} cl-logo--dark", height) +
-        logo_img(light_url, site_name, "#{base_class} cl-logo--light", height)
+        logo_img(dark_url, site_name, "#{base_class} cl-logo--dark", height, accent: accent) +
+        logo_img(light_url, site_name, "#{base_class} cl-logo--light", height, accent: accent)
       else
-        logo_img(dark_url || light_url, site_name, base_class, height)
+        logo_img(dark_url || light_url, site_name, base_class, height, accent: accent)
       end
     end
   end

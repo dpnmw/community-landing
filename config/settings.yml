@@ -50,6 +50,9 @@ plugins:
     type: integer
     min: 16
     max: 80
+  logo_use_accent_color:
+    default: false
+    type: bool
   footer_logo_url:
     default: ""
     type: string
@@ -211,6 +214,12 @@ plugins:
   hero_background_image_url:
     default: ""
     type: string
+  hero_image_url:
+    default: ""
+    type: string
+  hero_multiple_images_enabled:
+    default: false
+    type: bool
   hero_image_urls:
     default: ""
     type: text_area
