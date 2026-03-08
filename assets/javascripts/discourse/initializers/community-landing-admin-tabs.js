@@ -27,7 +27,7 @@ const TABS = [
       "hero_image_urls", "hero_image_max_height",
       "hero_primary_button_label", "hero_primary_button_url",
       "hero_secondary_button_label", "hero_secondary_button_url",
-      "hero_video_url",
+      "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
       "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style"
     ])
   },
@@ -37,7 +37,7 @@ const TABS = [
     settings: new Set([
       "stats_title", "stat_icon_color", "stat_icon_bg_color", "stat_icon_shape", "stat_counter_color",
       "stat_members_label", "stat_topics_label", "stat_posts_label",
-      "stat_likes_label", "stat_chats_label",
+      "stat_likes_label", "stat_chats_label", "stat_round_numbers",
       "stats_bg_dark", "stats_bg_light", "stats_min_height", "stats_border_style"
     ])
   },
@@ -184,7 +184,8 @@ function buildTabsUI() {
   if (!container) return false;
 
   // Already injected — just re-apply filter
-  if (container.querySelector(".cl-admin-tab")) {
+  // Search broadly: native tabs may be a sibling of container, not a child
+  if (document.querySelector(".cl-admin-tab")) {
     applyTabFilter();
     return true;
   }
@@ -199,7 +200,10 @@ function buildTabsUI() {
   if (!hasOurs) return false;
 
   // ── Strategy 1: Inject into native Discourse tab bar ──
-  const nativeTabsEl = container.querySelector(".admin-plugin-config-area__tabs");
+  // Native tabs may be a sibling of our container, so search at page level
+  const page = container.closest(".admin-plugin-config-page") || container.parentElement;
+  const nativeTabsEl = (page && page.querySelector(".admin-plugin-config-area__tabs")) ||
+                       document.querySelector(".admin-plugin-config-area__tabs");
   if (nativeTabsEl) {
     // Find the native "Settings" link and hook into it
     const nativeLink = nativeTabsEl.querySelector("a");
@@ -326,7 +330,7 @@ export default {
                 return;
               }
               const c = getContainer();
-              if (c && !c.querySelector(".cl-admin-tab")) {
+              if (c && !document.querySelector(".cl-admin-tab")) {
                 buildTabsUI();
               }
             }, 500);

@@ -157,10 +157,30 @@ module CommunityLanding
       html << "<div class=\"cl-hero__actions\">\n"
       html << "<a href=\"#{primary_url}\" class=\"cl-btn cl-btn--primary cl-btn--lg\">#{e(primary_label)}</a>\n"
       html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{e(secondary_label)}</a>\n"
-      html << "</div>\n</div>\n"
+      html << "</div>\n"
+
+      # Hero creators (top 3)
+      contributors = @data[:contributors]
+      if (@s.contributors_enabled rescue false) && contributors&.any?
+        top3 = contributors.first(3)
+        html << "<div class=\"cl-hero__creators\">\n"
+        top3.each do |user|
+          avatar_url     = user.avatar_template.gsub("{size}", "120")
+          activity_count = user.attributes["post_count"].to_i rescue 0
+          html << "<a href=\"#{login_url}\" class=\"cl-creator-pill\">\n"
+          html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-creator-pill__avatar\" loading=\"lazy\">\n"
+          html << "<span class=\"cl-creator-pill__name\">@#{e(user.username)}</span>\n"
+          html << "<span class=\"cl-creator-pill__count\">#{activity_count}</span>\n"
+          html << "</a>\n"
+        end
+        html << "</div>\n"
+      end
+
+      html << "</div>\n"
 
       hero_image_urls_raw = @s.hero_image_urls.presence
       hero_video = @s.hero_video_url.presence rescue nil
+      blur_attr = (@s.hero_video_blur_on_hover rescue true) ? " data-blur-hover=\"true\"" : ""
       has_images = false
 
       if hero_image_urls_raw
@@ -171,7 +191,7 @@ module CommunityLanding
           html << "<div class=\"cl-hero__image\" data-hero-images=\"#{e(urls.to_json)}\">\n"
           html << "<img src=\"#{urls.first}\" alt=\"#{e(site_name)}\" class=\"cl-hero__image-img\" style=\"max-height: #{img_max_h}px;\">\n"
           if hero_video
-            html << "<button class=\"cl-hero-play\" data-video-url=\"#{e(hero_video)}\" aria-label=\"Play video\">"
+            html << "<button class=\"cl-hero-play\" data-video-url=\"#{e(hero_video)}\"#{blur_attr} aria-label=\"Play video\">"
             html << "<span class=\"cl-hero-play__icon\">#{Icons::PLAY_SVG}</span>"
             html << "</button>\n"
           end
@@ -181,7 +201,7 @@ module CommunityLanding
 
       if hero_video && !has_images
         html << "<div class=\"cl-hero__image cl-hero__image--video-only\">\n"
-        html << "<button class=\"cl-hero-play\" data-video-url=\"#{e(hero_video)}\" aria-label=\"Play video\">"
+        html << "<button class=\"cl-hero-play\" data-video-url=\"#{e(hero_video)}\"#{blur_attr} aria-label=\"Play video\">"
         html << "<span class=\"cl-hero-play__icon\">#{Icons::PLAY_SVG}</span>"
         html << "</button>\n"
         html << "</div>\n"
@@ -199,16 +219,17 @@ module CommunityLanding
       border      = @s.stats_border_style rescue "none"
       min_h       = @s.stats_min_height rescue 0
       icon_shape  = @s.stat_icon_shape rescue "circle"
+      round_nums  = @s.stat_round_numbers rescue false
 
       html = +""
       html << "<section class=\"cl-stats cl-anim\" id=\"cl-stats-row\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(stats_title)}</h2>\n"
       html << "<div class=\"cl-stats__grid\">\n"
-      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape)
-      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape)
-      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label,   icon_shape)
-      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label,   icon_shape)
-      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label,   icon_shape)
+      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape, round_nums)
+      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape, round_nums)
+      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label,   icon_shape, round_nums)
+      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label,   icon_shape, round_nums)
+      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label,   icon_shape, round_nums)
       html << "</div>\n</div></section>\n"
       html
     end
@@ -339,15 +360,13 @@ module CommunityLanding
         light = 45 + (group.name.bytes.last.to_i % 12)
         icon_color = "hsl(#{hue}, #{sat}%, #{light}%)"
 
-        html << "<a href=\"#{login_url}\" class=\"cl-space-card\">\n"
-        html << "<div class=\"cl-space-card__header\" style=\"--space-color: #{icon_color}\">\n"
+        html << "<a href=\"#{login_url}\" class=\"cl-space-card\" style=\"--space-color: #{icon_color}\">\n"
         html << "<div class=\"cl-space-card__icon\">"
         if group.flair_url.present?
           html << "<img src=\"#{group.flair_url}\" alt=\"\">"
         else
           html << "<span class=\"cl-space-card__letter\">#{group.name[0].upcase}</span>"
         end
-        html << "</div>\n"
         html << "</div>\n"
         html << "<div class=\"cl-space-card__body\">\n"
         html << "<span class=\"cl-space-card__name\">#{e(display_name)}</span>\n"
@@ -447,12 +466,15 @@ module CommunityLanding
 
     # ── Shared helpers ──
 
-    def stat_card(icon_svg, count, label, icon_shape = "circle")
+    def stat_card(icon_svg, count, label, icon_shape = "circle", round_numbers = false)
       shape_class = icon_shape == "rounded" ? "cl-stat-icon--rounded" : "cl-stat-icon--circle"
+      round_attr = round_numbers ? ' data-round="true"' : ''
       "<div class=\"cl-stat-card\">\n" \
       "<div class=\"cl-stat-card__icon-wrap #{shape_class}\">#{icon_svg}</div>\n" \
+      "<div class=\"cl-stat-card__text\">\n" \
+      "<span class=\"cl-stat-card__value\" data-count=\"#{count}\"#{round_attr}>0</span>\n" \
       "<span class=\"cl-stat-card__label\">#{e(label)}</span>\n" \
-      "<span class=\"cl-stat-card__value\" data-count=\"#{count}\">0</span>\n" \
+      "</div>\n" \
       "</div>\n"
     end
 

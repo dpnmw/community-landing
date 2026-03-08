@@ -26,6 +26,7 @@ module CommunityLanding
       stat_counter = hex(@s.stat_counter_color.presence) rescue nil
       space_card_bg = hex(@s.groups_card_bg_color.presence) rescue nil
       topic_card_bg = hex(@s.topics_card_bg_color.presence) rescue nil
+      video_btn_bg  = hex(@s.hero_video_button_color.presence) rescue nil
       accent_rgb   = hex_to_rgb(accent)
       stat_icon_rgb = hex_to_rgb(stat_icon)
 
@@ -35,6 +36,7 @@ module CommunityLanding
       topic_card_bg_val = topic_card_bg || "var(--cl-card)"
 
       about_bg_extra = about_bg_img ? ", url('#{about_bg_img}') center/cover no-repeat" : ""
+      video_btn_line = video_btn_bg ? "\n  --cl-video-btn-bg: #{video_btn_bg};" : ""
 
       "<style>
 :root, [data-theme=\"dark\"] {
@@ -51,7 +53,7 @@ module CommunityLanding
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
   --cl-space-card-bg: #{space_card_bg_val};
-  --cl-topic-card-bg: #{topic_card_bg_val};
+  --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
   --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
@@ -69,7 +71,7 @@ module CommunityLanding
   --cl-stat-icon-bg: #{stat_icon_bg_val};
   --cl-stat-counter-color: #{stat_counter_val};
   --cl-space-card-bg: #{space_card_bg_val};
-  --cl-topic-card-bg: #{topic_card_bg_val};
+  --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
   --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }

@@ -118,11 +118,19 @@
   // ═══════════════════════════════════════════════════════════════════
   // 6. STAT COUNTER
   // ═══════════════════════════════════════════════════════════════════
+  function formatRounded(n) {
+    if (n < 1000) return n.toLocaleString();
+    if (n < 10000) return (n / 1000).toFixed(1).replace(/\.0$/, "") + "K";
+    if (n < 1000000) return Math.round(n / 1000) + "K";
+    return (n / 1000000).toFixed(1).replace(/\.0$/, "") + "M";
+  }
+
   function animateCount(el) {
     if (el.classList.contains("counted")) return;
     el.classList.add("counted");
     var target = parseInt(el.getAttribute("data-count"), 10);
     if (isNaN(target) || target === 0) return;
+    var round = el.getAttribute("data-round") === "true";
 
     var duration = 2000;
     var start = null;
@@ -131,9 +139,10 @@
     function step(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / duration, 1);
-      el.textContent = Math.floor(target * ease(p)).toLocaleString();
+      var current = Math.floor(target * ease(p));
+      el.textContent = round ? formatRounded(current) : current.toLocaleString();
       if (p < 1) requestAnimationFrame(step);
-      else el.textContent = target.toLocaleString();
+      else el.textContent = round ? formatRounded(target) : target.toLocaleString();
     }
     requestAnimationFrame(step);
   }

@@ -130,6 +130,12 @@ plugins:
   hero_video_url:
     default: ""
     type: string
+  hero_video_button_color:
+    default: ""
+    type: color
+  hero_video_blur_on_hover:
+    default: true
+    type: bool
   hero_bg_dark:
     default: ""
     type: color
@@ -186,6 +192,9 @@ plugins:
   stat_chats_label:
     default: "Chats"
     type: string
+  stat_round_numbers:
+    default: false
+    type: bool
   stats_bg_dark:
     default: ""
     type: color
