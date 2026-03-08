@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
    Community Landing — Admin Settings Panel Styles
-   Tab navigation + fallback separators
+   Tab navigation + fallback separators + bg-pair layout
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ── Tab-hidden class (used instead of inline display:none) ── */
@@ -123,6 +123,30 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
   padding-top: 0 !important;
 }
 
+/* ── Dual-color background pairs (side-by-side dark/light) ── */
+
+.cl-bg-pair {
+  display: flex;
+  gap: 16px;
+  width: 100%;
+}
+
+.cl-bg-pair > .row.setting {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0 !important;
+}
+
+.cl-bg-pair.cl-tab-hidden {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .cl-bg-pair {
+    flex-direction: column;
+  }
+}
+
 /* ── Fallback: Separator borders when tabs are NOT active ──
    (e.g. if JS fails to load or on older Discourse) */
 
@@ -155,10 +179,9 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="stats_title"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="stats_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="about_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="topics_enabled"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="contributors_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="groups_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="show_app_ctas"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="footer_description"] {
@@ -173,10 +196,9 @@ html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="a
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],
-html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="stats_title"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="stats_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="about_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="topics_enabled"],
-html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="contributors_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="groups_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="show_app_ctas"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="footer_description"],

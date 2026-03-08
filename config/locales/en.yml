@@ -42,9 +42,14 @@ en:
     hero_bg_light: "Background color for the hero section in light mode. Hex value. Leave blank for default."
     hero_min_height: "Minimum height for the hero section in pixels. Set to 0 for auto height."
     hero_border_style: "Border style at the bottom of the hero section."
+    hero_card_bg_dark: "Background color for the hero card overlay in dark mode. Only applies when hero card mode is enabled. Leave blank for default glass effect."
+    hero_card_bg_light: "Background color for the hero card overlay in light mode. Only applies when hero card mode is enabled. Leave blank for default glass effect."
+    hero_card_opacity: "Opacity of the hero card background (0 to 1, default 0.85). Lower values make the card more transparent, showing the background image through."
 
     # ── 3. Stats Section ──
-    stats_title: "━━ ROW 3: PREMIUM STATS ━━ — Full-width row of live community statistics (members, topics, posts, likes, chats) with animated counters and icons. Each card shows icon + label on one line with the counter below. This is the section heading."
+    stats_enabled: "━━ ROW 3: PREMIUM STATS ━━ — Show or hide the entire stats section."
+    stat_labels_enabled: "Show text labels below stat counters (e.g. 'Members', 'Topics'). When off, only numbers and icons are displayed."
+    stats_title: "Section heading text above the stats row."
     stat_icon_color: "Color for all stat counter icons. Hex value (e.g. #d4a24e)."
     stat_icon_bg_color: "Background color behind each stat icon. Leave blank for a subtle accent tint."
     stat_icon_shape: "Shape of the icon background: circle or rounded square."
@@ -87,15 +92,10 @@ en:
     topics_min_height: "Minimum height for the trending section in pixels. Set to 0 for auto height."
     topics_border_style: "Border style at the bottom of the trending section."
 
-    # ── 6. Top Creators ──
-    contributors_enabled: "━━ ROW 6: CREATORS ━━ — Show the Top Creators section: pill-shaped badges showing your most active community members. Each pill displays avatar, @username, and post count from the lookback period."
-    contributors_title: "Heading text above the creator pills."
+    # ── 6. Hero Creators ──
+    contributors_enabled: "Show top 3 creators in the hero section with gold, silver, and bronze rank badges. Each pill displays avatar, @username, and post count."
     contributors_days: "Lookback period in days for calculating top contributors."
-    contributors_count: "Number of top contributor pills to display. Recommended: 6–12."
-    contributors_bg_dark: "Background color for the creators section in dark mode. Leave blank for default."
-    contributors_bg_light: "Background color for the creators section in light mode. Leave blank for default."
-    contributors_min_height: "Minimum height for the creators section in pixels. Set to 0 for auto height."
-    contributors_border_style: "Border style at the bottom of the creators section."
+    contributors_count: "Number of top contributors to fetch (top 3 are shown in the hero)."
 
     # ── 7. Community Spaces ──
     groups_enabled: "━━ ROW 7: SPACES ━━ — Show the Community Spaces section: a grid of colorful cards representing your public groups. Each card shows a colored icon (with group's first letter or flair), group name, and member count. Only public, non-automatic groups are shown."

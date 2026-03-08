@@ -155,10 +155,25 @@ plugins:
       - solid
       - dashed
       - dotted
+  hero_card_bg_dark:
+    default: ""
+    type: color
+  hero_card_bg_light:
+    default: ""
+    type: color
+  hero_card_opacity:
+    default: "0.85"
+    type: string
 
   # ══════════════════════════════════════════
   # 3. Premium Stats Section
   # ══════════════════════════════════════════
+  stats_enabled:
+    default: true
+    type: bool
+  stat_labels_enabled:
+    default: true
+    type: bool
   stats_title:
     default: "Premium Stats"
     type: string
@@ -307,39 +322,17 @@ plugins:
       - dotted
 
   # ══════════════════════════════════════════
-  # 6. Top Creators Section
+  # 6. Hero Creators (Top 3 in Hero)
   # ══════════════════════════════════════════
   contributors_enabled:
     default: true
     type: bool
-  contributors_title:
-    default: "Top Creators"
-    type: string
   contributors_days:
     default: 90
     type: integer
   contributors_count:
     default: 10
     type: integer
-  contributors_bg_dark:
-    default: ""
-    type: color
-  contributors_bg_light:
-    default: ""
-    type: color
-  contributors_min_height:
-    default: 0
-    type: integer
-    min: 0
-    max: 2000
-  contributors_border_style:
-    default: "none"
-    type: enum
-    choices:
-      - none
-      - solid
-      - dashed
-      - dotted
 
   # ══════════════════════════════════════════
   # 7. Community Spaces Section

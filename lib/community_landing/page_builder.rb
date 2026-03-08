@@ -24,7 +24,6 @@ module CommunityLanding
       html << render_stats
       html << render_about
       html << render_topics
-      html << render_contributors
       html << render_groups
       html << render_app_cta
       html << render_footer_desc
@@ -127,18 +126,15 @@ module CommunityLanding
       site_name   = @s.title
 
       html = +""
-      html << "<section class=\"cl-hero#{hero_card ? ' cl-hero--card' : ''}\" id=\"cl-hero\"#{section_style(hero_border, hero_min_h)}>\n"
+      # Build hero section style: bg image on the section itself + border/min-height
+      hero_style_parts = []
+      hero_style_parts << "background-image: url('#{hero_bg_img}');" if hero_bg_img
+      hero_style_parts << "border-bottom: 1px #{hero_border} var(--cl-border);" if hero_border.present? && hero_border != "none"
+      hero_style_parts << "min-height: #{hero_min_h}px;" if hero_min_h.to_i > 0
+      hero_attr = hero_style_parts.any? ? " style=\"#{hero_style_parts.join(' ')}\"" : ""
+      html << "<section class=\"cl-hero#{hero_card ? ' cl-hero--card' : ''}\" id=\"cl-hero\"#{hero_attr}>\n"
 
-      if hero_bg_img && !hero_card
-        html << "<div class=\"cl-hero__bg\" style=\"background-image: url('#{hero_bg_img}');\"></div>\n"
-      end
-
-      inner_style = ""
-      if hero_card && hero_bg_img
-        inner_style = " style=\"background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('#{hero_bg_img}'); background-size: cover; background-position: center;\""
-      end
-
-      html << "<div class=\"cl-hero__inner\"#{inner_style}>\n<div class=\"cl-hero__content\">\n"
+      html << "<div class=\"cl-hero__inner\">\n<div class=\"cl-hero__content\">\n"
 
       title_words = @s.hero_title.to_s.split(" ")
       if title_words.length > 1
@@ -159,15 +155,18 @@ module CommunityLanding
       html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{e(secondary_label)}</a>\n"
       html << "</div>\n"
 
-      # Hero creators (top 3)
+      # Hero creators (top 3 with gold/silver/bronze ranks)
       contributors = @data[:contributors]
       if (@s.contributors_enabled rescue false) && contributors&.any?
         top3 = contributors.first(3)
+        rank_colors = ["#FFD700", "#C0C0C0", "#CD7F32"]
         html << "<div class=\"cl-hero__creators\">\n"
-        top3.each do |user|
+        top3.each_with_index do |user, idx|
           avatar_url     = user.avatar_template.gsub("{size}", "120")
           activity_count = user.attributes["post_count"].to_i rescue 0
-          html << "<a href=\"#{login_url}\" class=\"cl-creator-pill\">\n"
+          rank_color     = rank_colors[idx]
+          html << "<a href=\"#{login_url}\" class=\"cl-creator-pill cl-creator-pill--rank-#{idx + 1}\" style=\"--rank-color: #{rank_color}\">\n"
+          html << "<span class=\"cl-creator-pill__rank\">#{idx + 1}</span>\n"
           html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-creator-pill__avatar\" loading=\"lazy\">\n"
           html << "<span class=\"cl-creator-pill__name\">@#{e(user.username)}</span>\n"
           html << "<span class=\"cl-creator-pill__count\">#{activity_count}</span>\n"
@@ -214,22 +213,25 @@ module CommunityLanding
     # ── 3. STATS ──
 
     def render_stats
+      return "" unless (@s.stats_enabled rescue true)
+
       stats       = @data[:stats]
       stats_title = @s.stats_title.presence || "Premium Stats"
       border      = @s.stats_border_style rescue "none"
       min_h       = @s.stats_min_height rescue 0
       icon_shape  = @s.stat_icon_shape rescue "circle"
       round_nums  = @s.stat_round_numbers rescue false
+      show_labels = @s.stat_labels_enabled rescue true
 
       html = +""
       html << "<section class=\"cl-stats cl-anim\" id=\"cl-stats-row\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(stats_title)}</h2>\n"
       html << "<div class=\"cl-stats__grid\">\n"
-      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape, round_nums)
-      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape, round_nums)
-      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label,   icon_shape, round_nums)
-      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label,   icon_shape, round_nums)
-      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label,   icon_shape, round_nums)
+      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape, round_nums, show_labels)
+      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape, round_nums, show_labels)
+      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label,   icon_shape, round_nums, show_labels)
+      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label,   icon_shape, round_nums, show_labels)
+      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label,   icon_shape, round_nums, show_labels)
       html << "</div>\n</div></section>\n"
       html
     end
@@ -303,35 +305,6 @@ module CommunityLanding
         html << "<span class=\"cl-topic-card__stat\">#{Icons::COMMENT_SVG} #{topic_replies}</span>"
         html << "<span class=\"cl-topic-card__stat\">#{Icons::HEART_SVG} #{topic_likes}</span>"
         html << "</div></a>\n"
-      end
-
-      html << "</div>\n</div></section>\n"
-      html
-    end
-
-    # ── 6. TOP CREATORS ──
-
-    def render_contributors
-      contributors = @data[:contributors]
-      return "" unless @s.contributors_enabled && contributors&.any?
-
-      border = @s.contributors_border_style rescue "none"
-      min_h  = @s.contributors_min_height rescue 0
-
-      html = +""
-      html << "<section class=\"cl-creators cl-anim\" id=\"cl-contributors\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(@s.contributors_title)}</h2>\n"
-      html << "<div class=\"cl-creators__list\">\n"
-
-      contributors.each do |user|
-        avatar_url     = user.avatar_template.gsub("{size}", "120")
-        activity_count = user.attributes["post_count"].to_i rescue 0
-
-        html << "<a href=\"#{login_url}\" class=\"cl-creator-pill\">\n"
-        html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-creator-pill__avatar\" loading=\"lazy\">\n"
-        html << "<span class=\"cl-creator-pill__name\">@#{e(user.username)}</span>\n"
-        html << "<span class=\"cl-creator-pill__count\">#{activity_count}</span>\n"
-        html << "</a>\n"
       end
 
       html << "</div>\n</div></section>\n"
@@ -466,14 +439,15 @@ module CommunityLanding
 
     # ── Shared helpers ──
 
-    def stat_card(icon_svg, count, label, icon_shape = "circle", round_numbers = false)
+    def stat_card(icon_svg, count, label, icon_shape = "circle", round_numbers = false, show_label = true)
       shape_class = icon_shape == "rounded" ? "cl-stat-icon--rounded" : "cl-stat-icon--circle"
       round_attr = round_numbers ? ' data-round="true"' : ''
+      label_html = show_label ? "<span class=\"cl-stat-card__label\">#{e(label)}</span>\n" : ""
       "<div class=\"cl-stat-card\">\n" \
       "<div class=\"cl-stat-card__icon-wrap #{shape_class}\">#{icon_svg}</div>\n" \
       "<div class=\"cl-stat-card__text\">\n" \
       "<span class=\"cl-stat-card__value\" data-count=\"#{count}\"#{round_attr}>0</span>\n" \
-      "<span class=\"cl-stat-card__label\">#{e(label)}</span>\n" \
+      "#{label_html}" \
       "</div>\n" \
       "</div>\n"
     end

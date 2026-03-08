@@ -27,6 +27,10 @@ module CommunityLanding
       space_card_bg = hex(@s.groups_card_bg_color.presence) rescue nil
       topic_card_bg = hex(@s.topics_card_bg_color.presence) rescue nil
       video_btn_bg  = hex(@s.hero_video_button_color.presence) rescue nil
+      hero_card_dark  = hex(@s.hero_card_bg_dark.presence) rescue nil
+      hero_card_light = hex(@s.hero_card_bg_light.presence) rescue nil
+      hero_card_opacity = [[@s.hero_card_opacity.to_s.to_f, 0].max, 1].min rescue 0.85
+      hero_card_opacity = 0.85 if hero_card_opacity == 0.0 && (@s.hero_card_opacity.to_s.strip.empty? rescue true)
       accent_rgb   = hex_to_rgb(accent)
       stat_icon_rgb = hex_to_rgb(stat_icon)
 
@@ -34,6 +38,12 @@ module CommunityLanding
       stat_counter_val = stat_counter || "var(--cl-text-strong)"
       space_card_bg_val = space_card_bg || "var(--cl-card)"
       topic_card_bg_val = topic_card_bg || "var(--cl-card)"
+
+      # Hero card bg: convert hex + opacity to rgba
+      hero_card_dark_rgb = hero_card_dark ? hex_to_rgb(hero_card_dark) : "12, 12, 25"
+      hero_card_light_rgb = hero_card_light ? hex_to_rgb(hero_card_light) : "255, 255, 255"
+      hero_card_dark_val = "rgba(#{hero_card_dark_rgb}, #{hero_card_opacity})"
+      hero_card_light_val = "rgba(#{hero_card_light_rgb}, #{hero_card_opacity})"
 
       about_bg_extra = about_bg_img ? ", url('#{about_bg_img}') center/cover no-repeat" : ""
       video_btn_line = video_btn_bg ? "\n  --cl-video-btn-bg: #{video_btn_bg};" : ""
@@ -54,6 +64,7 @@ module CommunityLanding
   --cl-stat-counter-color: #{stat_counter_val};
   --cl-space-card-bg: #{space_card_bg_val};
   --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
+  --cl-hero-card-bg: #{hero_card_dark_val};
   --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
@@ -72,6 +83,7 @@ module CommunityLanding
   --cl-stat-counter-color: #{stat_counter_val};
   --cl-space-card-bg: #{space_card_bg_val};
   --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
+  --cl-hero-card-bg: #{hero_card_light_val};
   --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
@@ -102,7 +114,6 @@ module CommunityLanding
         ["#cl-stats-row",    safe_hex(:stats_bg_dark),        safe_hex(:stats_bg_light)],
         ["#cl-about",        safe_hex(:about_bg_dark),        safe_hex(:about_bg_light)],
         ["#cl-topics",       safe_hex(:topics_bg_dark),       safe_hex(:topics_bg_light)],
-        ["#cl-contributors", safe_hex(:contributors_bg_dark), safe_hex(:contributors_bg_light)],
         ["#cl-groups",       safe_hex(:groups_bg_dark),       safe_hex(:groups_bg_light)],
         ["#cl-app-cta",      safe_hex(:app_cta_bg_dark),      safe_hex(:app_cta_bg_light)],
         ["#cl-footer",       safe_hex(:footer_bg_dark),       safe_hex(:footer_bg_light)],

@@ -602,6 +602,8 @@
   min-height: 80vh;
   display: flex;
   align-items: center;
+  background-size: cover;
+  background-position: center;
 }
 
 @media (min-width: 1024px) {
@@ -692,34 +694,15 @@
   transition: opacity 0.6s ease;
 }
 
-/* ── Hero Background Image (flat mode) ── */
-.cl-hero__bg {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  z-index: 0;
-  opacity: 0.25;
-}
-
-.cl-hero__bg::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 60%, var(--cl-bg));
-}
-
 /* ── Hero Card Mode ── */
 .cl-hero--card .cl-hero__inner {
-  background: var(--cl-card);
+  background: var(--cl-hero-card-bg, var(--cl-card));
   border: 1px solid var(--cl-border);
   border-radius: var(--cl-radius);
   padding: 3rem 2.5rem;
   backdrop-filter: var(--cl-blur);
   -webkit-backdrop-filter: var(--cl-blur);
   box-shadow: 0 8px 32px var(--cl-shadow);
-  background-size: cover;
-  background-position: center;
 }
 
 @media (min-width: 1024px) {
@@ -892,10 +875,11 @@
   transition: filter 0.4s ease;
 }
 
-/* ── Hero Creators (top 3 pills in hero) ── */
+/* ── Hero Creators (top 3 ranked pills in hero) ── */
 .cl-hero__creators {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: center;
   gap: 0.75rem;
   margin-top: 2rem;
 }
@@ -1224,18 +1208,8 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   6. TOP CREATORS — pill badges
+   6. CREATOR PILLS — used in hero section
    ═══════════════════════════════════════════════════════════════════ */
-.cl-creators {
-  padding: 2.5rem 0 3rem;
-}
-
-.cl-creators__list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 .cl-creator-pill {
   display: flex;
   align-items: center;
@@ -1245,16 +1219,35 @@
   border: 1px solid var(--cl-border);
   border-radius: 50px;
   text-decoration: none;
+  position: relative;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   backdrop-filter: var(--cl-blur);
   -webkit-backdrop-filter: var(--cl-blur);
 }
 
 .cl-creator-pill:hover {
-  border-color: var(--cl-border-hover);
+  border-color: var(--rank-color, var(--cl-border-hover));
   background: var(--cl-accent-subtle);
   transform: translateY(-3px);
   box-shadow: 0 8px 24px var(--cl-shadow);
+}
+
+.cl-creator-pill__rank {
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--rank-color);
+  color: #000;
+  font-size: 0.65rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .cl-creator-pill__avatar {
@@ -1262,12 +1255,12 @@
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--cl-border);
+  border: 2px solid var(--rank-color, var(--cl-border));
   transition: border-color 0.3s ease;
 }
 
 .cl-creator-pill:hover .cl-creator-pill__avatar {
-  border-color: var(--cl-accent);
+  border-color: var(--rank-color, var(--cl-accent));
 }
 
 .cl-creator-pill__name {

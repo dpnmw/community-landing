@@ -28,13 +28,16 @@ const TABS = [
       "hero_primary_button_label", "hero_primary_button_url",
       "hero_secondary_button_label", "hero_secondary_button_url",
       "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
-      "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style"
+      "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style",
+      "hero_card_bg_dark", "hero_card_bg_light", "hero_card_opacity",
+      "contributors_enabled", "contributors_days", "contributors_count"
     ])
   },
   {
     id: "stats",
     label: "Stats",
     settings: new Set([
+      "stats_enabled", "stat_labels_enabled",
       "stats_title", "stat_icon_color", "stat_icon_bg_color", "stat_icon_shape", "stat_counter_color",
       "stat_members_label", "stat_topics_label", "stat_posts_label",
       "stat_likes_label", "stat_chats_label", "stat_round_numbers",
@@ -58,14 +61,6 @@ const TABS = [
     settings: new Set([
       "topics_enabled", "topics_title", "topics_count", "topics_card_bg_color",
       "topics_bg_dark", "topics_bg_light", "topics_min_height", "topics_border_style"
-    ])
-  },
-  {
-    id: "contributors",
-    label: "Creators",
-    settings: new Set([
-      "contributors_enabled", "contributors_title", "contributors_days", "contributors_count",
-      "contributors_bg_dark", "contributors_bg_light", "contributors_min_height", "contributors_border_style"
     ])
   },
   {
@@ -99,6 +94,18 @@ const TABS = [
   }
 ];
 
+// Pairs of dark/light background settings to display side-by-side
+const BG_PAIRS = [
+  ["hero_bg_dark", "hero_bg_light"],
+  ["hero_card_bg_dark", "hero_card_bg_light"],
+  ["stats_bg_dark", "stats_bg_light"],
+  ["about_bg_dark", "about_bg_light"],
+  ["topics_bg_dark", "topics_bg_light"],
+  ["groups_bg_dark", "groups_bg_light"],
+  ["app_cta_bg_dark", "app_cta_bg_light"],
+  ["footer_bg_dark", "footer_bg_light"],
+];
+
 let currentTab = "settings";
 let filterActive = false;
 let isActive = false;
@@ -124,6 +131,14 @@ function applyTabFilter() {
       "cl-tab-hidden",
       !filterActive && !tab.settings.has(name)
     );
+  });
+
+  // Toggle visibility on bg-pair wrappers
+  container.querySelectorAll(".cl-bg-pair").forEach((pair) => {
+    const firstRow = pair.querySelector(".row.setting[data-setting]");
+    if (firstRow) {
+      pair.classList.toggle("cl-tab-hidden", firstRow.classList.contains("cl-tab-hidden"));
+    }
   });
 
   // Update filter-active dimming on whichever tab container exists
@@ -179,6 +194,25 @@ function handleTabClick(container, tabId) {
   applyTabFilter();
 }
 
+function wrapBgPairs() {
+  const container = getContainer();
+  if (!container) return;
+
+  BG_PAIRS.forEach(([darkName, lightName]) => {
+    const darkRow = container.querySelector(`.row.setting[data-setting="${darkName}"]`);
+    const lightRow = container.querySelector(`.row.setting[data-setting="${lightName}"]`);
+    if (!darkRow || !lightRow) return;
+    // Skip if already wrapped
+    if (darkRow.parentElement && darkRow.parentElement.classList.contains("cl-bg-pair")) return;
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "cl-bg-pair";
+    darkRow.parentNode.insertBefore(wrapper, darkRow);
+    wrapper.appendChild(darkRow);
+    wrapper.appendChild(lightRow);
+  });
+}
+
 function buildTabsUI() {
   const container = getContainer();
   if (!container) return false;
@@ -229,6 +263,7 @@ function buildTabsUI() {
 
     nativeTabsEl.classList.add("cl-tabs-injected");
     container.classList.add("cl-tabs-active");
+    wrapBgPairs();
     applyTabFilter();
     return true;
   }
@@ -273,6 +308,7 @@ function buildTabsUI() {
   }
 
   container.classList.add("cl-tabs-active");
+  wrapBgPairs();
   applyTabFilter();
   return true;
 }
