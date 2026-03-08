@@ -1,3 +1,4 @@
+// community-landing-admin-tabs v2.4.0
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 // Setting descriptions — injected into the admin DOM since the newer

@@ -2,7 +2,7 @@
 
 # name: community-landing
 # about: Branded public landing page for unauthenticated visitors
-# version: 2.3.0
+# version: 2.4.0
 # authors: DPN MEDiA WORKS
 # url: https://github.com/dpnmw/community-landing
 # meta_url: https://dpnmediaworks.com
