@@ -54,9 +54,19 @@ after_initialize do
 
       render html: html.html_safe, layout: false, content_type: "text/html"
     rescue => e
-      Rails.logger.error("[CommunityLanding] 500 error: #{e.class}: #{e.message}\n#{e.backtrace&.first(10)&.join("\n")}")
-      render html: "<!-- CommunityLanding error: #{ERB::Util.html_escape(e.class)}: #{ERB::Util.html_escape(e.message)} -->".html_safe,
-             layout: false, content_type: "text/html", status: 500
+      bt = e.backtrace&.first(15)&.join("\n") rescue ""
+      error_page = <<~HTML
+        <!DOCTYPE html>
+        <html><head><meta charset="UTF-8"><title>Landing Page Error</title>
+        <style>body{font-family:monospace;padding:2em;background:#111;color:#eee}
+        pre{background:#1a1a2e;padding:1em;overflow-x:auto;border-radius:8px;font-size:13px}</style></head>
+        <body>
+        <h1 style="color:#e74c3c">CommunityLanding Error</h1>
+        <p><strong>#{ERB::Util.html_escape(e.class)}</strong>: #{ERB::Util.html_escape(e.message)}</p>
+        <pre>#{ERB::Util.html_escape(bt)}</pre>
+        </body></html>
+      HTML
+      render html: error_page.html_safe, layout: false, content_type: "text/html", status: 500
     end
 
     private

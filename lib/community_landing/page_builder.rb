@@ -140,7 +140,7 @@ module CommunityLanding
       hero_style_parts << "border-bottom: 1px #{hero_border} var(--cl-border);" if hero_border.present? && hero_border != "none"
       hero_style_parts << "min-height: #{hero_min_h}px;" if hero_min_h.to_i > 0
       hero_attr = hero_style_parts.any? ? " style=\"#{hero_style_parts.join(' ')}\"" : ""
-      hero_classes = "cl-hero"
+      hero_classes = +"cl-hero"
       hero_classes << " cl-hero--card" if hero_card
       hero_classes << " cl-hero--image-first" if hero_img_first
       html << "<section class=\"#{hero_classes}\" id=\"cl-hero\"#{hero_attr}>\n"
