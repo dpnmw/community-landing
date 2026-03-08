@@ -422,6 +422,25 @@ const BG_PAIRS = [
   ["footer_bg_dark", "footer_bg_light"],
 ];
 
+// Tabs that depend on a section-enable toggle.
+// When the toggle is OFF the tab shows a notice instead of the full settings list.
+const TAB_ENABLE_SETTINGS = {
+  hero:          { setting: "contributors_enabled", label: "Contributors", onlySettings: [
+                     "contributors_enabled", "contributors_title", "contributors_title_enabled",
+                     "contributors_count_label", "contributors_count_label_enabled",
+                     "contributors_alignment", "contributors_pill_max_width",
+                     "contributors_pill_bg_dark", "contributors_pill_bg_light",
+                     "contributors_days", "contributors_count"
+                   ]},
+  participation: { setting: "participation_enabled", label: "Participation" },
+  stats:         { setting: "stats_enabled",         label: "Stats" },
+  about:         { setting: "about_enabled",         label: "About" },
+  topics:        { setting: "topics_enabled",        label: "Trending" },
+  groups:        { setting: "groups_enabled",        label: "Spaces" },
+  faq:           { setting: "faq_enabled",           label: "FAQ" },
+  appcta:        { setting: "show_app_ctas",         label: "App CTA" },
+};
+
 let currentTab = "settings";
 let filterActive = false;
 let isActive = false;
@@ -500,8 +519,10 @@ function handleTabClick(container, tabId) {
     fi.dispatchEvent(new Event("input", { bubbles: true }));
   }
 
+  clearDisabledNotice(container);
   updateActiveStates(tabId);
   applyTabFilter();
+  updateDisabledNotice(container);
 }
 
 /**
@@ -542,6 +563,9 @@ function cleanupTabs() {
     container.querySelectorAll(".cl-merged-dark, .cl-merged-light").forEach((el) => {
       el.classList.remove("cl-merged-dark", "cl-merged-light");
     });
+
+    // Remove disabled notices
+    clearDisabledNotice(container);
   }
 
   // Reset state
@@ -620,6 +644,77 @@ function mergeBgPairs() {
   });
 }
 
+/**
+ * Read a boolean setting's current value from its DOM checkbox.
+ */
+function isSettingEnabled(container, settingName) {
+  const row = container.querySelector(`.row.setting[data-setting="${settingName}"]`);
+  if (!row) return true; // if row not found, assume enabled (safe default)
+  const cb = row.querySelector('input[type="checkbox"]');
+  if (!cb) return true;
+  return cb.checked;
+}
+
+/**
+ * Show or remove the "section disabled" notice for the current tab.
+ * When a section's master toggle is OFF, we hide all sub-settings (except
+ * the enable toggle itself) and show a notice prompting the user to enable it.
+ */
+function updateDisabledNotice(container) {
+  // Remove any existing notice
+  const existing = container.querySelector(".cl-disabled-notice");
+  if (existing) existing.remove();
+
+  const dep = TAB_ENABLE_SETTINGS[currentTab];
+  if (!dep) return; // tab has no dependency
+
+  const enabled = isSettingEnabled(container, dep.setting);
+  if (enabled) return; // section is on — nothing to do
+
+  // Determine which settings to hide (all tab settings except the enable toggle)
+  const tab = TABS.find((t) => t.id === currentTab);
+  if (!tab) return;
+
+  // For "hero" tab, only hide/dim the contributor sub-settings, not all hero settings
+  const affectedSettings = dep.onlySettings
+    ? new Set(dep.onlySettings)
+    : tab.settings;
+
+  container.querySelectorAll(".row.setting[data-setting]").forEach((row) => {
+    const name = row.getAttribute("data-setting");
+    if (name === dep.setting) return; // keep the enable toggle visible
+    if (affectedSettings.has(name)) {
+      row.classList.add("cl-disabled-dim");
+    }
+  });
+
+  // Insert notice after the enable toggle row
+  const toggleRow = container.querySelector(`.row.setting[data-setting="${dep.setting}"]`);
+  if (!toggleRow) return;
+
+  const notice = document.createElement("div");
+  notice.className = "cl-disabled-notice";
+  notice.innerHTML =
+    '<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" style="flex-shrink:0">' +
+    '<path d="M8 1a7 7 0 100 14A7 7 0 008 1zm-.75 3.5a.75.75 0 011.5 0v4a.75.75 0 01-1.5 0v-4zm.75 7a.75.75 0 110-1.5.75.75 0 010 1.5z"/>' +
+    "</svg>" +
+    "<span><strong>" + dep.label + "</strong> is currently disabled. " +
+    "Enable it above to configure these settings.</span>";
+
+  toggleRow.insertAdjacentElement("afterend", notice);
+}
+
+/**
+ * Remove disabled-notice and dim classes.
+ */
+function clearDisabledNotice(container) {
+  const notice = container.querySelector(".cl-disabled-notice");
+  if (notice) notice.remove();
+  container.querySelectorAll(".cl-disabled-dim").forEach((el) => {
+    el.classList.remove("cl-disabled-dim");
+  });
+}
+
 function buildTabsUI() {
   const container = getContainer();
   if (!container) return false;
@@ -683,6 +778,8 @@ function buildTabsUI() {
     injectDescriptions();
     mergeBgPairs();
     applyTabFilter();
+    updateDisabledNotice(container);
+    listenForEnableToggles(container);
     return true;
   }
 
@@ -729,7 +826,27 @@ function buildTabsUI() {
   injectDescriptions();
   mergeBgPairs();
   applyTabFilter();
+  updateDisabledNotice(container);
+  listenForEnableToggles(container);
   return true;
+}
+
+/**
+ * Listen for changes on section-enable checkboxes so the notice
+ * updates live when the user toggles a section on or off.
+ */
+function listenForEnableToggles(container) {
+  Object.values(TAB_ENABLE_SETTINGS).forEach(({ setting }) => {
+    const row = container.querySelector(`.row.setting[data-setting="${setting}"]`);
+    if (!row) return;
+    const cb = row.querySelector('input[type="checkbox"]');
+    if (!cb || cb.dataset.clToggleListening) return;
+    cb.dataset.clToggleListening = "1";
+    cb.addEventListener("change", () => {
+      clearDisabledNotice(container);
+      updateDisabledNotice(container);
+    });
+  });
 }
 
 // ── Global filter detection via event delegation ──
