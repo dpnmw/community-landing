@@ -49,7 +49,9 @@ en:
     # ── 3. Stats Section ──
     stats_enabled: "━━ ROW 3: PREMIUM STATS ━━ — Show or hide the entire stats section."
     stat_labels_enabled: "Show text labels below stat counters (e.g. 'Members', 'Topics'). When off, only numbers and icons are displayed."
+    stats_title_enabled: "Show the section heading above the stats row. Turn off to display only the stat cards."
     stats_title: "Section heading text above the stats row."
+    stat_card_style: "Visual style for stat cards: rectangle (sharp corners), rounded (soft corners), pill (fully rounded), or minimal (no background/border)."
     stat_icon_color: "Color for all stat counter icons. Hex value (e.g. #d4a24e)."
     stat_icon_bg_color: "Background color behind each stat icon. Leave blank for a subtle accent tint."
     stat_icon_shape: "Shape of the icon background: circle or rounded square."
@@ -93,7 +95,11 @@ en:
     topics_border_style: "Border style at the bottom of the trending section."
 
     # ── 6. Hero Creators ──
-    contributors_enabled: "Show top 3 creators in the hero section with gold, silver, and bronze rank badges. Each pill displays avatar, @username, and post count."
+    contributors_enabled: "Show top 3 creators in the hero section with gold, silver, and bronze rank badges."
+    contributors_title: "Heading text above the creators list (e.g. 'Top Creators', 'Community Leaders')."
+    contributors_title_enabled: "Show the heading above the creators list."
+    contributors_count_label: "Label shown before each creator's count (e.g. 'Cheers', 'Points'). Leave blank for no prefix."
+    contributors_count_label_enabled: "Show the count label prefix before each creator's activity count."
     contributors_days: "Lookback period in days for calculating top contributors."
     contributors_count: "Number of top contributors to fetch (top 3 are shown in the hero)."
 

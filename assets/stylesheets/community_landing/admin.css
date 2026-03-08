@@ -9,64 +9,31 @@
   display: none !important;
 }
 
-/* ── Injected tabs inside native Discourse tab bar ── */
+/* ── Injected tabs inside native Discourse nav bar ──
+   Native structure: <ul class="nav-pills d-nav-submenu__tabs">
+     <li class="admin-plugin-config-page__top-nav-item"><a>Settings</a></li>
+     <li class="admin-plugin-config-page__top-nav-item cl-admin-tab"><a>Hero</a></li>
+   </ul> */
 
-.admin-plugin-config-area__tabs.cl-tabs-injected {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0;
-}
-
-.admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab {
-  padding: 10px 14px;
-  border: none;
-  background: none;
-  color: var(--primary-medium, #888);
-  font-size: 0.875em;
-  font-weight: 600;
+.d-nav-submenu__tabs li.cl-admin-tab {
   cursor: pointer;
-  border-bottom: 2px solid transparent;
-  margin-bottom: -1px;
-  transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
 }
 
-.admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab:hover {
-  color: var(--primary, #333);
-}
-
-.admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab.active {
-  color: var(--tertiary, #0088cc);
-  border-bottom-color: var(--tertiary, #0088cc);
-}
-
-/* Native "Settings" link — match our tab styling when active/inactive */
-.admin-plugin-config-area__tabs.cl-tabs-injected .cl-native-settings-link {
-  transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
-}
-
-.admin-plugin-config-area__tabs.cl-tabs-injected .cl-native-settings-link:not(.active) {
-  color: var(--primary-medium, #888);
-  border-bottom-color: transparent;
+.d-nav-submenu__tabs li.cl-admin-tab a {
+  cursor: pointer;
 }
 
 /* Dimmed state when Discourse filter/search is active */
-.admin-plugin-config-area__tabs.cl-filter-active .cl-admin-tab,
-.admin-plugin-config-area__tabs.cl-filter-active .cl-native-settings-link {
+.d-nav-submenu__tabs.cl-filter-active > li {
   opacity: 0.4;
 }
 
-.admin-plugin-config-area__tabs.cl-filter-active .cl-admin-tab.active,
-.admin-plugin-config-area__tabs.cl-filter-active .cl-native-settings-link.active {
+.d-nav-submenu__tabs.cl-filter-active > li.active {
+  opacity: 1;
   border-bottom-color: transparent;
 }
 
-/* Dark mode */
-html.dark-scheme .admin-plugin-config-area__tabs.cl-tabs-injected .cl-admin-tab:hover {
-  color: var(--primary, #ddd);
-}
-
-/* ── Standalone tab bar (fallback for older Discourse without native tabs) ── */
+/* ── Standalone tab bar (fallback for older Discourse without native nav) ── */
 
 .cl-admin-tabs {
   display: flex;

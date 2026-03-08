@@ -174,9 +174,20 @@ plugins:
   stat_labels_enabled:
     default: true
     type: bool
+  stats_title_enabled:
+    default: true
+    type: bool
   stats_title:
     default: "Premium Stats"
     type: string
+  stat_card_style:
+    default: "rectangle"
+    type: enum
+    choices:
+      - rectangle
+      - rounded
+      - pill
+      - minimal
   stat_icon_color:
     default: "d4a24e"
     type: color
@@ -325,6 +336,18 @@ plugins:
   # 6. Hero Creators (Top 3 in Hero)
   # ══════════════════════════════════════════
   contributors_enabled:
+    default: true
+    type: bool
+  contributors_title:
+    default: "Top Creators"
+    type: string
+  contributors_title_enabled:
+    default: true
+    type: bool
+  contributors_count_label:
+    default: "Cheers"
+    type: string
+  contributors_count_label_enabled:
     default: true
     type: bool
   contributors_days:

@@ -878,10 +878,19 @@
 /* ── Hero Creators (top 3 ranked pills in hero) ── */
 .cl-hero__creators {
   display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
   gap: 0.75rem;
   margin-top: 2rem;
+}
+
+.cl-hero__creators-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--cl-muted);
+  margin: 0 0 0.25rem;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -984,6 +993,45 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Stat card style variants */
+.cl-stat-card--rectangle {
+  border-radius: var(--cl-radius-sm);
+}
+
+.cl-stat-card--rounded {
+  border-radius: 16px;
+}
+
+.cl-stat-card--pill {
+  border-radius: 50px;
+  padding: 0.85rem 1.5rem;
+}
+
+.cl-stat-card--minimal {
+  background: transparent;
+  border: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.cl-stat-card--minimal:hover {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  transform: translateY(-2px);
+}
+
+.cl-stat-card--minimal .cl-stat-card__icon-wrap {
+  background: transparent;
+  color: var(--cl-stat-icon-color);
+}
+
+.cl-stat-card--minimal:hover .cl-stat-card__icon-wrap {
+  background: transparent;
+  color: var(--cl-accent);
+  transform: scale(1.15);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1208,16 +1256,18 @@
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   6. CREATOR PILLS — used in hero section
+   6. CREATOR PILLS — vertical stack in hero section
    ═══════════════════════════════════════════════════════════════════ */
 .cl-creator-pill {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   padding: 0.6rem 1.25rem 0.6rem 0.6rem;
+  width: 100%;
+  max-width: 340px;
   background: var(--cl-card);
   border: 1px solid var(--cl-border);
-  border-radius: 50px;
+  border-radius: 14px;
   text-decoration: none;
   position: relative;
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1234,27 +1284,26 @@
 
 .cl-creator-pill__rank {
   position: absolute;
-  top: -6px;
-  left: -6px;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  top: -8px;
+  right: -8px;
+  padding: 0.15rem 0.5rem;
+  border-radius: 50px;
   background: var(--rank-color);
   color: #000;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 900;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
   z-index: 2;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
 }
 
 .cl-creator-pill__avatar {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
   border: 2px solid var(--rank-color, var(--cl-border));
   transition: border-color 0.3s ease;
 }
@@ -1263,24 +1312,27 @@
   border-color: var(--rank-color, var(--cl-accent));
 }
 
+.cl-creator-pill__info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1;
+}
+
 .cl-creator-pill__name {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: var(--cl-text-strong);
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cl-creator-pill__count {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   color: var(--cl-accent);
   white-space: nowrap;
-  font-weight: 800;
-  margin-left: auto;
-  padding: 0.15rem 0.6rem;
-  min-width: 1.5em;
-  text-align: center;
-  background: var(--cl-accent-subtle);
-  border-radius: 50px;
+  font-weight: 600;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

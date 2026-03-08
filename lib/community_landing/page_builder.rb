@@ -160,16 +160,25 @@ module CommunityLanding
       if (@s.contributors_enabled rescue false) && contributors&.any?
         top3 = contributors.first(3)
         rank_colors = ["#FFD700", "#C0C0C0", "#CD7F32"]
+        creators_title = @s.contributors_title.presence || "Top Creators"
+        show_title = @s.contributors_title_enabled rescue true
+        count_label = @s.contributors_count_label.presence || ""
+        show_count_label = @s.contributors_count_label_enabled rescue true
+
         html << "<div class=\"cl-hero__creators\">\n"
+        html << "<h3 class=\"cl-hero__creators-title\">#{e(creators_title)}</h3>\n" if show_title
         top3.each_with_index do |user, idx|
           avatar_url     = user.avatar_template.gsub("{size}", "120")
           activity_count = user.attributes["post_count"].to_i rescue 0
           rank_color     = rank_colors[idx]
+          count_prefix = show_count_label && count_label.present? ? "#{e(count_label)} " : ""
           html << "<a href=\"#{login_url}\" class=\"cl-creator-pill cl-creator-pill--rank-#{idx + 1}\" style=\"--rank-color: #{rank_color}\">\n"
-          html << "<span class=\"cl-creator-pill__rank\">#{idx + 1}</span>\n"
+          html << "<span class=\"cl-creator-pill__rank\">Ranked ##{idx + 1}</span>\n"
           html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-creator-pill__avatar\" loading=\"lazy\">\n"
+          html << "<div class=\"cl-creator-pill__info\">\n"
           html << "<span class=\"cl-creator-pill__name\">@#{e(user.username)}</span>\n"
-          html << "<span class=\"cl-creator-pill__count\">#{activity_count}</span>\n"
+          html << "<span class=\"cl-creator-pill__count\">#{count_prefix}#{activity_count}</span>\n"
+          html << "</div>\n"
           html << "</a>\n"
         end
         html << "</div>\n"
@@ -217,21 +226,23 @@ module CommunityLanding
 
       stats       = @data[:stats]
       stats_title = @s.stats_title.presence || "Premium Stats"
+      show_title  = @s.stats_title_enabled rescue true
       border      = @s.stats_border_style rescue "none"
       min_h       = @s.stats_min_height rescue 0
       icon_shape  = @s.stat_icon_shape rescue "circle"
+      card_style  = @s.stat_card_style rescue "rectangle"
       round_nums  = @s.stat_round_numbers rescue false
       show_labels = @s.stat_labels_enabled rescue true
 
       html = +""
       html << "<section class=\"cl-stats cl-anim\" id=\"cl-stats-row\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(stats_title)}</h2>\n"
+      html << "<h2 class=\"cl-section-title\">#{e(stats_title)}</h2>\n" if show_title
       html << "<div class=\"cl-stats__grid\">\n"
-      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape, round_nums, show_labels)
-      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape, round_nums, show_labels)
-      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label,   icon_shape, round_nums, show_labels)
-      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label,   icon_shape, round_nums, show_labels)
-      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label,   icon_shape, round_nums, show_labels)
+      html << stat_card(Icons::STAT_MEMBERS_SVG, stats[:members], @s.stat_members_label, icon_shape, card_style, round_nums, show_labels)
+      html << stat_card(Icons::STAT_TOPICS_SVG,  stats[:topics],  @s.stat_topics_label,  icon_shape, card_style, round_nums, show_labels)
+      html << stat_card(Icons::STAT_POSTS_SVG,   stats[:posts],   @s.stat_posts_label,   icon_shape, card_style, round_nums, show_labels)
+      html << stat_card(Icons::STAT_LIKES_SVG,   stats[:likes],   @s.stat_likes_label,   icon_shape, card_style, round_nums, show_labels)
+      html << stat_card(Icons::STAT_CHATS_SVG,   stats[:chats],   @s.stat_chats_label,   icon_shape, card_style, round_nums, show_labels)
       html << "</div>\n</div></section>\n"
       html
     end
@@ -439,11 +450,12 @@ module CommunityLanding
 
     # ── Shared helpers ──
 
-    def stat_card(icon_svg, count, label, icon_shape = "circle", round_numbers = false, show_label = true)
+    def stat_card(icon_svg, count, label, icon_shape = "circle", card_style = "rectangle", round_numbers = false, show_label = true)
       shape_class = icon_shape == "rounded" ? "cl-stat-icon--rounded" : "cl-stat-icon--circle"
+      style_class = "cl-stat-card--#{card_style}"
       round_attr = round_numbers ? ' data-round="true"' : ''
       label_html = show_label ? "<span class=\"cl-stat-card__label\">#{e(label)}</span>\n" : ""
-      "<div class=\"cl-stat-card\">\n" \
+      "<div class=\"cl-stat-card #{style_class}\">\n" \
       "<div class=\"cl-stat-card__icon-wrap #{shape_class}\">#{icon_svg}</div>\n" \
       "<div class=\"cl-stat-card__text\">\n" \
       "<span class=\"cl-stat-card__value\" data-count=\"#{count}\"#{round_attr}>0</span>\n" \

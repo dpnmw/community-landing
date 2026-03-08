@@ -30,15 +30,18 @@ const TABS = [
       "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
       "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style",
       "hero_card_bg_dark", "hero_card_bg_light", "hero_card_opacity",
-      "contributors_enabled", "contributors_days", "contributors_count"
+      "contributors_enabled", "contributors_title", "contributors_title_enabled",
+      "contributors_count_label", "contributors_count_label_enabled",
+      "contributors_days", "contributors_count"
     ])
   },
   {
     id: "stats",
     label: "Stats",
     settings: new Set([
-      "stats_enabled", "stat_labels_enabled",
-      "stats_title", "stat_icon_color", "stat_icon_bg_color", "stat_icon_shape", "stat_counter_color",
+      "stats_enabled", "stat_labels_enabled", "stats_title_enabled",
+      "stats_title", "stat_card_style",
+      "stat_icon_color", "stat_icon_bg_color", "stat_icon_shape", "stat_counter_color",
       "stat_members_label", "stat_topics_label", "stat_posts_label",
       "stat_likes_label", "stat_chats_label", "stat_round_numbers",
       "stats_bg_dark", "stats_bg_light", "stats_min_height", "stats_border_style"
@@ -141,31 +144,33 @@ function applyTabFilter() {
     }
   });
 
-  // Update filter-active dimming on whichever tab container exists
-  const nativeTabs = container.querySelector(".admin-plugin-config-area__tabs");
-  if (nativeTabs) {
-    nativeTabs.classList.toggle("cl-filter-active", filterActive);
+  // Update filter-active dimming on native nav or standalone tab bar
+  const nativeNav = document.querySelector(".d-nav-submenu__tabs");
+  if (nativeNav) {
+    nativeNav.classList.toggle("cl-filter-active", filterActive);
   }
-  const standaloneTabs = container.querySelector(".cl-admin-tabs");
-  if (standaloneTabs) {
-    standaloneTabs.classList.toggle("filter-active", filterActive);
+  const standaloneBar = document.querySelector(".cl-admin-tabs");
+  if (standaloneBar) {
+    standaloneBar.classList.toggle("filter-active", filterActive);
   }
 }
 
 function updateActiveStates(activeId) {
-  const container = getContainer();
-  if (!container) return;
-
-  // Update all our injected tabs
-  container.querySelectorAll(".cl-admin-tab").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.tab === activeId);
+  // Native nav: our injected <li> tabs
+  document.querySelectorAll("li.cl-admin-tab").forEach((li) => {
+    li.classList.toggle("active", li.dataset.tab === activeId);
   });
 
-  // Update native Settings link if present
-  const nativeLink = container.querySelector(".cl-native-settings-link");
-  if (nativeLink) {
-    nativeLink.classList.toggle("active", activeId === "settings");
+  // Native nav: the original Settings <li>
+  const nativeItem = document.querySelector(".cl-native-settings-item");
+  if (nativeItem) {
+    nativeItem.classList.toggle("active", activeId === "settings");
   }
+
+  // Standalone fallback: <button> tabs
+  document.querySelectorAll("button.cl-admin-tab").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.tab === activeId);
+  });
 }
 
 function findFilterInput(container) {
@@ -218,7 +223,6 @@ function buildTabsUI() {
   if (!container) return false;
 
   // Already injected — just re-apply filter
-  // Search broadly: native tabs may be a sibling of container, not a child
   if (document.querySelector(".cl-admin-tab")) {
     applyTabFilter();
     return true;
@@ -233,35 +237,46 @@ function buildTabsUI() {
   );
   if (!hasOurs) return false;
 
-  // ── Strategy 1: Inject into native Discourse tab bar ──
-  // Native tabs may be a sibling of our container, so search at page level
-  const page = container.closest(".admin-plugin-config-page") || container.parentElement;
-  const nativeTabsEl = (page && page.querySelector(".admin-plugin-config-area__tabs")) ||
-                       document.querySelector(".admin-plugin-config-area__tabs");
-  if (nativeTabsEl) {
-    // Find the native "Settings" link and hook into it
-    const nativeLink = nativeTabsEl.querySelector("a");
-    if (nativeLink) {
-      nativeLink.classList.add("cl-native-settings-link", "active");
-      nativeLink.addEventListener("click", (e) => {
-        e.preventDefault();
-        handleTabClick(container, "settings");
-      });
+  // ── Strategy 1: Inject into native Discourse nav tab bar ──
+  // Native structure: <ul class="nav-pills action-list d-nav-submenu__tabs">
+  //   <li class="admin-plugin-config-page__top-nav-item"><a>Settings</a></li>
+  const nativeTabsList = document.querySelector(".d-nav-submenu__tabs");
+  if (nativeTabsList) {
+    // Hook the native "Settings" <li> so clicking it activates our Settings tab
+    const nativeSettingsItem = nativeTabsList.querySelector(
+      ".admin-plugin-config-page__top-nav-item"
+    );
+    if (nativeSettingsItem) {
+      nativeSettingsItem.classList.add("cl-native-settings-item");
+      const nativeLink = nativeSettingsItem.querySelector("a");
+      if (nativeLink) {
+        nativeLink.addEventListener("click", (e) => {
+          e.preventDefault();
+          handleTabClick(container, "settings");
+        });
+      }
     }
 
-    // Inject our section tabs into the native bar (skip "settings" — native link handles that)
+    // Inject our section tabs as <li> items (skip "settings" — native handles it)
     TABS.forEach((tab) => {
       if (tab.id === "settings") return;
 
-      const btn = document.createElement("button");
-      btn.className = "cl-admin-tab";
-      btn.textContent = tab.label;
-      btn.dataset.tab = tab.id;
-      btn.addEventListener("click", () => handleTabClick(container, tab.id));
-      nativeTabsEl.appendChild(btn);
+      const li = document.createElement("li");
+      li.className = "admin-plugin-config-page__top-nav-item cl-admin-tab";
+      li.dataset.tab = tab.id;
+      li.title = tab.label;
+
+      const a = document.createElement("a");
+      a.textContent = tab.label;
+      a.addEventListener("click", (e) => {
+        e.preventDefault();
+        handleTabClick(container, tab.id);
+      });
+
+      li.appendChild(a);
+      nativeTabsList.appendChild(li);
     });
 
-    nativeTabsEl.classList.add("cl-tabs-injected");
     container.classList.add("cl-tabs-active");
     wrapBgPairs();
     applyTabFilter();
