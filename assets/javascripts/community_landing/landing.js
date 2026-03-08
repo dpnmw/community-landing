@@ -173,7 +173,8 @@
     function openVideoModal(url) {
       var ytId = parseYouTubeId(url);
       if (ytId) {
-        videoPlayer.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>';
+        var origin = encodeURIComponent(window.location.origin);
+        videoPlayer.innerHTML = '<iframe src="https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0&origin=' + origin + '&enablejsapi=1" allow="autoplay; encrypted-media" allowfullscreen frameborder="0"></iframe>';
       } else {
         videoPlayer.innerHTML = '<video src="' + url + '" controls autoplay></video>';
       }

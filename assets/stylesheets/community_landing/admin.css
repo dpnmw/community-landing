@@ -90,43 +90,6 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
   padding-top: 0 !important;
 }
 
-/* ── Dual-color background pairs (side-by-side dark/light) ── */
-
-.cl-bg-pair {
-  display: flex;
-  gap: 16px;
-  width: 100%;
-}
-
-.cl-bg-pair > .row.setting {
-  flex: 1;
-  min-width: 0;
-  margin-bottom: 0 !important;
-  padding-bottom: 10px !important;
-}
-
-/* Inside bg-pairs, let the label and value stack vertically to fit the narrower space */
-.cl-bg-pair > .row.setting .setting-label {
-  float: none;
-  width: 100%;
-  margin-right: 0;
-}
-
-.cl-bg-pair > .row.setting .setting-value {
-  float: none;
-  width: 100%;
-  padding-right: 0;
-}
-
-.cl-bg-pair.cl-tab-hidden {
-  display: none !important;
-}
-
-@media (max-width: 600px) {
-  .cl-bg-pair {
-    flex-direction: column;
-  }
-}
 
 /* ── Fallback: Separator borders when tabs are NOT active ──
    (e.g. if JS fails to load or on older Discourse) */

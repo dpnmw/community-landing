@@ -102,18 +102,6 @@ const TABS = [
   }
 ];
 
-// Pairs of dark/light background settings to display side-by-side
-const BG_PAIRS = [
-  ["hero_bg_dark", "hero_bg_light"],
-  ["hero_card_bg_dark", "hero_card_bg_light"],
-  ["stats_bg_dark", "stats_bg_light"],
-  ["about_bg_dark", "about_bg_light"],
-  ["topics_bg_dark", "topics_bg_light"],
-  ["groups_bg_dark", "groups_bg_light"],
-  ["app_cta_bg_dark", "app_cta_bg_light"],
-  ["footer_bg_dark", "footer_bg_light"],
-];
-
 let currentTab = "settings";
 let filterActive = false;
 let isActive = false;
@@ -139,14 +127,6 @@ function applyTabFilter() {
       "cl-tab-hidden",
       !filterActive && !tab.settings.has(name)
     );
-  });
-
-  // Toggle visibility on bg-pair wrappers
-  container.querySelectorAll(".cl-bg-pair").forEach((pair) => {
-    const firstRow = pair.querySelector(".row.setting[data-setting]");
-    if (firstRow) {
-      pair.classList.toggle("cl-tab-hidden", firstRow.classList.contains("cl-tab-hidden"));
-    }
   });
 
   // Update filter-active dimming on native nav or standalone tab bar
@@ -204,25 +184,6 @@ function handleTabClick(container, tabId) {
   applyTabFilter();
 }
 
-function wrapBgPairs() {
-  const container = getContainer();
-  if (!container) return;
-
-  BG_PAIRS.forEach(([darkName, lightName]) => {
-    const darkRow = container.querySelector(`.row.setting[data-setting="${darkName}"]`);
-    const lightRow = container.querySelector(`.row.setting[data-setting="${lightName}"]`);
-    if (!darkRow || !lightRow) return;
-    // Skip if already wrapped
-    if (darkRow.parentElement && darkRow.parentElement.classList.contains("cl-bg-pair")) return;
-
-    const wrapper = document.createElement("div");
-    wrapper.className = "cl-bg-pair";
-    darkRow.parentNode.insertBefore(wrapper, darkRow);
-    wrapper.appendChild(darkRow);
-    wrapper.appendChild(lightRow);
-  });
-}
-
 /**
  * Remove all injected tabs and restore clean state.
  * Called when navigating away from the community-landing settings page.
@@ -248,15 +209,6 @@ function cleanupTabs() {
   if (standaloneBar) {
     standaloneBar.remove();
   }
-
-  // Unwrap bg-pair wrappers
-  document.querySelectorAll(".cl-bg-pair").forEach((wrapper) => {
-    const parent = wrapper.parentNode;
-    while (wrapper.firstChild) {
-      parent.insertBefore(wrapper.firstChild, wrapper);
-    }
-    wrapper.remove();
-  });
 
   // Remove cl-tabs-active from container and un-hide all settings
   const container = getContainer();
@@ -332,7 +284,7 @@ function buildTabsUI() {
     });
 
     container.classList.add("cl-tabs-active");
-    wrapBgPairs();
+
     applyTabFilter();
     return true;
   }
