@@ -2097,3 +2097,42 @@ html {
     animation: none;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════
+   MOBILE — tighter padding, no horizontal overflow
+   ═══════════════════════════════════════════════════════════════════ */
+@media (max-width: 767px) {
+  .cl-container {
+    padding: 0 1rem;
+  }
+
+  .cl-hero__inner {
+    padding: 0 1rem;
+  }
+
+  .cl-navbar__inner {
+    padding: 0 1rem;
+  }
+
+  .cl-about__left {
+    padding: 1.25rem 1rem;
+  }
+
+  .cl-about__right {
+    padding: 1.25rem 1.25rem;
+  }
+
+  .cl-app-cta__inner {
+    padding: 1.5rem 1.25rem;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cl-app-cta__image {
+    display: none;
+  }
+
+  .cl-app-cta__badges {
+    justify-content: center;
+  }
+}

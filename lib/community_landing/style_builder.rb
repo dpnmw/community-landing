@@ -222,6 +222,7 @@ module CommunityLanding
         ["#cl-about",        safe_hex(:about_bg_dark),        safe_hex(:about_bg_light)],
         ["#cl-participation", safe_hex(:participation_bg_dark), safe_hex(:participation_bg_light)],
         ["#cl-topics",       safe_hex(:topics_bg_dark),       safe_hex(:topics_bg_light)],
+        ["#cl-splits",       safe_hex(:splits_bg_dark),       safe_hex(:splits_bg_light)],
         ["#cl-app-cta",      safe_hex(:app_cta_bg_dark),      safe_hex(:app_cta_bg_light)],
         ["#cl-footer",       safe_hex(:footer_bg_dark),       safe_hex(:footer_bg_light)],
       ]
@@ -235,6 +236,11 @@ module CommunityLanding
           css << "[data-theme=\"light\"] #{sel} { background: #{light_bg}; }\n"
           css << "@media (prefers-color-scheme: light) { :root:not([data-theme=\"dark\"]) #{sel} { background: #{light_bg}; } }\n"
         end
+      end
+
+      faq_mh = (@s.faq_mobile_max_height rescue 0).to_i
+      if faq_mh > 0
+        css << "@media (max-width: 767px) { .cl-faq { max-height: #{faq_mh}px; overflow-y: auto; } }\n"
       end
 
       css.present? ? "<style>\n#{css}</style>\n" : ""

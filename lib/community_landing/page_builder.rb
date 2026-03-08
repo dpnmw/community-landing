@@ -514,10 +514,13 @@ module CommunityLanding
       show_desc  = @s.groups_show_description rescue true
       desc_max   = (@s.groups_description_max_length rescue 100).to_i
 
+      min_h = @s.splits_min_height rescue 0
+
       html = +""
       groups_bg_img = (@s.splits_background_image_url.presence rescue nil)
       section_style_parts = []
       section_style_parts << "background: url('#{groups_bg_img}') center/cover no-repeat;" if groups_bg_img
+      section_style_parts << "min-height: #{min_h}px;" if min_h.to_i > 0
       section_attr = section_style_parts.any? ? " style=\"#{section_style_parts.join(' ')}\"" : ""
       html << "<section class=\"cl-spaces cl-anim\" id=\"cl-splits\"#{section_attr}><div class=\"cl-container\">\n"
 

@@ -194,7 +194,10 @@ const DESCRIPTIONS = {
   groups_description_max_length: "Max characters for group descriptions (30–500). Longer text is truncated.",
   groups_card_bg_dark: "Space card background for dark mode.",
   groups_card_bg_light: "Space card background for light mode.",
-  splits_background_image_url: "Background image for the splits section (Groups + FAQ row).",
+  splits_background_image_url: "Background image for the splits section (Groups + FAQ container).",
+  splits_bg_dark: "Background color for the splits section (dark mode).",
+  splits_bg_light: "Background color for the splits section (light mode).",
+  splits_min_height: "Minimum height in pixels for the splits section. 0 = auto.",
 
   // ── FAQ ──
   faq_enabled: "Show FAQ accordion alongside the Spaces section. One item opens at a time.",
@@ -204,6 +207,7 @@ const DESCRIPTIONS = {
   faq_items: 'FAQ items as JSON array: [{\"q\":\"Question\",\"a\":\"Answer\"}]. HTML supported in answers.',
   faq_card_bg_dark: "FAQ card background for dark mode.",
   faq_card_bg_light: "FAQ card background for light mode.",
+  faq_mobile_max_height: "Max height of FAQ container on mobile (px). Scrollable if content overflows. 0 = no limit.",
 
   // ── App CTA ──
   show_app_ctas: "Show App Download CTA: gradient banner with headline, badges, and promo image.",
@@ -343,23 +347,19 @@ const TABS = [
     ])
   },
   {
-    id: "groups",
-    label: "Groups",
+    id: "splits",
+    label: "Splits",
     settings: new Set([
+      "splits_background_image_url",
+      "splits_bg_dark", "splits_bg_light", "splits_min_height",
       "groups_enabled", "groups_title_enabled", "groups_title", "groups_title_size",
       "groups_count", "groups_selected",
       "groups_show_description", "groups_description_max_length",
       "groups_card_bg_dark", "groups_card_bg_light",
-      "splits_background_image_url"
-    ])
-  },
-  {
-    id: "faq",
-    label: "FAQ",
-    settings: new Set([
       "faq_enabled", "faq_title_enabled", "faq_title", "faq_title_size",
       "faq_items",
-      "faq_card_bg_dark", "faq_card_bg_light"
+      "faq_card_bg_dark", "faq_card_bg_light",
+      "faq_mobile_max_height"
     ])
   },
   {
@@ -403,8 +403,6 @@ const TAB_ENABLE_SETTINGS = {
   stats:         { setting: "stats_enabled",         label: "Stats" },
   about:         { setting: "about_enabled",         label: "About" },
   topics:        { setting: "topics_enabled",        label: "Topics" },
-  groups:        { setting: "groups_enabled",        label: "Groups" },
-  faq:           { setting: "faq_enabled",           label: "FAQ" },
   appcta:        { setting: "show_app_ctas",         label: "App CTA" },
 };
 
@@ -903,20 +901,137 @@ function updatePreviewThumbnail(wrapper, settingName) {
     row.querySelector(".setting-value textarea");
   const url = input ? input.value.trim() : "";
 
-  const preview = wrapper.querySelector(".cl-upload-preview");
-  if (!preview) return;
-
   const cfg = IMAGE_UPLOAD_SETTINGS[settingName];
   if (cfg && cfg.multi) {
-    // For multi-image, show the last image in the list
-    const urls = url.split("|").filter(Boolean);
-    const lastUrl = urls.length > 0 ? urls[urls.length - 1] : "";
-    preview.src = lastUrl;
-    preview.style.display = lastUrl ? "" : "none";
+    // Multi-image: render a sortable image list
+    renderMultiImageList(wrapper, row, input, settingName);
+    // Hide single preview if it exists
+    const preview = wrapper.querySelector(".cl-upload-preview");
+    if (preview) preview.style.display = "none";
   } else {
+    const preview = wrapper.querySelector(".cl-upload-preview");
+    if (!preview) return;
     preview.src = url;
     preview.style.display = url ? "" : "none";
   }
+}
+
+function renderMultiImageList(wrapper, row, input, settingName) {
+  let list = wrapper.querySelector(".cl-multi-image-list");
+  if (!list) {
+    list = document.createElement("div");
+    list.className = "cl-multi-image-list";
+    wrapper.appendChild(list);
+  }
+
+  const raw = input ? input.value.trim() : "";
+  const urls = raw.split(/[\n\r]+/).map((u) => u.trim()).filter(Boolean);
+
+  list.innerHTML = "";
+  if (urls.length === 0) return;
+
+  urls.forEach((url, idx) => {
+    const item = document.createElement("div");
+    item.className = "cl-multi-image-item";
+    item.draggable = true;
+    item.dataset.idx = idx;
+
+    const thumb = document.createElement("img");
+    thumb.src = url;
+    thumb.alt = `Image ${idx + 1}`;
+    thumb.className = "cl-multi-image-thumb";
+    item.appendChild(thumb);
+
+    const label = document.createElement("span");
+    label.className = "cl-multi-image-label";
+    label.textContent = `${idx + 1}`;
+    item.appendChild(label);
+
+    const actions = document.createElement("span");
+    actions.className = "cl-multi-image-actions";
+
+    // Move up
+    if (idx > 0) {
+      const upBtn = document.createElement("button");
+      upBtn.type = "button";
+      upBtn.className = "cl-multi-image-move";
+      upBtn.innerHTML = "&#9650;";
+      upBtn.title = "Move up";
+      upBtn.addEventListener("click", () => {
+        [urls[idx - 1], urls[idx]] = [urls[idx], urls[idx - 1]];
+        input.value = urls.join("\n");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        renderMultiImageList(wrapper, row, input, settingName);
+      });
+      actions.appendChild(upBtn);
+    }
+
+    // Move down
+    if (idx < urls.length - 1) {
+      const downBtn = document.createElement("button");
+      downBtn.type = "button";
+      downBtn.className = "cl-multi-image-move";
+      downBtn.innerHTML = "&#9660;";
+      downBtn.title = "Move down";
+      downBtn.addEventListener("click", () => {
+        [urls[idx], urls[idx + 1]] = [urls[idx + 1], urls[idx]];
+        input.value = urls.join("\n");
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        renderMultiImageList(wrapper, row, input, settingName);
+      });
+      actions.appendChild(downBtn);
+    }
+
+    // Remove
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "cl-multi-image-remove";
+    removeBtn.innerHTML = "&times;";
+    removeBtn.title = "Remove image";
+    removeBtn.addEventListener("click", () => {
+      urls.splice(idx, 1);
+      input.value = urls.join("\n");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      renderMultiImageList(wrapper, row, input, settingName);
+    });
+    actions.appendChild(removeBtn);
+
+    item.appendChild(actions);
+
+    // Drag-and-drop reorder
+    item.addEventListener("dragstart", (e) => {
+      e.dataTransfer.setData("text/plain", idx.toString());
+      item.classList.add("cl-dragging");
+    });
+    item.addEventListener("dragend", () => {
+      item.classList.remove("cl-dragging");
+    });
+    item.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      item.classList.add("cl-drag-over");
+    });
+    item.addEventListener("dragleave", () => {
+      item.classList.remove("cl-drag-over");
+    });
+    item.addEventListener("drop", (e) => {
+      e.preventDefault();
+      item.classList.remove("cl-drag-over");
+      const fromIdx = parseInt(e.dataTransfer.getData("text/plain"), 10);
+      const toIdx = idx;
+      if (fromIdx === toIdx) return;
+      const [moved] = urls.splice(fromIdx, 1);
+      urls.splice(toIdx, 0, moved);
+      input.value = urls.join("\n");
+      input.dispatchEvent(new Event("input", { bubbles: true }));
+      input.dispatchEvent(new Event("change", { bubbles: true }));
+      renderMultiImageList(wrapper, row, input, settingName);
+    });
+
+    list.appendChild(item);
+  });
 }
 
 function injectUploadButtons() {

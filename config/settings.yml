@@ -622,6 +622,17 @@ plugins:
   splits_background_image_url:
     default: ""
     type: string
+  splits_bg_dark:
+    default: ""
+    type: color
+  splits_bg_light:
+    default: ""
+    type: color
+  splits_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 800
   groups_show_description:
     default: true
     type: bool
@@ -662,6 +673,11 @@ plugins:
   faq_card_bg_light:
     default: ""
     type: color
+  faq_mobile_max_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 1200
 
   # ══════════════════════════════════════════
   # 8. App Download CTA Section
