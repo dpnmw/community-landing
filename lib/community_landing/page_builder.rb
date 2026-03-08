@@ -131,9 +131,11 @@ module CommunityLanding
 
     def render_hero
       hero_card   = @s.hero_card_enabled rescue true
+      hero_img_first = @s.hero_image_first rescue false
       hero_bg_img = @s.hero_background_image_url.presence
       hero_border = @s.hero_border_style rescue "none"
       hero_min_h  = @s.hero_min_height rescue 0
+      content_w   = @s.hero_content_width rescue 50
       site_name   = @s.title
 
       html = +""
@@ -142,14 +144,29 @@ module CommunityLanding
       hero_style_parts << "background-image: url('#{hero_bg_img}');" if hero_bg_img
       hero_style_parts << "border-bottom: 1px #{hero_border} var(--cl-border);" if hero_border.present? && hero_border != "none"
       hero_style_parts << "min-height: #{hero_min_h}px;" if hero_min_h.to_i > 0
+      hero_style_parts << "--cl-hero-content-w: #{content_w.to_i}%;" if content_w.to_i != 50
       hero_attr = hero_style_parts.any? ? " style=\"#{hero_style_parts.join(' ')}\"" : ""
-      html << "<section class=\"cl-hero#{hero_card ? ' cl-hero--card' : ''}\" id=\"cl-hero\"#{hero_attr}>\n"
+      hero_classes = "cl-hero"
+      hero_classes << " cl-hero--card" if hero_card
+      hero_classes << " cl-hero--image-first" if hero_img_first
+      html << "<section class=\"#{hero_classes}\" id=\"cl-hero\"#{hero_attr}>\n"
 
       html << "<div class=\"cl-hero__inner\">\n<div class=\"cl-hero__content\">\n"
 
+      # Accent word: 0 = last word (default), N = Nth word (1-indexed)
       title_words = @s.hero_title.to_s.split(" ")
+      accent_idx = (@s.hero_accent_word rescue 0).to_i
       if title_words.length > 1
-        html << "<h1 class=\"cl-hero__title\">#{e(title_words[0..-2].join(' '))} <span class=\"cl-hero__title-accent\">#{e(title_words.last)}</span></h1>\n"
+        # Convert to 0-based index; 0 means last word
+        target = accent_idx > 0 ? [accent_idx - 1, title_words.length - 1].min : title_words.length - 1
+        before = title_words[0...target]
+        accent = title_words[target]
+        after  = title_words[(target + 1)..]
+        parts = +""
+        parts << "#{e(before.join(' '))} " if before.any?
+        parts << "<span class=\"cl-hero__title-accent\">#{e(accent)}</span>"
+        parts << " #{e(after.join(' '))}" if after.any?
+        html << "<h1 class=\"cl-hero__title\">#{parts}</h1>\n"
       else
         html << "<h1 class=\"cl-hero__title\"><span class=\"cl-hero__title-accent\">#{e(@s.hero_title)}</span></h1>\n"
       end

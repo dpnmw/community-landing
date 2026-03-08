@@ -25,8 +25,9 @@ const TABS = [
     id: "hero",
     label: "Hero",
     settings: new Set([
-      "hero_title", "hero_subtitle", "hero_card_enabled", "hero_background_image_url",
-      "hero_image_urls", "hero_image_max_height",
+      "hero_title", "hero_accent_word", "hero_subtitle",
+      "hero_card_enabled", "hero_image_first", "hero_content_width",
+      "hero_background_image_url", "hero_image_urls", "hero_image_max_height",
       "hero_primary_button_enabled", "hero_primary_button_label", "hero_primary_button_url",
       "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",
       "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
@@ -56,8 +57,7 @@ const TABS = [
     settings: new Set([
       "about_enabled", "about_heading_enabled", "about_heading",
       "about_title", "about_role", "about_body", "about_image_url",
-      "about_gradient_start", "about_gradient_mid", "about_gradient_end",
-      "about_background_image_url",
+      "about_card_color", "about_background_image_url",
       "about_bg_dark", "about_bg_light", "about_min_height", "about_border_style"
     ])
   },
@@ -102,6 +102,18 @@ const TABS = [
   }
 ];
 
+// Dark/light background pairs — light row gets merged into dark row
+const BG_PAIRS = [
+  ["hero_bg_dark", "hero_bg_light"],
+  ["hero_card_bg_dark", "hero_card_bg_light"],
+  ["stats_bg_dark", "stats_bg_light"],
+  ["about_bg_dark", "about_bg_light"],
+  ["topics_bg_dark", "topics_bg_light"],
+  ["groups_bg_dark", "groups_bg_light"],
+  ["app_cta_bg_dark", "app_cta_bg_light"],
+  ["footer_bg_dark", "footer_bg_light"],
+];
+
 let currentTab = "settings";
 let filterActive = false;
 let isActive = false;
@@ -122,6 +134,8 @@ function applyTabFilter() {
   if (!tab) return;
 
   container.querySelectorAll(".row.setting[data-setting]").forEach((row) => {
+    // Keep merged light rows permanently hidden
+    if (row.classList.contains("cl-merged-hidden")) return;
     const name = row.getAttribute("data-setting");
     row.classList.toggle(
       "cl-tab-hidden",
@@ -224,6 +238,71 @@ function cleanupTabs() {
   filterActive = false;
 }
 
+/**
+ * Merge dark/light bg color pairs into a single row.
+ * Moves the light setting-value into the dark row and hides the light row.
+ */
+function mergeBgPairs() {
+  const container = getContainer();
+  if (!container) return;
+
+  BG_PAIRS.forEach(([darkName, lightName]) => {
+    const darkRow = container.querySelector(`.row.setting[data-setting="${darkName}"]`);
+    const lightRow = container.querySelector(`.row.setting[data-setting="${lightName}"]`);
+    if (!darkRow || !lightRow) return;
+    // Already merged
+    if (darkRow.querySelector(".cl-merged-value")) return;
+
+    const lightValue = lightRow.querySelector(".setting-value");
+    const lightLabel = lightRow.querySelector(".setting-label");
+    if (!lightValue) return;
+
+    // Rename the dark row label to just show the base name (e.g. "Hero BG" instead of "Hero BG dark")
+    const darkH3 = darkRow.querySelector(".setting-label h3");
+    if (darkH3) {
+      darkH3.textContent = darkH3.textContent.replace(/\s*dark$/i, "").trim();
+    }
+
+    // Create a wrapper that holds both color pickers side by side
+    const darkValue = darkRow.querySelector(".setting-value");
+    if (!darkValue) return;
+
+    // Wrap existing dark value
+    const wrapper = document.createElement("div");
+    wrapper.className = "cl-merged-value";
+
+    const darkCol = document.createElement("div");
+    darkCol.className = "cl-color-col";
+    const darkLbl = document.createElement("span");
+    darkLbl.className = "cl-color-col__label";
+    darkLbl.textContent = "Dark";
+    darkCol.appendChild(darkLbl);
+    // Move dark value's children into the column
+    while (darkValue.firstChild) {
+      darkCol.appendChild(darkValue.firstChild);
+    }
+
+    const lightCol = document.createElement("div");
+    lightCol.className = "cl-color-col";
+    const lightLbl = document.createElement("span");
+    lightLbl.className = "cl-color-col__label";
+    lightLbl.textContent = "Light";
+    lightCol.appendChild(lightLbl);
+    // Move light value's children into the column
+    while (lightValue.firstChild) {
+      lightCol.appendChild(lightValue.firstChild);
+    }
+
+    wrapper.appendChild(darkCol);
+    wrapper.appendChild(lightCol);
+    darkValue.appendChild(wrapper);
+
+    // Hide the now-empty light row permanently
+    lightRow.classList.add("cl-merged-hidden");
+    lightRow.style.display = "none";
+  });
+}
+
 function buildTabsUI() {
   const container = getContainer();
   if (!container) return false;
@@ -284,7 +363,7 @@ function buildTabsUI() {
     });
 
     container.classList.add("cl-tabs-active");
-
+    mergeBgPairs();
     applyTabFilter();
     return true;
   }
@@ -329,7 +408,7 @@ function buildTabsUI() {
   }
 
   container.classList.add("cl-tabs-active");
-  wrapBgPairs();
+  mergeBgPairs();
   applyTabFilter();
   return true;
 }

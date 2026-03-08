@@ -110,12 +110,25 @@ plugins:
   hero_title:
     default: "Welcome to Our Creative HeadQuarters"
     type: string
+  hero_accent_word:
+    default: 0
+    type: integer
+    min: 0
+    max: 50
   hero_subtitle:
     default: "Are you ready to start your creative journey?"
     type: string
   hero_card_enabled:
     default: true
     type: bool
+  hero_image_first:
+    default: false
+    type: bool
+  hero_content_width:
+    default: 50
+    type: integer
+    min: 20
+    max: 80
   hero_background_image_url:
     default: ""
     type: string
@@ -283,14 +296,8 @@ plugins:
   about_image_url:
     default: ""
     type: string
-  about_gradient_start:
-    default: "fdf6ec"
-    type: color
-  about_gradient_mid:
-    default: "fef9f0"
-    type: color
-  about_gradient_end:
-    default: "fdf6ec"
+  about_card_color:
+    default: ""
     type: color
   about_background_image_url:
     default: ""

@@ -30,7 +30,7 @@
   --cl-radius-sm: 12px;
   --cl-radius-xs: 8px;
   --cl-stat-icon-color: #d4a24e;
-  --cl-about-gradient: linear-gradient(135deg, #0a0a14, #080812, #0a0a14);
+  --cl-about-card-bg: linear-gradient(135deg, #0a0a14, #080812, #0a0a14);
   --cl-app-gradient: linear-gradient(135deg, #d4a24e, #c4922e, #b8862e);
   --cl-blur: blur(12px);
   color-scheme: dark;
@@ -59,7 +59,7 @@
   --cl-orb-2: rgba(100, 150, 255, 0.05);
   --cl-gradient-text: linear-gradient(135deg, #c4922e, #a3711d, #c4922e);
   --cl-scrolled-nav: rgba(250, 249, 246, 0.85);
-  --cl-about-gradient: linear-gradient(135deg, #fdfcf9, #f9f8f4, #fdfcf9);
+  --cl-about-card-bg: linear-gradient(135deg, #fdfcf9, #f9f8f4, #fdfcf9);
   --cl-app-gradient: linear-gradient(135deg, #c4922e, #b3811d, #a3711d);
   --cl-blur: blur(16px);
   color-scheme: light;
@@ -88,7 +88,7 @@
     --cl-orb-1: rgba(212, 162, 78, 0.08);
     --cl-gradient-text: linear-gradient(135deg, #d4a24e, #b8862e, #d4a24e);
     --cl-scrolled-nav: rgba(250, 246, 240, 0.95);
-    --cl-about-gradient: linear-gradient(135deg, #fdf6ec, #fef9f0, #fdf6ec);
+    --cl-about-card-bg: linear-gradient(135deg, #fdf6ec, #fef9f0, #fdf6ec);
     --cl-app-gradient: linear-gradient(135deg, #d4a24e, #c4922e, #b8862e);
     color-scheme: light;
   }
@@ -637,6 +637,18 @@
   text-align: left;
 }
 
+@media (min-width: 1024px) {
+  .cl-hero__content {
+    flex: 0 0 var(--cl-hero-content-w, 50%);
+    max-width: var(--cl-hero-content-w, 50%);
+  }
+
+  .cl-hero__image {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
 .cl-hero__title {
   font-size: clamp(2.5rem, 8vw, 4.5rem);
   font-weight: 900;
@@ -691,7 +703,13 @@
   height: auto;
   border-radius: var(--cl-radius);
   object-fit: cover;
+  object-position: center;
   transition: opacity 0.6s ease;
+}
+
+/* ── Hero Image First (swap order) ── */
+.cl-hero--image-first .cl-hero__image {
+  order: -1;
 }
 
 /* ── Hero Card Mode ── */
@@ -1046,7 +1064,7 @@
 }
 
 .cl-about__card {
-  background: var(--cl-about-gradient);
+  background: var(--cl-about-card-bg);
   border: 1px solid var(--cl-border);
   border-radius: 20px;
   overflow: hidden;

@@ -15,9 +15,7 @@ module CommunityLanding
       dark_bg      = hex(@s.dark_bg_color) || "#06060f"
       light_bg     = hex(@s.light_bg_color) || "#faf6f0"
       stat_icon    = hex(@s.stat_icon_color) || accent
-      about_g1     = hex(@s.about_gradient_start) || "#fdf6ec"
-      about_g2     = hex(@s.about_gradient_mid) || "#fef9f0"
-      about_g3     = hex(@s.about_gradient_end) || "#fdf6ec"
+      about_card   = hex(@s.about_card_color.presence) rescue nil
       about_bg_img = @s.about_background_image_url.presence
       app_g1       = hex(@s.app_cta_gradient_start) || accent
       app_g2       = hex(@s.app_cta_gradient_mid) || accent_hover
@@ -45,7 +43,8 @@ module CommunityLanding
       hero_card_dark_val = "rgba(#{hero_card_dark_rgb}, #{hero_card_opacity})"
       hero_card_light_val = "rgba(#{hero_card_light_rgb}, #{hero_card_opacity})"
 
-      about_bg_extra = about_bg_img ? ", url('#{about_bg_img}') center/cover no-repeat" : ""
+      about_card_val = about_card || "var(--cl-card)"
+      about_card_css = about_bg_img ? "#{about_card_val}, url('#{about_bg_img}') center/cover no-repeat" : about_card_val
       video_btn_line = video_btn_bg ? "\n  --cl-video-btn-bg: #{video_btn_bg};" : ""
 
       "<style>
@@ -65,7 +64,7 @@ module CommunityLanding
   --cl-space-card-bg: #{space_card_bg_val};
   --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
   --cl-hero-card-bg: #{hero_card_dark_val};
-  --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
+  --cl-about-card-bg: #{about_card_css};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
 [data-theme=\"light\"] {
@@ -84,7 +83,7 @@ module CommunityLanding
   --cl-space-card-bg: #{space_card_bg_val};
   --cl-topic-card-bg: #{topic_card_bg_val};#{video_btn_line}
   --cl-hero-card-bg: #{hero_card_light_val};
-  --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
+  --cl-about-card-bg: #{about_card_css};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
 }
 @media (prefers-color-scheme: light) {
@@ -99,7 +98,7 @@ module CommunityLanding
     --cl-border-hover: rgba(#{accent_rgb}, 0.3);
     --cl-orb-1: rgba(#{accent_rgb}, 0.08);
     --cl-stat-icon-color: #{stat_icon};
-    --cl-about-gradient: linear-gradient(135deg, #{about_g1}, #{about_g2}, #{about_g3})#{about_bg_extra};
+    --cl-about-card-bg: #{about_card_css};
     --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});
   }
 }

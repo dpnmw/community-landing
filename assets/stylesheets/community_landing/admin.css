@@ -82,6 +82,35 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
   color: var(--primary, #ddd);
 }
 
+/* ── Merged dark/light color pairs (two pickers in one row) ── */
+
+.cl-merged-value {
+  display: flex;
+  gap: 24px;
+}
+
+.cl-color-col {
+  flex: 1;
+  min-width: 0;
+}
+
+.cl-color-col__label {
+  display: block;
+  font-size: var(--font-down-1);
+  font-weight: 600;
+  color: var(--primary-medium);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 767px) {
+  .cl-merged-value {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
 /* ── When tabs are active, remove separator borders ── */
 
 .cl-tabs-active .row.setting[data-setting] {
