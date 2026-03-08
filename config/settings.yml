@@ -77,9 +77,21 @@ plugins:
   navbar_signin_label:
     default: "Sign In"
     type: string
+  navbar_signin_enabled:
+    default: true
+    type: bool
+  navbar_signin_color:
+    default: ""
+    type: color
   navbar_join_label:
     default: "Get Started"
     type: string
+  navbar_join_enabled:
+    default: true
+    type: bool
+  navbar_join_color:
+    default: ""
+    type: color
   navbar_bg_color:
     default: ""
     type: color
@@ -115,12 +127,18 @@ plugins:
     type: integer
     min: 100
     max: 1200
+  hero_primary_button_enabled:
+    default: true
+    type: bool
   hero_primary_button_label:
     default: "View Latest Topics"
     type: string
   hero_primary_button_url:
     default: "/latest"
     type: string
+  hero_secondary_button_enabled:
+    default: true
+    type: bool
   hero_secondary_button_label:
     default: "Explore Our Spaces"
     type: string
@@ -303,6 +321,9 @@ plugins:
   topics_enabled:
     default: true
     type: bool
+  topics_title_enabled:
+    default: true
+    type: bool
   topics_title:
     default: "Trending Discussions"
     type: string
@@ -350,6 +371,20 @@ plugins:
   contributors_count_label_enabled:
     default: true
     type: bool
+  contributors_alignment:
+    default: "center"
+    type: enum
+    choices:
+      - center
+      - left
+  contributors_pill_max_width:
+    default: 340
+    type: integer
+    min: 200
+    max: 600
+  contributors_pill_bg_color:
+    default: ""
+    type: color
   contributors_days:
     default: 90
     type: integer
@@ -361,6 +396,9 @@ plugins:
   # 7. Community Spaces Section
   # ══════════════════════════════════════════
   groups_enabled:
+    default: true
+    type: bool
+  groups_title_enabled:
     default: true
     type: bool
   groups_title:

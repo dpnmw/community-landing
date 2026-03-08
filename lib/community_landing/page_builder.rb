@@ -100,10 +100,21 @@ module CommunityLanding
       end
       html << "</a>\n</div>"
 
+      signin_enabled = @s.navbar_signin_enabled rescue true
+      join_enabled   = @s.navbar_join_enabled rescue true
+      signin_color   = hex(@s.navbar_signin_color) rescue nil
+      join_color     = hex(@s.navbar_join_color) rescue nil
+
       html << "<div class=\"cl-navbar__right\">"
       html << theme_toggle
-      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
-      html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{e(join_label)}</a>\n"
+      if signin_enabled
+        signin_style = signin_color ? " style=\"color: #{signin_color}; border-color: #{signin_color}\"" : ""
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\"#{signin_style}>#{e(signin_label)}</a>\n"
+      end
+      if join_enabled
+        join_style = join_color ? " style=\"background: #{join_color}; border-color: #{join_color}\"" : ""
+        html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\"#{join_style}>#{e(join_label)}</a>\n"
+      end
       html << "</div>"
 
       html << "<button class=\"cl-navbar__hamburger\" id=\"cl-hamburger\" aria-label=\"Toggle menu\"><span></span><span></span><span></span></button>\n"
@@ -145,15 +156,19 @@ module CommunityLanding
 
       html << "<p class=\"cl-hero__subtitle\">#{e(@s.hero_subtitle)}</p>\n"
 
+      primary_on      = @s.hero_primary_button_enabled rescue true
+      secondary_on    = @s.hero_secondary_button_enabled rescue true
       primary_label   = @s.hero_primary_button_label.presence || "View Latest Topics"
       primary_url     = @s.hero_primary_button_url.presence || "/latest"
       secondary_label = @s.hero_secondary_button_label.presence || "Explore Our Spaces"
       secondary_url   = @s.hero_secondary_button_url.presence || login_url
 
-      html << "<div class=\"cl-hero__actions\">\n"
-      html << "<a href=\"#{primary_url}\" class=\"cl-btn cl-btn--primary cl-btn--lg\">#{e(primary_label)}</a>\n"
-      html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{e(secondary_label)}</a>\n"
-      html << "</div>\n"
+      if primary_on || secondary_on
+        html << "<div class=\"cl-hero__actions\">\n"
+        html << "<a href=\"#{primary_url}\" class=\"cl-btn cl-btn--primary cl-btn--lg\">#{e(primary_label)}</a>\n" if primary_on
+        html << "<a href=\"#{secondary_url}\" class=\"cl-btn cl-btn--ghost cl-btn--lg\">#{e(secondary_label)}</a>\n" if secondary_on
+        html << "</div>\n"
+      end
 
       # Hero creators (top 3 with gold/silver/bronze ranks)
       contributors = @data[:contributors]
@@ -164,15 +179,22 @@ module CommunityLanding
         show_title = @s.contributors_title_enabled rescue true
         count_label = @s.contributors_count_label.presence || ""
         show_count_label = @s.contributors_count_label_enabled rescue true
+        alignment = @s.contributors_alignment rescue "center"
+        pill_max_w = @s.contributors_pill_max_width rescue 340
+        pill_bg = hex(@s.contributors_pill_bg_color) rescue nil
 
-        html << "<div class=\"cl-hero__creators\">\n"
+        align_class = alignment == "left" ? " cl-hero__creators--left" : ""
+        html << "<div class=\"cl-hero__creators#{align_class}\">\n"
         html << "<h3 class=\"cl-hero__creators-title\">#{e(creators_title)}</h3>\n" if show_title
         top3.each_with_index do |user, idx|
           avatar_url     = user.avatar_template.gsub("{size}", "120")
           activity_count = user.attributes["post_count"].to_i rescue 0
           rank_color     = rank_colors[idx]
           count_prefix = show_count_label && count_label.present? ? "#{e(count_label)} " : ""
-          html << "<a href=\"#{login_url}\" class=\"cl-creator-pill cl-creator-pill--rank-#{idx + 1}\" style=\"--rank-color: #{rank_color}\">\n"
+          pill_style_parts = ["--rank-color: #{rank_color}"]
+          pill_style_parts << "max-width: #{pill_max_w}px" if pill_max_w.to_i != 340
+          pill_style_parts << "background: #{pill_bg}" if pill_bg
+          html << "<a href=\"#{login_url}\" class=\"cl-creator-pill cl-creator-pill--rank-#{idx + 1}\" style=\"#{pill_style_parts.join('; ')}\">\n"
           html << "<span class=\"cl-creator-pill__rank\">Ranked ##{idx + 1}</span>\n"
           html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-creator-pill__avatar\" loading=\"lazy\">\n"
           html << "<div class=\"cl-creator-pill__info\">\n"
@@ -297,9 +319,11 @@ module CommunityLanding
       border = @s.topics_border_style rescue "none"
       min_h  = @s.topics_min_height rescue 0
 
+      show_title = @s.topics_title_enabled rescue true
+
       html = +""
       html << "<section class=\"cl-topics cl-anim\" id=\"cl-topics\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(@s.topics_title)}</h2>\n"
+      html << "<h2 class=\"cl-section-title\">#{e(@s.topics_title)}</h2>\n" if show_title
       stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
       html << "<div class=\"cl-topics__grid#{stagger_class}\">\n"
 
@@ -331,9 +355,11 @@ module CommunityLanding
       border = @s.groups_border_style rescue "none"
       min_h  = @s.groups_min_height rescue 0
 
+      show_title = @s.groups_title_enabled rescue true
+
       html = +""
       html << "<section class=\"cl-spaces cl-anim\" id=\"cl-groups\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
-      html << "<h2 class=\"cl-section-title\">#{e(@s.groups_title)}</h2>\n"
+      html << "<h2 class=\"cl-section-title\">#{e(@s.groups_title)}</h2>\n" if show_title
       stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
       html << "<div class=\"cl-spaces__grid#{stagger_class}\">\n"
 

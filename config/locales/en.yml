@@ -20,7 +20,11 @@ en:
 
     # ── 1. Navbar ──
     navbar_signin_label: "━━ ROW 1: NAVBAR ━━ — Fixed navigation bar at the top with logo, theme toggle, sign-in link, and join button. This setting controls the sign-in link text."
+    navbar_signin_enabled: "Show the sign-in link in the navbar."
+    navbar_signin_color: "Custom color for the sign-in link text and border. Leave blank for default."
     navbar_join_label: "Text for the join/register CTA button in the navbar."
+    navbar_join_enabled: "Show the join/register button in the navbar."
+    navbar_join_color: "Custom background color for the join button. Leave blank to use the accent color."
     navbar_bg_color: "Custom background color for the navbar when scrolled. Leave blank for the default frosted glass effect."
     navbar_border_style: "Border style at the bottom of the navbar when scrolled."
 
@@ -31,8 +35,10 @@ en:
     hero_background_image_url: "Full-bleed background image behind the hero section. In card mode, fills the card with a dark overlay. In flat mode, covers the entire section."
     hero_image_urls: "Images displayed on the right side of the hero. Add up to 5 URLs — a random one is shown on each page load."
     hero_image_max_height: "Maximum height in pixels for the hero image (100–1200)."
+    hero_primary_button_enabled: "Show the primary CTA button in the hero section."
     hero_primary_button_label: "Text on the primary (filled, accent-colored) CTA button."
     hero_primary_button_url: "URL the primary button links to. Use a relative path like /latest or an absolute URL."
+    hero_secondary_button_enabled: "Show the secondary CTA button in the hero section."
     hero_secondary_button_label: "Text on the secondary (outlined) CTA button."
     hero_secondary_button_url: "URL the secondary button links to."
     hero_video_url: "URL for a hero video. Supports MP4 and YouTube links. A play button appears in the hero area; clicking opens a lightbox modal with the video."
@@ -86,6 +92,7 @@ en:
 
     # ── 5. Trending Discussions ──
     topics_enabled: "━━ ROW 5: TRENDING ━━ — Show the Trending Discussions section: a horizontally scrollable row of topic cards showing the most active discussions. Each card displays category badge, title, reply count, and like count — all live data. Supports drag-to-scroll and native swipe."
+    topics_title_enabled: "Show the section heading above the trending topic cards."
     topics_title: "Heading text above the scrollable topic cards."
     topics_count: "Number of trending topic cards to display."
     topics_card_bg_color: "Background color for each trending topic card. Leave blank for default card styling."
@@ -100,11 +107,15 @@ en:
     contributors_title_enabled: "Show the heading above the creators list."
     contributors_count_label: "Label shown before each creator's count (e.g. 'Cheers', 'Points'). Leave blank for no prefix."
     contributors_count_label_enabled: "Show the count label prefix before each creator's activity count."
+    contributors_alignment: "Horizontal alignment of the creators list: center or left."
+    contributors_pill_max_width: "Maximum width in pixels for each creator pill card (200–600)."
+    contributors_pill_bg_color: "Custom background color for creator pill cards. Leave blank for default glass card styling."
     contributors_days: "Lookback period in days for calculating top contributors."
     contributors_count: "Number of top contributors to fetch (top 3 are shown in the hero)."
 
     # ── 7. Community Spaces ──
     groups_enabled: "━━ ROW 7: SPACES ━━ — Show the Community Spaces section: a grid of colorful cards representing your public groups. Each card shows a colored icon (with group's first letter or flair), group name, and member count. Only public, non-automatic groups are shown."
+    groups_title_enabled: "Show the section heading above the group cards."
     groups_title: "Heading text above the group cards."
     groups_count: "Number of group cards to display."
     groups_selected: "Show only specific groups. Enter group names separated by pipes (e.g. designers|developers|artists). Leave blank to auto-select public groups."

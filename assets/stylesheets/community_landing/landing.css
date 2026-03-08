@@ -884,6 +884,10 @@
   margin-top: 2rem;
 }
 
+.cl-hero__creators--left {
+  align-items: flex-start;
+}
+
 .cl-hero__creators-title {
   font-size: 0.85rem;
   font-weight: 700;

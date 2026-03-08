@@ -16,7 +16,9 @@ const TABS = [
     id: "navbar",
     label: "Navbar",
     settings: new Set([
-      "navbar_signin_label", "navbar_join_label", "navbar_bg_color", "navbar_border_style"
+      "navbar_signin_label", "navbar_signin_enabled", "navbar_signin_color",
+      "navbar_join_label", "navbar_join_enabled", "navbar_join_color",
+      "navbar_bg_color", "navbar_border_style"
     ])
   },
   {
@@ -25,13 +27,14 @@ const TABS = [
     settings: new Set([
       "hero_title", "hero_subtitle", "hero_card_enabled", "hero_background_image_url",
       "hero_image_urls", "hero_image_max_height",
-      "hero_primary_button_label", "hero_primary_button_url",
-      "hero_secondary_button_label", "hero_secondary_button_url",
+      "hero_primary_button_enabled", "hero_primary_button_label", "hero_primary_button_url",
+      "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",
       "hero_video_url", "hero_video_button_color", "hero_video_blur_on_hover",
       "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style",
       "hero_card_bg_dark", "hero_card_bg_light", "hero_card_opacity",
       "contributors_enabled", "contributors_title", "contributors_title_enabled",
       "contributors_count_label", "contributors_count_label_enabled",
+      "contributors_alignment", "contributors_pill_max_width", "contributors_pill_bg_color",
       "contributors_days", "contributors_count"
     ])
   },
@@ -62,7 +65,8 @@ const TABS = [
     id: "topics",
     label: "Trending",
     settings: new Set([
-      "topics_enabled", "topics_title", "topics_count", "topics_card_bg_color",
+      "topics_enabled", "topics_title_enabled", "topics_title", "topics_count",
+      "topics_card_bg_color",
       "topics_bg_dark", "topics_bg_light", "topics_min_height", "topics_border_style"
     ])
   },
@@ -70,7 +74,8 @@ const TABS = [
     id: "groups",
     label: "Spaces",
     settings: new Set([
-      "groups_enabled", "groups_title", "groups_count", "groups_selected", "groups_card_bg_color",
+      "groups_enabled", "groups_title_enabled", "groups_title", "groups_count",
+      "groups_selected", "groups_card_bg_color",
       "groups_bg_dark", "groups_bg_light", "groups_min_height", "groups_border_style"
     ])
   },
@@ -216,6 +221,55 @@ function wrapBgPairs() {
     wrapper.appendChild(darkRow);
     wrapper.appendChild(lightRow);
   });
+}
+
+/**
+ * Remove all injected tabs and restore clean state.
+ * Called when navigating away from the community-landing settings page.
+ */
+function cleanupTabs() {
+  // Remove injected <li> tabs from native nav
+  document.querySelectorAll("li.cl-admin-tab").forEach((li) => li.remove());
+
+  // Restore native Settings <li> — remove our hook class
+  const nativeItem = document.querySelector(".cl-native-settings-item");
+  if (nativeItem) {
+    nativeItem.classList.remove("cl-native-settings-item", "active");
+  }
+
+  // Remove filter-active class from native nav
+  const nativeNav = document.querySelector(".d-nav-submenu__tabs");
+  if (nativeNav) {
+    nativeNav.classList.remove("cl-filter-active");
+  }
+
+  // Remove standalone tab bar if present
+  const standaloneBar = document.querySelector(".cl-admin-tabs");
+  if (standaloneBar) {
+    standaloneBar.remove();
+  }
+
+  // Unwrap bg-pair wrappers
+  document.querySelectorAll(".cl-bg-pair").forEach((wrapper) => {
+    const parent = wrapper.parentNode;
+    while (wrapper.firstChild) {
+      parent.insertBefore(wrapper.firstChild, wrapper);
+    }
+    wrapper.remove();
+  });
+
+  // Remove cl-tabs-active from container and un-hide all settings
+  const container = getContainer();
+  if (container) {
+    container.classList.remove("cl-tabs-active");
+    container.querySelectorAll(".cl-tab-hidden").forEach((el) => {
+      el.classList.remove("cl-tab-hidden");
+    });
+  }
+
+  // Reset state
+  currentTab = "settings";
+  filterActive = false;
 }
 
 function buildTabsUI() {
@@ -366,6 +420,7 @@ export default {
           // Initial injection with retries
           let attempts = 0;
           const tryInject = () => {
+            if (!isActive) return; // Guard: user navigated away during retries
             if (buildTabsUI() || attempts > 15) return;
             attempts++;
             setTimeout(tryInject, 200);
@@ -387,7 +442,10 @@ export default {
             }, 500);
           }
         } else {
-          // Left plugin settings page — clean up
+          // Left plugin settings page — clean up injected tabs
+          if (isActive) {
+            cleanupTabs();
+          }
           isActive = false;
           if (recheckTimer) {
             clearInterval(recheckTimer);
