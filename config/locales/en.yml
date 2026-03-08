@@ -3,6 +3,18 @@ en:
     # ── Master Switch ──
     community_landing_enabled: "Enable the community landing page."
 
+    # ── Layout ──
+    section_order: "━━ LAYOUT ━━ — Order of content sections, pipe-separated. IDs: hero, stats, about, participation, topics, groups, app_cta. Navbar and footer are always fixed."
+
+    # ── Custom CSS ──
+    custom_css: "━━ CUSTOM CSS ━━ — Raw CSS injected after all plugin styles. Use for overrides and tweaks. No style tags needed."
+
+    # ── SEO & Meta ──
+    meta_description: "━━ SEO & META ━━ — Custom meta description for search engines and social sharing. If blank, the hero subtitle is used."
+    og_image_url: "Custom Open Graph image URL for social sharing (1200×630px recommended). If blank, the site logo is used."
+    favicon_url: "Custom favicon URL (.ico, .png, .svg). If blank, the browser default is used."
+    json_ld_enabled: "Add JSON-LD structured data (Organization + WebSite schema) for search engines."
+
     # ── Branding: Logo ──
     logo_dark_url: "━━ BRANDING ━━ — Logo image URL for dark mode. Displayed in the navbar and footer. Leave blank to show the site name as text."
     logo_light_url: "Logo image URL for light mode. If not set, the dark logo is used for both themes."
@@ -29,6 +41,12 @@ en:
     navbar_join_color_light: "Light mode background for the join button."
     navbar_bg_color: "Custom background color for the navbar when scrolled. Leave blank for the default frosted glass effect."
     navbar_border_style: "Border style at the bottom of the navbar when scrolled."
+    social_twitter_url: "━━ SOCIAL LINKS ━━ — Twitter / X profile URL. Leave blank to hide. Icons appear in the navbar before the auth buttons."
+    social_facebook_url: "Facebook page or profile URL. Leave blank to hide."
+    social_instagram_url: "Instagram profile URL. Leave blank to hide."
+    social_youtube_url: "YouTube channel URL. Leave blank to hide."
+    social_tiktok_url: "TikTok profile URL. Leave blank to hide."
+    social_github_url: "GitHub organization or profile URL. Leave blank to hide."
 
     # ── 2. Hero Section ──
     hero_title: "━━ ROW 2: HERO ━━ — Large welcome area at the top with headline, subtitle, CTA buttons, and optional imagery. This is the main headline text."
@@ -122,7 +140,20 @@ en:
     contributors_pill_bg_dark: "Creator pill background color. Dark (left) and light (right) pickers. Leave blank for default glass styling."
     contributors_pill_bg_light: "Light mode background for creator pills."
     contributors_days: "Lookback period in days for calculating top contributors."
-    contributors_count: "Number of top contributors to fetch (top 3 are shown in the hero)."
+    contributors_count: "Number of top contributors to fetch (top 3 are shown in the hero, 4–10 appear in the Participation section)."
+
+    # ── 5b. Participation ──
+    participation_enabled: "━━ ROW 5b: PARTICIPATION ━━ — Show the Participation section: testimonial-style cards displaying leaderboard positions 4–10 with their public bio/summary. Only users who have written a bio are shown. Uses the same contributor data and lookback period as the Hero Creators."
+    participation_title_enabled: "Show the section heading above the participation cards."
+    participation_title: "Heading text above the participation cards."
+    participation_bio_max_length: "Maximum number of characters to show from each user's bio (50–500). Longer bios are truncated with an ellipsis."
+    participation_icon_color: "Color for the decorative quote icon on each participation card. Leave blank to use the accent color."
+    participation_card_bg_dark: "Participation card background color. Dark (left) and light (right) pickers. Leave blank for default card styling."
+    participation_card_bg_light: "Light mode background for participation cards."
+    participation_bg_dark: "Section background color override. Dark (left) and light (right) color pickers. Leave blank for default."
+    participation_bg_light: "Light mode background for the participation section."
+    participation_min_height: "Minimum height for the participation section in pixels. Set to 0 for auto height."
+    participation_border_style: "Border style at the bottom of the participation section."
 
     # ── 7. Community Spaces ──
     groups_enabled: "━━ ROW 7: SPACES ━━ — Show the Community Spaces section: a grid of colorful cards representing your public groups. Each card shows a colored icon (with group's first letter or flair), group name, and member count. Only public, non-automatic groups are shown."
@@ -136,6 +167,14 @@ en:
     groups_bg_light: "Light mode background for the spaces section."
     groups_min_height: "Minimum height for the spaces section in pixels. Set to 0 for auto height."
     groups_border_style: "Border style at the bottom of the spaces section."
+    groups_show_description: "Show group description text (from the group's bio) below the group name on each card."
+    groups_description_max_length: "Maximum characters for group description text (30–500). Longer descriptions are truncated."
+
+    # ── 7b. FAQ Accordion ──
+    faq_enabled: "━━ FAQ ACCORDION ━━ — Show an FAQ accordion alongside the Spaces section. Only one item opens at a time."
+    faq_title_enabled: "Show a heading above the FAQ accordion."
+    faq_title: "Heading text above the FAQ accordion."
+    faq_items: 'FAQ items as a JSON array. Format: [{"q":"Question","a":"Answer"}]. HTML is supported in answers.'
 
     # ── 8. App Download CTA ──
     show_app_ctas: "━━ ROW 8: APP CTA ━━ — Show the App Download CTA: a gradient banner promoting your mobile app with headline, subtitle, download badges (App Store / Google Play), and optional promotional image. Requires at least one app store URL."
@@ -147,9 +186,12 @@ en:
     app_badge_style: "Badge border-radius: rounded (soft corners), pill (fully rounded), or square (minimal rounding)."
     app_cta_headline: "Bold headline text in the app download banner."
     app_cta_subtext: "Supporting text below the headline."
-    app_cta_gradient_start: "First color (left) of the app CTA 3-color gradient. Hex value."
-    app_cta_gradient_mid: "Middle color of the app CTA gradient. Hex value."
-    app_cta_gradient_end: "Third color (right) of the app CTA gradient. Hex value."
+    app_cta_gradient_start_dark: "Gradient start color. Dark (left) and light (right) pickers. Leave blank for accent color."
+    app_cta_gradient_start_light: "Light mode gradient start color."
+    app_cta_gradient_mid_dark: "Gradient middle color. Dark (left) and light (right) pickers. Leave blank for accent hover color."
+    app_cta_gradient_mid_light: "Light mode gradient middle color."
+    app_cta_gradient_end_dark: "Gradient end color. Dark (left) and light (right) pickers. Leave blank for accent hover color."
+    app_cta_gradient_end_light: "Light mode gradient end color."
     app_cta_image_url: "Promotional image on the right side of the CTA (e.g. phone mockup). PNG for transparent backgrounds."
     app_cta_bg_dark: "Section background color override. Dark (left) and light (right) color pickers. Leave blank for default."
     app_cta_bg_light: "Light mode background for the app CTA section."

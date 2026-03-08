@@ -4,6 +4,16 @@ module CommunityLanding
   class PageBuilder
     include Helpers
 
+    SECTION_MAP = {
+      "hero"          => :render_hero,
+      "stats"         => :render_stats,
+      "about"         => :render_about,
+      "participation" => :render_participation,
+      "topics"        => :render_topics,
+      "groups"        => :render_groups,
+      "app_cta"       => :render_app_cta,
+    }.freeze
+
     def initialize(data:, css:, js:)
       @data = data
       @css  = css
@@ -20,12 +30,14 @@ module CommunityLanding
         html << "<div class=\"cl-orb-container\"><div class=\"cl-orb cl-orb--1\"></div><div class=\"cl-orb cl-orb--2\"></div></div>\n"
       end
       html << render_navbar
-      html << render_hero
-      html << render_stats
-      html << render_about
-      html << render_topics
-      html << render_groups
-      html << render_app_cta
+
+      # Reorderable sections
+      order = (@s.section_order.presence rescue nil) || "hero|stats|about|participation|topics|groups|app_cta"
+      order.split("|").map(&:strip).each do |section_id|
+        method_name = SECTION_MAP[section_id]
+        html << send(method_name) if method_name
+      end
+
       html << render_footer_desc
       html << render_footer
       html << render_video_modal
@@ -43,6 +55,12 @@ module CommunityLanding
       anim_class = @s.scroll_animation rescue "fade_up"
       anim_class = "none" if anim_class.blank?
       og_logo    = logo_dark_url || logo_light_url
+      base_url   = Discourse.base_url
+
+      # SEO overrides
+      meta_desc = (@s.meta_description.presence rescue nil) || @s.hero_subtitle
+      og_image  = (@s.og_image_url.presence rescue nil) || og_logo
+      favicon   = (@s.favicon_url.presence rescue nil)
 
       html = +""
       html << "<!DOCTYPE html>\n<html lang=\"en\""
@@ -55,17 +73,51 @@ module CommunityLanding
       html << "<link href=\"https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap\" rel=\"stylesheet\">\n"
       html << "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n"
       html << "<meta name=\"color-scheme\" content=\"dark light\">\n"
+
+      # Favicon
+      if favicon
+        ftype = case favicon.to_s.split(".").last.downcase
+                when "svg" then "image/svg+xml"
+                when "png" then "image/png"
+                else "image/x-icon"
+                end
+        html << "<link rel=\"icon\" type=\"#{ftype}\" href=\"#{e(favicon)}\">\n"
+      end
+
+      # Title & meta
       html << "<title>#{e(@s.hero_title)} | #{e(site_name)}</title>\n"
-      html << "<meta name=\"description\" content=\"#{e(@s.hero_subtitle)}\">\n"
+      html << "<meta name=\"description\" content=\"#{e(meta_desc)}\">\n"
+
+      # Open Graph
       html << "<meta property=\"og:type\" content=\"website\">\n"
       html << "<meta property=\"og:title\" content=\"#{e(@s.hero_title)}\">\n"
-      html << "<meta property=\"og:description\" content=\"#{e(@s.hero_subtitle)}\">\n"
-      html << "<meta property=\"og:image\" content=\"#{og_logo}\">\n" if og_logo
+      html << "<meta property=\"og:description\" content=\"#{e(meta_desc)}\">\n"
+      html << "<meta property=\"og:url\" content=\"#{base_url}\">\n"
+      html << "<meta property=\"og:site_name\" content=\"#{e(site_name)}\">\n"
+      html << "<meta property=\"og:image\" content=\"#{og_image}\">\n" if og_image
+
+      # Twitter card
       html << "<meta name=\"twitter:card\" content=\"summary_large_image\">\n"
-      html << "<link rel=\"canonical\" href=\"#{Discourse.base_url}\">\n"
+      html << "<meta name=\"twitter:title\" content=\"#{e(@s.hero_title)}\">\n"
+      html << "<meta name=\"twitter:description\" content=\"#{e(meta_desc)}\">\n"
+      html << "<meta name=\"twitter:image\" content=\"#{og_image}\">\n" if og_image
+
+      html << "<link rel=\"canonical\" href=\"#{base_url}\">\n"
+
+      # JSON-LD structured data
+      if (@s.json_ld_enabled rescue true)
+        html << "<script type=\"application/ld+json\">\n#{render_json_ld(site_name, base_url, og_logo)}\n</script>\n"
+      end
+
       html << "<style>\n#{@css}\n</style>\n"
       html << @styles.color_overrides
       html << @styles.section_backgrounds
+
+      # Custom CSS (injected last so it can override everything)
+      custom_css = @s.custom_css.presence rescue nil
+      if custom_css
+        html << "<style id=\"cl-custom-css\">\n#{custom_css}\n</style>\n"
+      end
 
       html << "</head>\n"
       html
@@ -105,6 +157,7 @@ module CommunityLanding
 
       html << "<div class=\"cl-navbar__right\">"
       html << theme_toggle
+      html << render_social_icons
       if signin_enabled
         html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
       end
@@ -116,6 +169,7 @@ module CommunityLanding
       html << "<button class=\"cl-navbar__hamburger\" id=\"cl-hamburger\" aria-label=\"Toggle menu\"><span></span><span></span><span></span></button>\n"
       html << "<div class=\"cl-navbar__mobile-menu\" id=\"cl-nav-links\">\n"
       html << theme_toggle
+      html << render_social_icons
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--ghost\">#{e(signin_label)}</a>\n"
       html << "<a href=\"#{login_url}\" class=\"cl-navbar__link cl-btn--primary\">#{e(join_label)}</a>\n"
       html << "</div>"
@@ -319,6 +373,57 @@ module CommunityLanding
       html
     end
 
+    # ── 5b. PARTICIPATION ──
+
+    def render_participation
+      return "" unless (@s.participation_enabled rescue true)
+
+      contributors = @data[:contributors]
+      return "" unless contributors&.length.to_i > 3
+
+      # Positions 4–10: users with a public bio
+      bio_max   = (@s.participation_bio_max_length rescue 150).to_i
+      candidates = contributors[3..9] || []
+      users_with_bio = candidates.select { |u| u.user_profile&.bio_excerpt.present? rescue false }
+      return "" if users_with_bio.empty?
+
+      show_title  = @s.participation_title_enabled rescue true
+      title_text  = @s.participation_title.presence || "Participation"
+      border      = @s.participation_border_style rescue "none"
+      min_h       = @s.participation_min_height rescue 0
+      count_label = @s.contributors_count_label.presence || ""
+      show_count  = @s.contributors_count_label_enabled rescue true
+
+      html = +""
+      html << "<section class=\"cl-participation cl-anim\" id=\"cl-participation\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
+      html << "<h2 class=\"cl-section-title\">#{e(title_text)}</h2>\n" if show_title
+      stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
+      html << "<div class=\"cl-participation__grid#{stagger_class}\">\n"
+
+      users_with_bio.each do |user|
+        avatar_url     = user.avatar_template.to_s.gsub("{size}", "120")
+        activity_count = user.attributes["post_count"].to_i rescue 0
+        bio_raw        = user.user_profile.bio_excerpt.to_s
+        bio_text       = bio_raw.length > bio_max ? "#{bio_raw[0...bio_max]}..." : bio_raw
+        count_prefix   = show_count && count_label.present? ? "#{e(count_label)} " : ""
+
+        html << "<div class=\"cl-participation-card\">\n"
+        html << "<div class=\"cl-participation-card__quote\">#{Icons::QUOTE_SVG}</div>\n"
+        html << "<p class=\"cl-participation-card__bio\">#{e(bio_text)}</p>\n"
+        html << "<div class=\"cl-participation-card__footer\">\n"
+        html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-participation-card__avatar\" loading=\"lazy\">\n"
+        html << "<div class=\"cl-participation-card__meta\">\n"
+        html << "<span class=\"cl-participation-card__name\">@#{e(user.username)}</span>\n"
+        html << "<span class=\"cl-participation-card__count\">#{count_prefix}#{activity_count}</span>\n"
+        html << "</div>\n"
+        html << "</div>\n"
+        html << "</div>\n"
+      end
+
+      html << "</div>\n</div></section>\n"
+      html
+    end
+
     # ── 5. TRENDING DISCUSSIONS ──
 
     def render_topics
@@ -355,46 +460,104 @@ module CommunityLanding
       html
     end
 
-    # ── 7. COMMUNITY SPACES ──
+    # ── 7. COMMUNITY SPACES + FAQ ──
 
     def render_groups
-      groups = @data[:groups]
-      return "" unless @s.groups_enabled && groups&.any?
+      groups  = @data[:groups]
+      faq_on  = (@s.faq_enabled rescue false)
+      has_groups = @s.groups_enabled && groups&.any?
 
-      border = @s.groups_border_style rescue "none"
-      min_h  = @s.groups_min_height rescue 0
+      return "" unless has_groups || faq_on
 
+      border     = @s.groups_border_style rescue "none"
+      min_h      = @s.groups_min_height rescue 0
       show_title = @s.groups_title_enabled rescue true
+      show_desc  = @s.groups_show_description rescue true
+      desc_max   = (@s.groups_description_max_length rescue 100).to_i
 
       html = +""
       html << "<section class=\"cl-spaces cl-anim\" id=\"cl-groups\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\">#{e(@s.groups_title)}</h2>\n" if show_title
-      stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
-      html << "<div class=\"cl-spaces__grid#{stagger_class}\">\n"
 
-      groups.each do |group|
-        display_name = group.full_name.presence || group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)
-        hue   = group.name.bytes.sum % 360
-        sat   = 55 + (group.name.bytes.first.to_i % 15)
-        light = 45 + (group.name.bytes.last.to_i % 12)
-        icon_color = "hsl(#{hue}, #{sat}%, #{light}%)"
+      layout_class = (has_groups && faq_on) ? "cl-spaces__split" : "cl-spaces__full"
+      html << "<div class=\"#{layout_class}\">\n"
 
-        html << "<a href=\"#{login_url}\" class=\"cl-space-card\" style=\"--space-color: #{icon_color}\">\n"
-        html << "<div class=\"cl-space-card__icon\">"
-        if group.flair_url.present?
-          html << "<img src=\"#{group.flair_url}\" alt=\"\">"
-        else
-          html << "<span class=\"cl-space-card__letter\">#{group.name[0].upcase}</span>"
+      # ── Left: Groups Grid ──
+      if has_groups
+        stagger_class = @s.staggered_reveal_enabled ? " cl-stagger" : ""
+        html << "<div class=\"cl-spaces__left\">\n"
+        html << "<div class=\"cl-spaces__grid#{stagger_class}\">\n"
+
+        groups.each do |group|
+          display_name = group.full_name.presence || group.name.tr("_-", " ").gsub(/\b\w/, &:upcase)
+          hue   = group.name.bytes.sum % 360
+          sat   = 55 + (group.name.bytes.first.to_i % 15)
+          light = 45 + (group.name.bytes.last.to_i % 12)
+          icon_color = "hsl(#{hue}, #{sat}%, #{light}%)"
+
+          # Group description from bio_raw
+          desc_text = nil
+          if show_desc
+            raw_bio = (group.bio_raw.to_s.strip rescue "")
+            if raw_bio.present?
+              plain = raw_bio.gsub(/<[^>]*>/, "").strip
+              desc_text = plain.length > desc_max ? "#{plain[0...desc_max]}..." : plain
+            end
+          end
+
+          html << "<a href=\"#{login_url}\" class=\"cl-space-card\" style=\"--space-color: #{icon_color}\">\n"
+          html << "<div class=\"cl-space-card__icon\">"
+          if group.flair_url.present?
+            html << "<img src=\"#{group.flair_url}\" alt=\"\">"
+          else
+            html << "<span class=\"cl-space-card__letter\">#{group.name[0].upcase}</span>"
+          end
+          html << "</div>\n"
+          html << "<div class=\"cl-space-card__body\">\n"
+          html << "<span class=\"cl-space-card__name\">#{e(display_name)}</span>\n"
+          html << "<span class=\"cl-space-card__sub\">#{group.user_count} members</span>\n"
+          html << "<p class=\"cl-space-card__desc\">#{e(desc_text)}</p>\n" if desc_text
+          html << "</div>\n"
+          html << "</a>\n"
         end
-        html << "</div>\n"
-        html << "<div class=\"cl-space-card__body\">\n"
-        html << "<span class=\"cl-space-card__name\">#{e(display_name)}</span>\n"
-        html << "<span class=\"cl-space-card__sub\">#{group.user_count} members</span>\n"
-        html << "</div>\n"
-        html << "</a>\n"
+
+        html << "</div>\n</div>\n"
       end
 
+      # ── Right: FAQ Accordion ──
+      html << render_faq if faq_on
+
       html << "</div>\n</div></section>\n"
+      html
+    end
+
+    def render_faq
+      faq_title_on = @s.faq_title_enabled rescue true
+      faq_title    = @s.faq_title.presence || "Frequently Asked Questions"
+      faq_raw      = @s.faq_items.presence rescue nil
+
+      html = +""
+      html << "<div class=\"cl-faq\">\n"
+      html << "<h3 class=\"cl-faq__title\">#{e(faq_title)}</h3>\n" if faq_title_on
+
+      if faq_raw
+        begin
+          items = JSON.parse(faq_raw)
+          items.each do |item|
+            q = item["q"].to_s
+            a = item["a"].to_s
+            next if q.blank?
+            html << "<details class=\"cl-faq__item\" data-faq-exclusive>\n"
+            html << "<summary class=\"cl-faq__question\">#{e(q)}</summary>\n"
+            html << "<div class=\"cl-faq__answer\">#{a}</div>\n"
+            html << "</details>\n"
+          end
+        rescue JSON::ParserError
+          # Invalid JSON — silently skip
+        end
+      end
+
+      html << "</div>\n"
       html
     end
 
@@ -534,8 +697,36 @@ module CommunityLanding
       html
     end
 
+    def render_social_icons
+      icons = {
+        social_twitter_url:   Icons::SOCIAL_TWITTER_SVG,
+        social_facebook_url:  Icons::SOCIAL_FACEBOOK_SVG,
+        social_instagram_url: Icons::SOCIAL_INSTAGRAM_SVG,
+        social_youtube_url:   Icons::SOCIAL_YOUTUBE_SVG,
+        social_tiktok_url:    Icons::SOCIAL_TIKTOK_SVG,
+        social_github_url:    Icons::SOCIAL_GITHUB_SVG,
+      }
+
+      links = +""
+      icons.each do |setting, svg|
+        url = (@s.public_send(setting).presence rescue nil)
+        next unless url
+        links << "<a href=\"#{e(url)}\" class=\"cl-social-icon\" target=\"_blank\" rel=\"noopener noreferrer\" aria-label=\"#{setting.to_s.split('_')[1].capitalize}\">#{svg}</a>\n"
+      end
+      return "" if links.empty?
+
+      "<div class=\"cl-social-icons\">#{links}</div>\n"
+    end
+
     def theme_toggle
       "<button class=\"cl-theme-toggle\" aria-label=\"Toggle theme\">#{Icons::SUN_SVG}#{Icons::MOON_SVG}</button>\n"
+    end
+
+    def render_json_ld(site_name, base_url, logo_url)
+      org = { "@type" => "Organization", "name" => site_name, "url" => base_url }
+      org["logo"] = logo_url if logo_url
+      website = { "@type" => "WebSite", "name" => site_name, "url" => base_url }
+      { "@context" => "https://schema.org", "@graph" => [org, website] }.to_json
     end
 
     def login_url

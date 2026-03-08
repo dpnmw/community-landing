@@ -7,6 +7,36 @@ plugins:
     type: bool
 
   # ══════════════════════════════════════════
+  # Layout & Section Order
+  # ══════════════════════════════════════════
+  section_order:
+    default: "hero|stats|about|participation|topics|groups|app_cta"
+    type: string
+
+  # ══════════════════════════════════════════
+  # Custom CSS
+  # ══════════════════════════════════════════
+  custom_css:
+    default: ""
+    type: text_area
+
+  # ══════════════════════════════════════════
+  # SEO & Meta
+  # ══════════════════════════════════════════
+  meta_description:
+    default: ""
+    type: string
+  og_image_url:
+    default: ""
+    type: string
+  favicon_url:
+    default: ""
+    type: string
+  json_ld_enabled:
+    default: true
+    type: bool
+
+  # ══════════════════════════════════════════
   # Branding: Logo
   # ══════════════════════════════════════════
   logo_dark_url:
@@ -109,6 +139,24 @@ plugins:
       - solid
       - dashed
       - dotted
+  social_twitter_url:
+    default: ""
+    type: string
+  social_facebook_url:
+    default: ""
+    type: string
+  social_instagram_url:
+    default: ""
+    type: string
+  social_youtube_url:
+    default: ""
+    type: string
+  social_tiktok_url:
+    default: ""
+    type: string
+  social_github_url:
+    default: ""
+    type: string
 
   # ══════════════════════════════════════════
   # 2. Hero Section
@@ -428,6 +476,52 @@ plugins:
     type: integer
 
   # ══════════════════════════════════════════
+  # 5b. Participation (Leaderboard Bios)
+  # ══════════════════════════════════════════
+  participation_enabled:
+    default: true
+    type: bool
+  participation_title_enabled:
+    default: true
+    type: bool
+  participation_title:
+    default: "Participation"
+    type: string
+  participation_bio_max_length:
+    default: 150
+    type: integer
+    min: 50
+    max: 500
+  participation_icon_color:
+    default: ""
+    type: color
+  participation_card_bg_dark:
+    default: ""
+    type: color
+  participation_card_bg_light:
+    default: ""
+    type: color
+  participation_bg_dark:
+    default: ""
+    type: color
+  participation_bg_light:
+    default: ""
+    type: color
+  participation_min_height:
+    default: 0
+    type: integer
+    min: 0
+    max: 2000
+  participation_border_style:
+    default: "none"
+    type: enum
+    choices:
+      - none
+      - solid
+      - dashed
+      - dotted
+
+  # ══════════════════════════════════════════
   # 7. Community Spaces Section
   # ══════════════════════════════════════════
   groups_enabled:
@@ -470,6 +564,30 @@ plugins:
       - solid
       - dashed
       - dotted
+  groups_show_description:
+    default: true
+    type: bool
+  groups_description_max_length:
+    default: 100
+    type: integer
+    min: 30
+    max: 500
+
+  # ══════════════════════════════════════════
+  # 7b. FAQ Accordion
+  # ══════════════════════════════════════════
+  faq_enabled:
+    default: false
+    type: bool
+  faq_title_enabled:
+    default: true
+    type: bool
+  faq_title:
+    default: "Frequently Asked Questions"
+    type: string
+  faq_items:
+    default: '[{"q":"What is this community about?","a":"A creative community focused on sharing knowledge and building together."},{"q":"How do I join?","a":"Click the Get Started button to create your free account."},{"q":"Is it free?","a":"Yes! Basic membership is completely free."}]'
+    type: text_area
 
   # ══════════════════════════════════════════
   # 8. App Download CTA Section
@@ -507,14 +625,23 @@ plugins:
   app_cta_subtext:
     default: "Available free on iOS and Android"
     type: string
-  app_cta_gradient_start:
+  app_cta_gradient_start_dark:
     default: "d4a24e"
     type: color
-  app_cta_gradient_mid:
+  app_cta_gradient_start_light:
+    default: ""
+    type: color
+  app_cta_gradient_mid_dark:
     default: "c4922e"
     type: color
-  app_cta_gradient_end:
+  app_cta_gradient_mid_light:
+    default: ""
+    type: color
+  app_cta_gradient_end_dark:
     default: "b8862e"
+    type: color
+  app_cta_gradient_end_light:
+    default: ""
     type: color
   app_cta_image_url:
     default: ""

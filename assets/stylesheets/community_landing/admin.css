@@ -82,16 +82,35 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
   color: var(--primary, #ddd);
 }
 
-/* ── Merged dark/light color pairs (two pickers in one row) ── */
+/* ── Merged dark/light color pairs (wrapper approach) ── */
 
-.cl-merged-value {
+.cl-merge-wrapper {
   display: flex;
-  gap: 24px;
+  gap: 16px;
+  width: 100%;
+  padding-bottom: 20px;
 }
 
-.cl-color-col {
+.cl-merge-wrapper > .row.setting {
   flex: 1;
   min-width: 0;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Hide the light row's label + description — dark row's label covers both */
+.cl-merge-wrapper > .cl-merged-light > .setting-label {
+  display: none;
+}
+
+.cl-merge-wrapper > .cl-merged-light .desc {
+  display: none;
+}
+
+/* Light row's value area fills the full width since label is hidden */
+.cl-tabs-active .cl-merge-wrapper > .cl-merged-light > .setting-value {
+  width: 100%;
+  float: none;
 }
 
 .cl-color-col__label {
@@ -105,9 +124,13 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 }
 
 @media (max-width: 767px) {
-  .cl-merged-value {
+  .cl-merge-wrapper {
     flex-direction: column;
-    gap: 12px;
+    gap: 0;
+  }
+
+  .cl-merge-wrapper > .cl-merged-light > .setting-label {
+    display: none;
   }
 }
 
@@ -125,6 +148,12 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 
 /* All plugin settings spacing */
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="community_landing_enabled"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="section_order"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="custom_css"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="meta_"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="og_image_url"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="favicon_url"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="json_ld_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="logo_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="accent_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="dark_bg_color"],
@@ -137,25 +166,34 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="about_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="topics_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="contributors_"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="participation_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="groups_"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="faq_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="show_app_ctas"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="ios_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="android_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="app_"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="social_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="footer_"] {
   margin-bottom: 20px;
 }
 
 /* Section separator borders (fallback only) */
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="section_order"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="custom_css"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="meta_description"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="logo_dark_url"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="accent_color"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="social_twitter_url"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="stats_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="about_enabled"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="participation_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="topics_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="groups_enabled"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="faq_enabled"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="show_app_ctas"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="footer_description"] {
   border-top: 2px solid rgba(0, 0, 0, 0.12);
@@ -164,18 +202,23 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 }
 
 /* Dark mode separators (fallback only) */
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="section_order"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="custom_css"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="meta_description"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="logo_dark_url"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="accent_color"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="social_twitter_url"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="stats_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="about_enabled"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="participation_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="topics_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="groups_enabled"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="faq_enabled"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="show_app_ctas"],
-html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="footer_description"],
-html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="custom_css"] {
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="footer_description"] {
   border-top-color: rgba(255, 255, 255, 0.12);
 }
 

@@ -11,6 +11,7 @@ module CommunityLanding
         if s.contributors_enabled
           User
             .joins(:posts)
+            .includes(:user_profile)
             .where(posts: { created_at: s.contributors_days.days.ago.. })
             .where.not(username: %w[system discobot])
             .where(active: true, staged: false)

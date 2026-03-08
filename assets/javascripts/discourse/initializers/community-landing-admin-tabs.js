@@ -6,6 +6,8 @@ const TABS = [
     label: "Settings",
     settings: new Set([
       "community_landing_enabled",
+      "section_order", "custom_css",
+      "meta_description", "og_image_url", "favicon_url", "json_ld_enabled",
       "logo_dark_url", "logo_light_url", "logo_height", "footer_logo_url",
       "accent_color", "accent_hover_color", "dark_bg_color", "light_bg_color",
       "scroll_animation", "staggered_reveal_enabled", "dynamic_background_enabled",
@@ -20,7 +22,9 @@ const TABS = [
       "navbar_signin_color_dark", "navbar_signin_color_light",
       "navbar_join_label", "navbar_join_enabled",
       "navbar_join_color_dark", "navbar_join_color_light",
-      "navbar_bg_color", "navbar_border_style"
+      "navbar_bg_color", "navbar_border_style",
+      "social_twitter_url", "social_facebook_url", "social_instagram_url",
+      "social_youtube_url", "social_tiktok_url", "social_github_url"
     ])
   },
   {
@@ -42,6 +46,18 @@ const TABS = [
       "contributors_alignment", "contributors_pill_max_width",
       "contributors_pill_bg_dark", "contributors_pill_bg_light",
       "contributors_days", "contributors_count"
+    ])
+  },
+  {
+    id: "participation",
+    label: "Participation",
+    settings: new Set([
+      "participation_enabled", "participation_title_enabled",
+      "participation_title", "participation_bio_max_length",
+      "participation_icon_color",
+      "participation_card_bg_dark", "participation_card_bg_light",
+      "participation_bg_dark", "participation_bg_light",
+      "participation_min_height", "participation_border_style"
     ])
   },
   {
@@ -79,12 +95,14 @@ const TABS = [
   },
   {
     id: "groups",
-    label: "Spaces",
+    label: "Spaces & FAQ",
     settings: new Set([
       "groups_enabled", "groups_title_enabled", "groups_title", "groups_count",
       "groups_selected",
+      "groups_show_description", "groups_description_max_length",
       "groups_card_bg_dark", "groups_card_bg_light",
-      "groups_bg_dark", "groups_bg_light", "groups_min_height", "groups_border_style"
+      "groups_bg_dark", "groups_bg_light", "groups_min_height", "groups_border_style",
+      "faq_enabled", "faq_title_enabled", "faq_title", "faq_items"
     ])
   },
   {
@@ -95,7 +113,9 @@ const TABS = [
       "ios_app_badge_image_url", "android_app_badge_image_url",
       "app_badge_height", "app_badge_style",
       "app_cta_headline", "app_cta_subtext",
-      "app_cta_gradient_start", "app_cta_gradient_mid", "app_cta_gradient_end",
+      "app_cta_gradient_start_dark", "app_cta_gradient_start_light",
+      "app_cta_gradient_mid_dark", "app_cta_gradient_mid_light",
+      "app_cta_gradient_end_dark", "app_cta_gradient_end_light",
       "app_cta_image_url",
       "app_cta_bg_dark", "app_cta_bg_light", "app_cta_min_height", "app_cta_border_style"
     ])
@@ -121,6 +141,9 @@ const BG_PAIRS = [
   ["hero_bg_dark", "hero_bg_light"],
   ["hero_card_bg_dark", "hero_card_bg_light"],
   ["contributors_pill_bg_dark", "contributors_pill_bg_light"],
+  // Participation
+  ["participation_card_bg_dark", "participation_card_bg_light"],
+  ["participation_bg_dark", "participation_bg_light"],
   // Stats
   ["stat_card_bg_dark", "stat_card_bg_light"],
   ["stats_bg_dark", "stats_bg_light"],
@@ -134,6 +157,9 @@ const BG_PAIRS = [
   ["groups_card_bg_dark", "groups_card_bg_light"],
   ["groups_bg_dark", "groups_bg_light"],
   // App CTA
+  ["app_cta_gradient_start_dark", "app_cta_gradient_start_light"],
+  ["app_cta_gradient_mid_dark", "app_cta_gradient_mid_light"],
+  ["app_cta_gradient_end_dark", "app_cta_gradient_end_light"],
   ["app_cta_bg_dark", "app_cta_bg_light"],
   // Footer
   ["footer_bg_dark", "footer_bg_light"],
@@ -159,10 +185,21 @@ function applyTabFilter() {
   if (!tab) return;
 
   container.querySelectorAll(".row.setting[data-setting]").forEach((row) => {
-    // Keep merged light rows permanently hidden
-    if (row.classList.contains("cl-merged-hidden")) return;
+    // Skip rows inside a merge wrapper — handled at wrapper level
+    if (row.closest(".cl-merge-wrapper")) return;
     const name = row.getAttribute("data-setting");
     row.classList.toggle(
+      "cl-tab-hidden",
+      !filterActive && !tab.settings.has(name)
+    );
+  });
+
+  // Handle merge wrappers — show/hide based on dark row's setting
+  container.querySelectorAll(".cl-merge-wrapper").forEach((wrapper) => {
+    const darkRow = wrapper.querySelector(".cl-merged-dark");
+    if (!darkRow) return;
+    const name = darkRow.getAttribute("data-setting");
+    wrapper.classList.toggle(
       "cl-tab-hidden",
       !filterActive && !tab.settings.has(name)
     );
@@ -256,6 +293,17 @@ function cleanupTabs() {
     container.querySelectorAll(".cl-tab-hidden").forEach((el) => {
       el.classList.remove("cl-tab-hidden");
     });
+
+    // Unwrap merge wrappers — restore rows to their original position
+    container.querySelectorAll(".cl-merge-wrapper").forEach((wrapper) => {
+      const parent = wrapper.parentNode;
+      while (wrapper.firstChild) {
+        const child = wrapper.firstChild;
+        child.classList.remove("cl-merged-dark", "cl-merged-light");
+        parent.insertBefore(child, wrapper);
+      }
+      wrapper.remove();
+    });
   }
 
   // Reset state
@@ -264,8 +312,9 @@ function cleanupTabs() {
 }
 
 /**
- * Merge dark/light bg color pairs into a single row.
- * Moves the light setting-value into the dark row and hides the light row.
+ * Merge dark/light bg color pairs into a single visual row.
+ * Uses a CSS wrapper approach — both rows stay intact in the DOM
+ * (preserving Ember bindings and undo/reset buttons).
  */
 function mergeBgPairs() {
   const container = getContainer();
@@ -276,55 +325,41 @@ function mergeBgPairs() {
     const lightRow = container.querySelector(`.row.setting[data-setting="${lightName}"]`);
     if (!darkRow || !lightRow) return;
     // Already merged
-    if (darkRow.querySelector(".cl-merged-value")) return;
+    if (darkRow.classList.contains("cl-merged-dark")) return;
 
-    const lightValue = lightRow.querySelector(".setting-value");
-    const lightLabel = lightRow.querySelector(".setting-label");
-    if (!lightValue) return;
-
-    // Rename the dark row label to just show the base name (e.g. "Hero BG" instead of "Hero BG dark")
+    // Rename the dark row label (remove " dark" suffix)
     const darkH3 = darkRow.querySelector(".setting-label h3");
     if (darkH3) {
       darkH3.textContent = darkH3.textContent.replace(/\s*dark$/i, "").trim();
     }
 
-    // Create a wrapper that holds both color pickers side by side
+    // Add "Dark" / "Light" labels to each row's setting-value
     const darkValue = darkRow.querySelector(".setting-value");
-    if (!darkValue) return;
+    const lightValue = lightRow.querySelector(".setting-value");
+    if (darkValue && !darkValue.querySelector(".cl-color-col__label")) {
+      const lbl = document.createElement("span");
+      lbl.className = "cl-color-col__label";
+      lbl.textContent = "Dark";
+      darkValue.insertBefore(lbl, darkValue.firstChild);
+    }
+    if (lightValue && !lightValue.querySelector(".cl-color-col__label")) {
+      const lbl = document.createElement("span");
+      lbl.className = "cl-color-col__label";
+      lbl.textContent = "Light";
+      lightValue.insertBefore(lbl, lightValue.firstChild);
+    }
 
-    // Wrap existing dark value
+    // Wrap both rows in a flex container
     const wrapper = document.createElement("div");
-    wrapper.className = "cl-merged-value";
+    wrapper.className = "cl-merge-wrapper";
+    darkRow.parentNode.insertBefore(wrapper, darkRow);
+    wrapper.appendChild(darkRow);
+    wrapper.appendChild(lightRow);
 
-    const darkCol = document.createElement("div");
-    darkCol.className = "cl-color-col";
-    const darkLbl = document.createElement("span");
-    darkLbl.className = "cl-color-col__label";
-    darkLbl.textContent = "Dark";
-    darkCol.appendChild(darkLbl);
-    // Move dark value's children into the column
-    while (darkValue.firstChild) {
-      darkCol.appendChild(darkValue.firstChild);
-    }
-
-    const lightCol = document.createElement("div");
-    lightCol.className = "cl-color-col";
-    const lightLbl = document.createElement("span");
-    lightLbl.className = "cl-color-col__label";
-    lightLbl.textContent = "Light";
-    lightCol.appendChild(lightLbl);
-    // Move light value's children into the column
-    while (lightValue.firstChild) {
-      lightCol.appendChild(lightValue.firstChild);
-    }
-
-    wrapper.appendChild(darkCol);
-    wrapper.appendChild(lightCol);
-    darkValue.appendChild(wrapper);
-
-    // Hide the now-empty light row permanently
-    lightRow.classList.add("cl-merged-hidden");
-    lightRow.style.display = "none";
+    // Mark rows for CSS styling
+    darkRow.classList.add("cl-merged-dark");
+    lightRow.classList.add("cl-merged-light");
+    // Light row is NOT hidden — it stays in the DOM with full Ember bindings
   });
 }
 

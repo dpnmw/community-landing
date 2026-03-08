@@ -16,9 +16,12 @@ module CommunityLanding
       light_bg     = (hex(@s.light_bg_color) rescue nil) || "#faf6f0"
       stat_icon    = (hex(@s.stat_icon_color) rescue nil) || accent
       about_bg_img = (@s.about_background_image_url.presence rescue nil)
-      app_g1       = (hex(@s.app_cta_gradient_start) rescue nil) || accent
-      app_g2       = (hex(@s.app_cta_gradient_mid) rescue nil) || accent_hover
-      app_g3       = (hex(@s.app_cta_gradient_end) rescue nil) || accent_hover
+      app_g1_dark  = safe_hex(:app_cta_gradient_start_dark) || accent
+      app_g1_light = safe_hex(:app_cta_gradient_start_light)
+      app_g2_dark  = safe_hex(:app_cta_gradient_mid_dark) || accent_hover
+      app_g2_light = safe_hex(:app_cta_gradient_mid_light)
+      app_g3_dark  = safe_hex(:app_cta_gradient_end_dark) || accent_hover
+      app_g3_light = safe_hex(:app_cta_gradient_end_light)
       stat_icon_bg = hex(@s.stat_icon_bg_color.presence) rescue nil
       stat_counter = hex(@s.stat_counter_color.presence) rescue nil
       video_btn_bg = hex(@s.hero_video_button_color.presence) rescue nil
@@ -48,6 +51,9 @@ module CommunityLanding
       topic_card_light    = safe_hex(:topics_card_bg_light)
       space_card_dark     = safe_hex(:groups_card_bg_dark)
       space_card_light    = safe_hex(:groups_card_bg_light)
+      part_card_dark      = safe_hex(:participation_card_bg_dark)
+      part_card_light     = safe_hex(:participation_card_bg_light)
+      part_icon_color     = safe_hex(:participation_icon_color)
 
       accent_rgb    = hex_to_rgb(accent)
       stat_icon_rgb = hex_to_rgb(stat_icon)
@@ -74,7 +80,11 @@ module CommunityLanding
       dark_extras << "\n  --cl-primary-btn-bg: #{primary_btn_dark};" if primary_btn_dark
       dark_extras << "\n  --cl-secondary-btn-bg: #{secondary_btn_dark};" if secondary_btn_dark
       dark_extras << "\n  --cl-pill-bg: #{pill_bg_dark};" if pill_bg_dark
-      dark_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};" if video_btn_bg
+      if video_btn_bg
+        video_btn_rgb = hex_to_rgb(video_btn_bg)
+        dark_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};"
+        dark_extras << "\n  --cl-video-btn-glow: rgba(#{video_btn_rgb}, 0.35);"
+      end
 
       light_extras = +""
       light_extras << "\n  --cl-navbar-signin-color: #{navbar_signin_light || navbar_signin_dark};" if navbar_signin_light || navbar_signin_dark
@@ -82,7 +92,11 @@ module CommunityLanding
       light_extras << "\n  --cl-primary-btn-bg: #{primary_btn_light || primary_btn_dark};" if primary_btn_light || primary_btn_dark
       light_extras << "\n  --cl-secondary-btn-bg: #{secondary_btn_light || secondary_btn_dark};" if secondary_btn_light || secondary_btn_dark
       light_extras << "\n  --cl-pill-bg: #{pill_bg_light || pill_bg_dark};" if pill_bg_light || pill_bg_dark
-      light_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};" if video_btn_bg
+      if video_btn_bg
+        video_btn_rgb ||= hex_to_rgb(video_btn_bg)
+        light_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};"
+        light_extras << "\n  --cl-video-btn-glow: rgba(#{video_btn_rgb}, 0.25);"
+      end
 
       "<style>
 :root, [data-theme=\"dark\"] {
@@ -103,7 +117,9 @@ module CommunityLanding
   --cl-topic-card-bg: #{topic_card_dark || 'var(--cl-card)'};
   --cl-hero-card-bg: #{hero_card_dark_val};
   --cl-about-card-bg: #{about_dark_css};
-  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});#{dark_extras}
+  --cl-participation-card-bg: #{part_card_dark || 'var(--cl-card)'};
+  --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1_dark}, #{app_g2_dark}, #{app_g3_dark});#{dark_extras}
 }
 [data-theme=\"light\"] {
   --cl-accent: #{accent};
@@ -123,7 +139,9 @@ module CommunityLanding
   --cl-topic-card-bg: #{topic_card_light || topic_card_dark || 'var(--cl-card)'};
   --cl-hero-card-bg: #{hero_card_light_val};
   --cl-about-card-bg: #{about_light_css};
-  --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});#{light_extras}
+  --cl-participation-card-bg: #{part_card_light || part_card_dark || 'var(--cl-card)'};
+  --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+  --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
 }
 @media (prefers-color-scheme: light) {
   :root:not([data-theme=\"dark\"]) {
@@ -141,7 +159,9 @@ module CommunityLanding
     --cl-space-card-bg: #{space_card_light || space_card_dark || 'var(--cl-card)'};
     --cl-topic-card-bg: #{topic_card_light || topic_card_dark || 'var(--cl-card)'};
     --cl-about-card-bg: #{about_light_css};
-    --cl-app-gradient: linear-gradient(135deg, #{app_g1}, #{app_g2}, #{app_g3});#{light_extras}
+    --cl-participation-card-bg: #{part_card_light || part_card_dark || 'var(--cl-card)'};
+    --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+    --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
   }
 }
 </style>\n"
@@ -154,6 +174,7 @@ module CommunityLanding
         ["#cl-hero",         safe_hex(:hero_bg_dark),         safe_hex(:hero_bg_light)],
         ["#cl-stats-row",    safe_hex(:stats_bg_dark),        safe_hex(:stats_bg_light)],
         ["#cl-about",        safe_hex(:about_bg_dark),        safe_hex(:about_bg_light)],
+        ["#cl-participation", safe_hex(:participation_bg_dark), safe_hex(:participation_bg_light)],
         ["#cl-topics",       safe_hex(:topics_bg_dark),       safe_hex(:topics_bg_light)],
         ["#cl-groups",       safe_hex(:groups_bg_dark),       safe_hex(:groups_bg_light)],
         ["#cl-app-cta",      safe_hex(:app_cta_bg_dark),      safe_hex(:app_cta_bg_light)],

@@ -211,4 +211,19 @@
     });
   }
 
+  // ═══════════════════════════════════════════════════════════════════
+  // 8. FAQ EXCLUSIVE ACCORDION
+  // ═══════════════════════════════════════════════════════════════════
+  $$("details[data-faq-exclusive]").forEach(function (detail) {
+    detail.addEventListener("toggle", function () {
+      if (detail.open) {
+        $$("details[data-faq-exclusive]").forEach(function (other) {
+          if (other !== detail && other.open) {
+            other.removeAttribute("open");
+          }
+        });
+      }
+    });
+  });
+
 })();
