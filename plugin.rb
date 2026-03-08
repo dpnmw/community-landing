@@ -53,6 +53,10 @@ after_initialize do
       response.headers["Content-Security-Policy"] = csp
 
       render html: html.html_safe, layout: false, content_type: "text/html"
+    rescue => e
+      Rails.logger.error("[CommunityLanding] 500 error: #{e.class}: #{e.message}\n#{e.backtrace&.first(10)&.join("\n")}")
+      render html: "<!-- CommunityLanding error: #{ERB::Util.html_escape(e.class)}: #{ERB::Util.html_escape(e.message)} -->".html_safe,
+             layout: false, content_type: "text/html", status: 500
     end
 
     private

@@ -128,7 +128,7 @@ module CommunityLanding
     def render_hero
       hero_card   = @s.hero_card_enabled rescue true
       hero_img_first = @s.hero_image_first rescue false
-      hero_bg_img = @s.hero_background_image_url.presence
+      hero_bg_img = (@s.hero_background_image_url.presence rescue nil)
       hero_border = @s.hero_border_style rescue "none"
       hero_min_h  = @s.hero_min_height rescue 0
       site_name   = @s.title
@@ -197,7 +197,7 @@ module CommunityLanding
         html << "<div class=\"cl-hero__creators#{align_class}\">\n"
         html << "<h3 class=\"cl-hero__creators-title\">#{e(creators_title)}</h3>\n" if show_title
         top3.each_with_index do |user, idx|
-          avatar_url     = user.avatar_template.gsub("{size}", "120")
+          avatar_url     = user.avatar_template.to_s.gsub("{size}", "120")
           activity_count = user.attributes["post_count"].to_i rescue 0
           rank_color     = rank_colors[idx]
           count_prefix = show_count_label && count_label.present? ? "#{e(count_label)} " : ""
@@ -217,8 +217,8 @@ module CommunityLanding
 
       html << "</div>\n"
 
-      hero_image_urls_raw = @s.hero_image_urls.presence
-      hero_video = @s.hero_video_url.presence rescue nil
+      hero_image_urls_raw = (@s.hero_image_urls.presence rescue nil)
+      hero_video = (@s.hero_video_url.presence rescue nil)
       blur_attr = (@s.hero_video_blur_on_hover rescue true) ? " data-blur-hover=\"true\"" : ""
       has_images = false
 

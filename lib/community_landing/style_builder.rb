@@ -10,15 +10,15 @@ module CommunityLanding
 
     # CSS custom properties for accent colors, gradients, backgrounds
     def color_overrides
-      accent       = hex(@s.accent_color) || "#d4a24e"
-      accent_hover = hex(@s.accent_hover_color) || "#c4922e"
-      dark_bg      = hex(@s.dark_bg_color) || "#06060f"
-      light_bg     = hex(@s.light_bg_color) || "#faf6f0"
-      stat_icon    = hex(@s.stat_icon_color) || accent
-      about_bg_img = @s.about_background_image_url.presence
-      app_g1       = hex(@s.app_cta_gradient_start) || accent
-      app_g2       = hex(@s.app_cta_gradient_mid) || accent_hover
-      app_g3       = hex(@s.app_cta_gradient_end) || accent_hover
+      accent       = (hex(@s.accent_color) rescue nil) || "#d4a24e"
+      accent_hover = (hex(@s.accent_hover_color) rescue nil) || "#c4922e"
+      dark_bg      = (hex(@s.dark_bg_color) rescue nil) || "#06060f"
+      light_bg     = (hex(@s.light_bg_color) rescue nil) || "#faf6f0"
+      stat_icon    = (hex(@s.stat_icon_color) rescue nil) || accent
+      about_bg_img = (@s.about_background_image_url.presence rescue nil)
+      app_g1       = (hex(@s.app_cta_gradient_start) rescue nil) || accent
+      app_g2       = (hex(@s.app_cta_gradient_mid) rescue nil) || accent_hover
+      app_g3       = (hex(@s.app_cta_gradient_end) rescue nil) || accent_hover
       stat_icon_bg = hex(@s.stat_icon_bg_color.presence) rescue nil
       stat_counter = hex(@s.stat_counter_color.presence) rescue nil
       video_btn_bg = hex(@s.hero_video_button_color.presence) rescue nil
