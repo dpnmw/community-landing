@@ -11,7 +11,7 @@ module CommunityLanding
         if s.contributors_enabled || (s.participation_enabled rescue true)
           User
             .joins(:posts)
-            .includes(:user_profile)
+            .includes(:user_profile, :user_stat)
             .where(posts: { created_at: s.contributors_days.days.ago.. })
             .where.not(username: %w[system discobot])
             .where(active: true, staged: false)

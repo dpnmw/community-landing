@@ -419,9 +419,6 @@ module CommunityLanding
       title_text  = @s.participation_title.presence || "Participation"
       border      = @s.participation_border_style rescue "none"
       min_h       = @s.participation_min_height rescue 0
-      count_label = @s.contributors_count_label.presence || ""
-      show_count  = @s.contributors_count_label_enabled rescue true
-
       html = +""
       html << "<section class=\"cl-participation cl-anim\" id=\"cl-participation\"#{section_style(border, min_h)}><div class=\"cl-container\">\n"
       html << "<h2 class=\"cl-section-title\"#{title_style(:participation_title_size)}>#{e(title_text)}</h2>\n" if show_title
@@ -429,20 +426,31 @@ module CommunityLanding
       html << "<div class=\"cl-participation__grid#{stagger_class}\">\n"
 
       users_with_bio.each do |user|
-        avatar_url     = user.avatar_template.to_s.gsub("{size}", "120")
-        activity_count = user.attributes["post_count"].to_i rescue 0
-        bio_raw        = user.user_profile.bio_excerpt.to_s
-        bio_text       = bio_raw.length > bio_max ? "#{bio_raw[0...bio_max]}..." : bio_raw
-        count_prefix   = show_count && count_label.present? ? "#{e(count_label)} " : ""
+        avatar_url    = user.avatar_template.to_s.gsub("{size}", "120")
+        bio_raw       = user.user_profile.bio_excerpt.to_s
+        bio_text      = bio_raw.length > bio_max ? "#{bio_raw[0...bio_max]}..." : bio_raw
+        join_date     = user.created_at.strftime("Joined %b %Y") rescue "Member"
+        location      = (user.user_profile&.location.presence rescue nil)
+        meta_line     = location ? "#{join_date} · #{e(location)}" : join_date
+        topic_count   = (user.user_stat&.topic_count.to_i rescue 0)
+        post_count    = (user.user_stat&.post_count.to_i rescue 0)
+        likes_received = (user.user_stat&.likes_received.to_i rescue 0)
 
         html << "<div class=\"cl-participation-card\">\n"
+        html << "<div class=\"cl-participation-card__header\">\n"
         html << "<div class=\"cl-participation-card__quote\">#{Icons::QUOTE_SVG}</div>\n"
         html << "<p class=\"cl-participation-card__bio\">#{e(bio_text)}</p>\n"
+        html << "</div>\n"
+        html << "<div class=\"cl-participation-card__stats\">\n"
+        html << "<div class=\"cl-participation-stat\"><span class=\"cl-participation-stat__value\">#{topic_count}</span><span class=\"cl-participation-stat__label\">Topics</span></div>\n"
+        html << "<div class=\"cl-participation-stat\"><span class=\"cl-participation-stat__value\">#{post_count}</span><span class=\"cl-participation-stat__label\">Posts</span></div>\n"
+        html << "<div class=\"cl-participation-stat\"><span class=\"cl-participation-stat__value\">#{likes_received}</span><span class=\"cl-participation-stat__label\">Likes</span></div>\n"
+        html << "</div>\n"
         html << "<div class=\"cl-participation-card__footer\">\n"
         html << "<img src=\"#{avatar_url}\" alt=\"#{e(user.username)}\" class=\"cl-participation-card__avatar\" loading=\"lazy\">\n"
         html << "<div class=\"cl-participation-card__meta\">\n"
         html << "<span class=\"cl-participation-card__name\">@#{e(user.username)}</span>\n"
-        html << "<span class=\"cl-participation-card__count\">#{count_prefix}#{activity_count}</span>\n"
+        html << "<span class=\"cl-participation-card__count\">#{e(meta_line)}</span>\n"
         html << "</div>\n"
         html << "</div>\n"
         html << "</div>\n"

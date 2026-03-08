@@ -606,6 +606,21 @@ plugins:
     type: integer
     min: 0
     max: 80
+  participation_stat_color:
+    default: ""
+    type: color
+  participation_stat_label_color:
+    default: ""
+    type: color
+  participation_bio_color:
+    default: ""
+    type: color
+  participation_name_color:
+    default: ""
+    type: color
+  participation_meta_color:
+    default: ""
+    type: color
 
   # ══════════════════════════════════════════
   # 7. Community Spaces Section

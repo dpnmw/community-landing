@@ -1,6 +1,6 @@
 /* ═══════════════════════════════════════════════════════════════════
-   Community Landing — Admin Settings Panel Styles v2.4.0
-   Tab navigation + fallback separators + bg-pair layout
+   Community Landing — Admin Settings Panel Styles v2.5.0
+   Tab navigation + fallback separators + image upload buttons
    ═══════════════════════════════════════════════════════════════════ */
 
 /* ── Tab-hidden class (used instead of inline display:none) ── */
@@ -21,6 +21,19 @@
 
 .d-nav-submenu__tabs li.cl-admin-tab a {
   cursor: pointer;
+}
+
+/* Active state for our injected tabs */
+.d-nav-submenu__tabs li.cl-admin-tab.active a {
+  color: var(--tertiary, #0088cc);
+}
+
+/* Suppress native Settings tab active styling when another CL tab is selected.
+   Discourse keeps aria-current on the native <a>, so we override it. */
+.d-nav-submenu__tabs li.cl-tab-inactive a,
+.d-nav-submenu__tabs li.cl-tab-inactive a[aria-current="true"] {
+  color: var(--primary-medium, #888) !important;
+  border-bottom-color: transparent !important;
 }
 
 /* Dimmed state when Discourse filter/search is active */
@@ -82,97 +95,14 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
   color: var(--primary, #ddd);
 }
 
-/* ── Merged dark/light color pairs (CSS-only, no DOM moves) ── */
+/* ── Boolean "Enable" label next to checkboxes ── */
 
-.cl-tabs-active .row.setting.cl-merged-dark {
-  float: left;
-  width: calc(50% - 8px);
-  margin-right: 16px;
-  padding-bottom: 0 !important;
-  margin-bottom: 0 !important;
-}
-
-.cl-tabs-active .row.setting.cl-merged-light {
-  float: left;
-  width: calc(50% - 8px);
-  padding-bottom: 0 !important;
-  margin-bottom: 20px !important;
-}
-
-/* Hide the light row's label + description — dark row's label covers both */
-.cl-tabs-active .row.setting.cl-merged-light > .setting-label {
-  display: none;
-}
-
-.cl-tabs-active .row.setting.cl-merged-light .desc {
-  display: none;
-}
-
-/* Light row's value area fills the full width since label is hidden */
-.cl-tabs-active .row.setting.cl-merged-light > .setting-value {
-  width: 100%;
-  float: none;
-}
-
-/* Dark row: label + value stack vertically inside the half-width */
-.cl-tabs-active .row.setting.cl-merged-dark > .setting-label {
-  float: none;
-  width: 100%;
-  margin-bottom: 4px;
-}
-
-.cl-tabs-active .row.setting.cl-merged-dark > .setting-value {
-  float: none;
-  width: 100%;
-  padding-right: 0;
-}
-
-/* Controls (reset/undo) inside merged rows — inline after the color picker */
-.cl-tabs-active .row.setting.cl-merged-dark > .setting-controls,
-.cl-tabs-active .row.setting.cl-merged-light > .setting-controls {
-  float: none;
-  display: inline-block;
-  margin-top: 4px;
-}
-
-/* Clearfix after the light row to restore normal flow */
-.cl-tabs-active .row.setting.cl-merged-light::after {
-  content: "";
-  display: block;
-  clear: both;
-}
-
-/* Insert a clear break after each pair to prevent stacking issues */
-.cl-tabs-active .row.setting.cl-merged-light + .row.setting:not(.cl-merged-light) {
-  clear: both;
-}
-
-/* Also clear when a merged-light is followed by anything else */
-.cl-tabs-active .cl-merged-light + *:not(.cl-merged-light):not(.cl-tab-hidden) {
-  clear: both;
-}
-
-.cl-color-col__label {
-  display: block;
-  font-size: var(--font-down-1);
-  font-weight: 600;
-  color: var(--primary-medium);
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-@media (max-width: 767px) {
-  .cl-tabs-active .row.setting.cl-merged-dark,
-  .cl-tabs-active .row.setting.cl-merged-light {
-    float: none;
-    width: 100%;
-    margin-right: 0;
-  }
-
-  .cl-tabs-active .row.setting.cl-merged-light > .setting-label {
-    display: none;
-  }
+.cl-enable-label {
+  margin-left: 6px;
+  font-size: var(--font-0);
+  color: var(--primary-high);
+  vertical-align: middle;
+  cursor: default;
 }
 
 /* ── Disabled-section notice banner ── */
@@ -448,4 +378,73 @@ html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="f
   .cl-tabs-active .row.setting .setting-value .select-kit {
     width: 100% !important;
   }
+}
+
+/* ── Image upload buttons & preview ── */
+
+.cl-upload-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.cl-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: var(--font-down-1);
+  font-weight: 600;
+  color: var(--secondary);
+  background: var(--tertiary);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease;
+}
+
+.cl-upload-btn:hover {
+  background: var(--tertiary-hover);
+}
+
+.cl-upload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.cl-upload-preview {
+  max-width: 80px;
+  max-height: 48px;
+  border-radius: 4px;
+  border: 1px solid var(--primary-low);
+  object-fit: contain;
+  background: var(--primary-very-low);
+}
+
+.cl-upload-preview[src=""],
+.cl-upload-preview:not([src]) {
+  display: none;
+}
+
+.cl-upload-remove {
+  padding: 4px 8px;
+  font-size: var(--font-down-2);
+  color: var(--danger);
+  background: none;
+  border: 1px solid var(--danger-low);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.cl-upload-remove:hover {
+  background: var(--danger-low);
+}
+
+.cl-upload-status {
+  font-size: var(--font-down-2);
+  color: var(--primary-medium);
+  font-style: italic;
 }

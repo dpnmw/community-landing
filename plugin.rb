@@ -2,7 +2,7 @@
 
 # name: community-landing
 # about: Branded public landing page for unauthenticated visitors
-# version: 2.4.0
+# version: 2.5.0
 # authors: DPN MEDiA WORKS
 # url: https://github.com/dpnmw/community-landing
 # meta_url: https://dpnmediaworks.com
@@ -78,7 +78,41 @@ after_initialize do
     end
   end
 
+  class ::CommunityLanding::AdminUploadsController < ::ApplicationController
+    requires_plugin CommunityLanding::PLUGIN_NAME
+    before_action :ensure_admin
+
+    ALLOWED_IMAGE_SETTINGS = %w[
+      og_image_url favicon_url logo_dark_url logo_light_url footer_logo_url
+      hero_background_image_url hero_image_urls about_image_url
+      about_background_image_url ios_app_badge_image_url
+      android_app_badge_image_url app_cta_image_url
+    ].freeze
+
+    # POST /community-landing/admin/pin-upload
+    def pin_upload
+      upload = Upload.find(params[:upload_id])
+      setting_name = params[:setting_name].to_s
+      raise Discourse::InvalidParameters unless ALLOWED_IMAGE_SETTINGS.include?(setting_name)
+
+      key = "upload_pin_#{setting_name}"
+      existing = PluginStore.get("community-landing", key)
+      existing_ids = existing ? existing.to_s.split(",").map(&:to_i) : []
+      existing_ids << upload.id unless existing_ids.include?(upload.id)
+      PluginStore.set("community-landing", key, existing_ids.join(","))
+
+      row = PluginStoreRow.find_by(plugin_name: "community-landing", key: key)
+      UploadReference.ensure_exist!(upload_ids: existing_ids, target: row) if row
+
+      render json: { success: true, upload_id: upload.id }
+    end
+  end
+
   Discourse::Application.routes.prepend do
+    post "/community-landing/admin/pin-upload" =>
+      "community_landing/admin_uploads#pin_upload",
+      constraints: AdminConstraint.new
+
     root to: "community_landing/landing#index",
          constraints: ->(req) {
            req.cookies["_t"].blank? &&

@@ -56,6 +56,11 @@ module CommunityLanding
       part_card_dark      = safe_hex(:participation_card_bg_dark)
       part_card_light     = safe_hex(:participation_card_bg_light)
       part_icon_color     = safe_hex(:participation_icon_color)
+      part_stat_color     = safe_hex(:participation_stat_color)
+      part_stat_lbl_color = safe_hex(:participation_stat_label_color)
+      part_bio_color      = safe_hex(:participation_bio_color)
+      part_name_color     = safe_hex(:participation_name_color)
+      part_meta_color     = safe_hex(:participation_meta_color)
 
       orb_color     = safe_hex(:orb_color)
       orb_opacity   = [[@s.orb_opacity.to_i, 0].max, 100].min rescue 50
@@ -128,6 +133,11 @@ module CommunityLanding
   --cl-about-card-bg: #{about_dark_css};
   --cl-participation-card-bg: #{part_card_dark || 'var(--cl-card)'};
   --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+  --cl-participation-stat-color: #{part_stat_color || 'var(--cl-text-strong)'};
+  --cl-participation-stat-label-color: #{part_stat_lbl_color || 'var(--cl-text-muted, var(--cl-text))'};
+  --cl-participation-bio-color: #{part_bio_color || 'var(--cl-text)'};
+  --cl-participation-name-color: #{part_name_color || 'var(--cl-text-strong)'};
+  --cl-participation-meta-color: #{part_meta_color || 'var(--cl-participation-icon-color)'};
   --cl-faq-card-bg: #{faq_card_dark || 'var(--cl-card)'};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1_dark}, #{app_g2_dark}, #{app_g3_dark});#{dark_extras}
 }
@@ -153,6 +163,11 @@ module CommunityLanding
   --cl-about-card-bg: #{about_light_css};
   --cl-participation-card-bg: #{part_card_light || part_card_dark || 'var(--cl-card)'};
   --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+  --cl-participation-stat-color: #{part_stat_color || 'var(--cl-text-strong)'};
+  --cl-participation-stat-label-color: #{part_stat_lbl_color || 'var(--cl-text-muted, var(--cl-text))'};
+  --cl-participation-bio-color: #{part_bio_color || 'var(--cl-text)'};
+  --cl-participation-name-color: #{part_name_color || 'var(--cl-text-strong)'};
+  --cl-participation-meta-color: #{part_meta_color || 'var(--cl-participation-icon-color)'};
   --cl-faq-card-bg: #{faq_card_light || faq_card_dark || 'var(--cl-card)'};
   --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
 }
@@ -176,6 +191,11 @@ module CommunityLanding
     --cl-about-card-bg: #{about_light_css};
     --cl-participation-card-bg: #{part_card_light || part_card_dark || 'var(--cl-card)'};
     --cl-participation-icon-color: #{part_icon_color || 'var(--cl-accent)'};
+    --cl-participation-stat-color: #{part_stat_color || 'var(--cl-text-strong)'};
+    --cl-participation-stat-label-color: #{part_stat_lbl_color || 'var(--cl-text-muted, var(--cl-text))'};
+    --cl-participation-bio-color: #{part_bio_color || 'var(--cl-text)'};
+    --cl-participation-name-color: #{part_name_color || 'var(--cl-text-strong)'};
+    --cl-participation-meta-color: #{part_meta_color || 'var(--cl-participation-icon-color)'};
     --cl-faq-card-bg: #{faq_card_light || faq_card_dark || 'var(--cl-card)'};
     --cl-app-gradient: linear-gradient(135deg, #{app_g1_light || app_g1_dark}, #{app_g2_light || app_g2_dark}, #{app_g3_light || app_g3_dark});#{light_extras}
   }

@@ -1,4 +1,4 @@
-// community-landing-admin-tabs v2.4.0
+// community-landing-admin-tabs v2.5.0
 import { withPluginApi } from "discourse/lib/plugin-api";
 
 // Setting descriptions — injected into the admin DOM since the newer
@@ -120,7 +120,7 @@ const DESCRIPTIONS = {
   participation_title_enabled: "Show heading above participation cards.",
   participation_title: "Heading text above participation cards.",
   participation_bio_max_length: "Max characters from each user's bio (50–500). Longer bios are truncated.",
-  participation_icon_color: "Color for the decorative quote icon on cards. Leave blank for accent color.",
+  participation_icon_color: "Color for the decorative quote icon and avatar border. Leave blank for accent color.",
   participation_card_bg_dark: "Participation card background for dark mode.",
   participation_card_bg_light: "Participation card background for light mode.",
   participation_bg_dark: "Section background for dark mode. Leave blank for default.",
@@ -128,6 +128,11 @@ const DESCRIPTIONS = {
   participation_min_height: "Minimum section height in pixels. 0 = auto.",
   participation_border_style: "Border style at the bottom of the section.",
   participation_title_size: "Section title font size in pixels. 0 = use default.",
+  participation_stat_color: "Color for stat numbers (Topics, Posts, Likes). Leave blank for default text color.",
+  participation_stat_label_color: "Color for stat labels below the numbers. Leave blank for muted text.",
+  participation_bio_color: "Color for the bio excerpt text. Leave blank for default text color.",
+  participation_name_color: "Color for the @username. Leave blank for default strong text color.",
+  participation_meta_color: "Color for the join date and location line. Leave blank for accent color.",
 
   // ── Stats ──
   stats_enabled: "Show the stats section with live community counters.",
@@ -304,7 +309,10 @@ const TABS = [
       "participation_icon_color",
       "participation_card_bg_dark", "participation_card_bg_light",
       "participation_bg_dark", "participation_bg_light",
-      "participation_min_height", "participation_border_style"
+      "participation_min_height", "participation_border_style",
+      "participation_stat_color", "participation_stat_label_color",
+      "participation_bio_color", "participation_name_color",
+      "participation_meta_color"
     ])
   },
   {
@@ -333,7 +341,7 @@ const TABS = [
   },
   {
     id: "topics",
-    label: "Trending",
+    label: "Topics",
     settings: new Set([
       "topics_enabled", "topics_title_enabled", "topics_title", "topics_title_size",
       "topics_count",
@@ -343,7 +351,7 @@ const TABS = [
   },
   {
     id: "groups",
-    label: "Spaces",
+    label: "Groups",
     settings: new Set([
       "groups_enabled", "groups_title_enabled", "groups_title", "groups_title_size",
       "groups_count", "groups_selected",
@@ -386,43 +394,6 @@ const TABS = [
   }
 ];
 
-// Dark/light color pairs — light row gets merged into dark row (same-row display)
-const BG_PAIRS = [
-  // Navbar
-  ["navbar_signin_color_dark", "navbar_signin_color_light"],
-  ["navbar_join_color_dark", "navbar_join_color_light"],
-  // Hero
-  ["hero_primary_btn_color_dark", "hero_primary_btn_color_light"],
-  ["hero_secondary_btn_color_dark", "hero_secondary_btn_color_light"],
-  ["hero_bg_dark", "hero_bg_light"],
-  ["hero_card_bg_dark", "hero_card_bg_light"],
-  ["contributors_pill_bg_dark", "contributors_pill_bg_light"],
-  // Participation
-  ["participation_card_bg_dark", "participation_card_bg_light"],
-  ["participation_bg_dark", "participation_bg_light"],
-  // Stats
-  ["stat_card_bg_dark", "stat_card_bg_light"],
-  ["stats_bg_dark", "stats_bg_light"],
-  // About
-  ["about_card_color_dark", "about_card_color_light"],
-  ["about_bg_dark", "about_bg_light"],
-  // Trending
-  ["topics_card_bg_dark", "topics_card_bg_light"],
-  ["topics_bg_dark", "topics_bg_light"],
-  // Spaces
-  ["groups_card_bg_dark", "groups_card_bg_light"],
-  ["groups_bg_dark", "groups_bg_light"],
-  // FAQ
-  ["faq_card_bg_dark", "faq_card_bg_light"],
-  // App CTA
-  ["app_cta_gradient_start_dark", "app_cta_gradient_start_light"],
-  ["app_cta_gradient_mid_dark", "app_cta_gradient_mid_light"],
-  ["app_cta_gradient_end_dark", "app_cta_gradient_end_light"],
-  ["app_cta_bg_dark", "app_cta_bg_light"],
-  // Footer
-  ["footer_bg_dark", "footer_bg_light"],
-];
-
 // Tabs that depend on a section-enable toggle.
 // When the toggle is OFF the tab shows a notice instead of the full settings list.
 const TAB_ENABLE_SETTINGS = {
@@ -436,10 +407,27 @@ const TAB_ENABLE_SETTINGS = {
   participation: { setting: "participation_enabled", label: "Participation" },
   stats:         { setting: "stats_enabled",         label: "Stats" },
   about:         { setting: "about_enabled",         label: "About" },
-  topics:        { setting: "topics_enabled",        label: "Trending" },
-  groups:        { setting: "groups_enabled",        label: "Spaces" },
+  topics:        { setting: "topics_enabled",        label: "Topics" },
+  groups:        { setting: "groups_enabled",        label: "Groups" },
   faq:           { setting: "faq_enabled",           label: "FAQ" },
   appcta:        { setting: "show_app_ctas",         label: "App CTA" },
+};
+
+// Image URL settings that get upload buttons injected in the admin panel.
+// "multi: true" means pipe-separated list (appends rather than replaces).
+const IMAGE_UPLOAD_SETTINGS = {
+  og_image_url:                { label: "Upload Image", multi: false },
+  favicon_url:                 { label: "Upload Favicon", multi: false },
+  logo_dark_url:               { label: "Upload Logo", multi: false },
+  logo_light_url:              { label: "Upload Logo", multi: false },
+  footer_logo_url:             { label: "Upload Logo", multi: false },
+  hero_background_image_url:   { label: "Upload Image", multi: false },
+  hero_image_urls:             { label: "Add Image", multi: true },
+  about_image_url:             { label: "Upload Image", multi: false },
+  about_background_image_url:  { label: "Upload Image", multi: false },
+  ios_app_badge_image_url:     { label: "Upload Badge", multi: false },
+  android_app_badge_image_url: { label: "Upload Badge", multi: false },
+  app_cta_image_url:           { label: "Upload Image", multi: false },
 };
 
 let currentTab = "settings";
@@ -487,9 +475,14 @@ function updateActiveStates(activeId) {
   });
 
   // Native nav: the original Settings <li>
+  // Discourse's router keeps aria-current="true" on the native <a>, so we
+  // must also add a class to suppress its active styling when another tab
+  // is selected.
   const nativeItem = document.querySelector(".cl-native-settings-item");
   if (nativeItem) {
-    nativeItem.classList.toggle("active", activeId === "settings");
+    const isSettings = activeId === "settings";
+    nativeItem.classList.toggle("active", isSettings);
+    nativeItem.classList.toggle("cl-tab-inactive", !isSettings);
   }
 
   // Standalone fallback: <button> tabs
@@ -523,6 +516,7 @@ function handleTabClick(container, tabId) {
   clearDisabledNotice(container);
   updateActiveStates(tabId);
   applyTabFilter();
+  injectUploadButtons();
   updateDisabledNotice(container);
 }
 
@@ -537,7 +531,7 @@ function cleanupTabs() {
   // Restore native Settings <li> — remove our hook class
   const nativeItem = document.querySelector(".cl-native-settings-item");
   if (nativeItem) {
-    nativeItem.classList.remove("cl-native-settings-item", "active");
+    nativeItem.classList.remove("cl-native-settings-item", "active", "cl-tab-inactive");
   }
 
   // Remove filter-active class from native nav
@@ -558,11 +552,6 @@ function cleanupTabs() {
     container.classList.remove("cl-tabs-active");
     container.querySelectorAll(".cl-tab-hidden").forEach((el) => {
       el.classList.remove("cl-tab-hidden");
-    });
-
-    // Remove merge classes
-    container.querySelectorAll(".cl-merged-dark, .cl-merged-light").forEach((el) => {
-      el.classList.remove("cl-merged-dark", "cl-merged-light");
     });
 
     // Remove disabled notices
@@ -602,46 +591,43 @@ function injectDescriptions() {
 }
 
 /**
- * Merge dark/light bg color pairs into a single visual row.
- * CSS-only approach — elements stay in their original DOM positions
- * (preserving Ember bindings, undo/reset buttons, and re-renders).
+ * For boolean (checkbox) settings:
+ *  1. Strip "enable" / "enabled" from the setting-label heading.
+ *  2. Add an "Enable" text label next to the checkbox in setting-value.
  */
-function mergeBgPairs() {
+function cleanBooleanLabels() {
   const container = getContainer();
   if (!container) return;
 
-  BG_PAIRS.forEach(([darkName, lightName]) => {
-    const darkRow = container.querySelector(`.row.setting[data-setting="${darkName}"]`);
-    const lightRow = container.querySelector(`.row.setting[data-setting="${lightName}"]`);
-    if (!darkRow || !lightRow) return;
-    // Already merged
-    if (darkRow.classList.contains("cl-merged-dark")) return;
+  container.querySelectorAll(".row.setting[data-setting]").forEach((row) => {
+    const cb = row.querySelector('.setting-value input[type="checkbox"]');
+    if (!cb) return; // not a boolean setting
 
-    // Rename the dark row label (remove " dark" suffix)
-    const darkH3 = darkRow.querySelector(".setting-label h3");
-    if (darkH3) {
-      darkH3.textContent = darkH3.textContent.replace(/\s*dark$/i, "").trim();
+    // Already processed
+    if (cb.dataset.clLabelCleaned) return;
+    cb.dataset.clLabelCleaned = "1";
+
+    // 1. Clean the heading: remove "enable" / "enabled" (case-insensitive)
+    const h3 = row.querySelector(".setting-label h3");
+    if (h3) {
+      h3.childNodes.forEach((node) => {
+        if (node.nodeType === Node.TEXT_NODE) {
+          node.textContent = node.textContent
+            .replace(/\benabled?\b/gi, "")
+            .replace(/\s{2,}/g, " ")
+            .trim();
+        }
+      });
     }
 
-    // Add "Dark" / "Light" labels to each row's setting-value
-    const darkValue = darkRow.querySelector(".setting-value");
-    const lightValue = lightRow.querySelector(".setting-value");
-    if (darkValue && !darkValue.querySelector(".cl-color-col__label")) {
+    // 2. Add "Enable" label next to the checkbox
+    const valueDiv = row.querySelector(".setting-value");
+    if (valueDiv && !valueDiv.querySelector(".cl-enable-label")) {
       const lbl = document.createElement("span");
-      lbl.className = "cl-color-col__label";
-      lbl.textContent = "Dark";
-      darkValue.insertBefore(lbl, darkValue.firstChild);
+      lbl.className = "cl-enable-label";
+      lbl.textContent = "Enable";
+      cb.insertAdjacentElement("afterend", lbl);
     }
-    if (lightValue && !lightValue.querySelector(".cl-color-col__label")) {
-      const lbl = document.createElement("span");
-      lbl.className = "cl-color-col__label";
-      lbl.textContent = "Light";
-      lightValue.insertBefore(lbl, lightValue.firstChild);
-    }
-
-    // Just add classes — NO DOM moves, preserves all Ember bindings
-    darkRow.classList.add("cl-merged-dark");
-    lightRow.classList.add("cl-merged-light");
   });
 }
 
@@ -777,7 +763,8 @@ function buildTabsUI() {
 
     container.classList.add("cl-tabs-active");
     injectDescriptions();
-    mergeBgPairs();
+    cleanBooleanLabels();
+    injectUploadButtons();
     applyTabFilter();
     updateDisabledNotice(container);
     listenForEnableToggles(container);
@@ -825,7 +812,8 @@ function buildTabsUI() {
 
   container.classList.add("cl-tabs-active");
   injectDescriptions();
-  mergeBgPairs();
+  cleanBooleanLabels();
+  injectUploadButtons();
   applyTabFilter();
   updateDisabledNotice(container);
   listenForEnableToggles(container);
@@ -847,6 +835,197 @@ function listenForEnableToggles(container) {
       clearDisabledNotice(container);
       updateDisabledNotice(container);
     });
+  });
+}
+
+// ── Image Upload Helpers ──
+
+function getCsrfToken() {
+  const meta = document.querySelector('meta[name="csrf-token"]');
+  return meta ? meta.getAttribute("content") : "";
+}
+
+async function uploadFile(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("type", "composer");
+  formData.append("synchronous_uploads", "true");
+
+  const response = await fetch("/uploads.json", {
+    method: "POST",
+    headers: { "X-CSRF-Token": getCsrfToken() },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`Upload failed (${response.status}): ${text}`);
+  }
+  return response.json();
+}
+
+async function pinUpload(uploadId, settingName) {
+  const response = await fetch("/community-landing/admin/pin-upload", {
+    method: "POST",
+    headers: {
+      "X-CSRF-Token": getCsrfToken(),
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ upload_id: uploadId, setting_name: settingName }),
+  });
+
+  if (!response.ok) {
+    console.warn("[CL] Pin upload failed:", response.status);
+  }
+}
+
+function setSettingValue(row, newValue, multi) {
+  // For list-type settings (hero_image_urls), Discourse renders a .values .value-list
+  // or a plain text input. Try the text input first.
+  const input =
+    row.querySelector('.setting-value input[type="text"]') ||
+    row.querySelector(".setting-value textarea");
+  if (!input) return;
+
+  if (multi) {
+    const current = input.value.trim();
+    input.value = current ? current + "|" + newValue : newValue;
+  } else {
+    input.value = newValue;
+  }
+
+  // Dispatch events so Discourse's admin UI picks up the change
+  input.dispatchEvent(new Event("input", { bubbles: true }));
+  input.dispatchEvent(new Event("change", { bubbles: true }));
+
+  // Some Discourse admin UIs require a keydown Enter to register
+  input.dispatchEvent(
+    new KeyboardEvent("keydown", { key: "Enter", keyCode: 13, bubbles: true })
+  );
+}
+
+function updatePreviewThumbnail(wrapper, settingName) {
+  const row = wrapper.closest(".row.setting");
+  if (!row) return;
+
+  const input =
+    row.querySelector('.setting-value input[type="text"]') ||
+    row.querySelector(".setting-value textarea");
+  const url = input ? input.value.trim() : "";
+
+  const preview = wrapper.querySelector(".cl-upload-preview");
+  if (!preview) return;
+
+  const cfg = IMAGE_UPLOAD_SETTINGS[settingName];
+  if (cfg && cfg.multi) {
+    // For multi-image, show the last image in the list
+    const urls = url.split("|").filter(Boolean);
+    const lastUrl = urls.length > 0 ? urls[urls.length - 1] : "";
+    preview.src = lastUrl;
+    preview.style.display = lastUrl ? "" : "none";
+  } else {
+    preview.src = url;
+    preview.style.display = url ? "" : "none";
+  }
+}
+
+function injectUploadButtons() {
+  const container = getContainer();
+  if (!container) return;
+
+  Object.entries(IMAGE_UPLOAD_SETTINGS).forEach(([settingName, cfg]) => {
+    const row = container.querySelector(
+      `.row.setting[data-setting="${settingName}"]`
+    );
+    if (!row) return;
+    if (row.dataset.clUploadInjected) return;
+    row.dataset.clUploadInjected = "1";
+
+    const valueDiv = row.querySelector(".setting-value");
+    if (!valueDiv) return;
+
+    // Build wrapper
+    const wrapper = document.createElement("div");
+    wrapper.className = "cl-upload-wrapper";
+
+    // Upload button
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "cl-upload-btn";
+    btn.textContent = cfg.label;
+    btn.addEventListener("click", () => {
+      const fileInput = document.createElement("input");
+      fileInput.type = "file";
+      fileInput.accept = "image/*";
+      fileInput.style.display = "none";
+      document.body.appendChild(fileInput);
+
+      fileInput.addEventListener("change", async () => {
+        const file = fileInput.files[0];
+        if (!file) return;
+        fileInput.remove();
+
+        // Show uploading status
+        let status = wrapper.querySelector(".cl-upload-status");
+        if (!status) {
+          status = document.createElement("span");
+          status.className = "cl-upload-status";
+          wrapper.appendChild(status);
+        }
+        status.textContent = "Uploading…";
+        btn.disabled = true;
+
+        try {
+          const data = await uploadFile(file);
+          await pinUpload(data.id, settingName);
+          setSettingValue(row, data.url, cfg.multi);
+          updatePreviewThumbnail(wrapper, settingName);
+          status.textContent = "";
+        } catch (err) {
+          status.textContent = "Upload failed";
+          console.error("[CL] Upload error:", err);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
+      fileInput.click();
+    });
+    wrapper.appendChild(btn);
+
+    // Preview thumbnail
+    const preview = document.createElement("img");
+    preview.className = "cl-upload-preview";
+    preview.alt = "Preview";
+    wrapper.appendChild(preview);
+
+    // Remove button (single-image only)
+    if (!cfg.multi) {
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "cl-upload-remove";
+      removeBtn.textContent = "Remove";
+      removeBtn.addEventListener("click", () => {
+        setSettingValue(row, "", false);
+        updatePreviewThumbnail(wrapper, settingName);
+      });
+      wrapper.appendChild(removeBtn);
+    }
+
+    valueDiv.appendChild(wrapper);
+
+    // Initialize preview from current value
+    updatePreviewThumbnail(wrapper, settingName);
+
+    // Listen for manual URL changes to update preview
+    const input =
+      row.querySelector('.setting-value input[type="text"]') ||
+      row.querySelector(".setting-value textarea");
+    if (input) {
+      input.addEventListener("input", () => {
+        updatePreviewThumbnail(wrapper, settingName);
+      });
+    }
   });
 }
 
