@@ -44,6 +44,7 @@ en:
     preloader_bg_light: "Preloader background color for light mode."
     preloader_text_color_dark: "Percentage counter text color for dark mode."
     preloader_text_color_light: "Percentage counter text color for light mode."
+    preloader_logo_color: "Logo color override. Works with single-color SVG logos. Leave blank for white (dark mode) or inherits text color."
     preloader_bar_color: "Progress bar color. Leave blank to use the accent color."
     preloader_min_duration: "Minimum time (ms) the preloader is shown, even if loading finishes sooner. Prevents a flash on fast connections. Default: 800."
 

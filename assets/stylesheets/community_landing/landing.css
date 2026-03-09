@@ -2159,11 +2159,15 @@ html, .cl-body {
 }
 
 .cl-preloader__logo {
-  max-width: 120px;
-  max-height: 60px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+  width: 120px;
+  height: 60px;
+  background: var(--cl-preloader-logo-color, var(--cl-preloader-text, #ffffff));
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
 }
 
 .cl-preloader__counter {

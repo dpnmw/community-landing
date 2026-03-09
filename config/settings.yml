@@ -143,6 +143,9 @@ plugins:
   preloader_text_color_light:
     default: ""
     type: color
+  preloader_logo_color:
+    default: ""
+    type: color
   preloader_bar_color:
     default: ""
     type: color

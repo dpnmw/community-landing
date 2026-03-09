@@ -158,7 +158,7 @@ module CommunityLanding
       html << "<div id=\"cl-preloader\" class=\"cl-preloader\">\n"
       html << "  <div class=\"cl-preloader__content\">\n"
       if logo
-        html << "    <img src=\"#{e(logo)}\" alt=\"\" class=\"cl-preloader__logo\">\n"
+        html << "    <div class=\"cl-preloader__logo\" style=\"-webkit-mask-image: url('#{e(logo)}'); mask-image: url('#{e(logo)}');\"></div>\n"
       end
       html << "    <div class=\"cl-preloader__counter\" id=\"cl-preloader-pct\">0%</div>\n"
       html << "    <div class=\"cl-preloader__bar\"><div class=\"cl-preloader__bar-fill\" id=\"cl-preloader-bar\"></div></div>\n"

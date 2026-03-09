@@ -50,6 +50,7 @@ const DESCRIPTIONS = {
   preloader_bg_light: "Preloader background for light mode.",
   preloader_text_color_dark: "Percentage text color for dark mode.",
   preloader_text_color_light: "Percentage text color for light mode.",
+  preloader_logo_color: "Logo color. Works with single-color SVG logos on transparent background.",
   preloader_bar_color: "Progress bar color. Leave blank for accent color.",
   preloader_min_duration: "Minimum display time (ms). Prevents a flash on fast connections.",
 
@@ -280,7 +281,7 @@ const TABS = [
       "preloader_enabled", "preloader_logo_url",
       "preloader_bg_dark", "preloader_bg_light",
       "preloader_text_color_dark", "preloader_text_color_light",
-      "preloader_bar_color", "preloader_min_duration"
+      "preloader_logo_color", "preloader_bar_color", "preloader_min_duration"
     ])
   },
   {
