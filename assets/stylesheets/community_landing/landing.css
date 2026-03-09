@@ -385,13 +385,16 @@ html, .cl-body {
   font-size: 1.05rem;
 }
 
-/* FontAwesome icon spacing inside buttons */
-.cl-btn i.fa-solid {
+/* FontAwesome icon spacing inside buttons & nav links */
+.cl-btn i.fa-solid,
+.cl-navbar__link i.fa-solid {
   margin: 0 0.35em;
+  vertical-align: middle;
 }
 
-/* Google Material Symbols icon spacing inside buttons */
-.cl-btn .material-symbols-outlined {
+/* Google Material Symbols icon spacing inside buttons & nav links */
+.cl-btn .material-symbols-outlined,
+.cl-navbar__link .material-symbols-outlined {
   margin: 0 0.35em;
   font-size: 1.1em;
   vertical-align: middle;

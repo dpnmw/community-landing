@@ -440,6 +440,7 @@ let currentTab = "settings";
 let filterActive = false;
 let isActive = false;
 let recheckTimer = null;
+let _siteSettings = null;
 
 function getContainer() {
   return (
@@ -907,9 +908,8 @@ function injectVideoUploadNotice(container) {
   toggleRow.dataset.clVideoNoticeInjected = "1";
 
   // Check Discourse site settings for file attachment support
-  const siteSettings = window.Discourse && window.Discourse.SiteSettings;
   const authorizedExtensions = (
-    (siteSettings && siteSettings.authorized_extensions) || ""
+    (_siteSettings && _siteSettings.authorized_extensions) || ""
   ).toLowerCase();
   const attachmentsAllowed =
     authorizedExtensions.includes("mp4") ||
@@ -928,7 +928,7 @@ function injectVideoUploadNotice(container) {
     const uploadBtn = toggleRow.querySelector(".cl-upload-btn");
     if (uploadBtn) uploadBtn.disabled = true;
   } else {
-    const maxSize = siteSettings && siteSettings.max_attachment_size_kb;
+    const maxSize = _siteSettings && _siteSettings.max_attachment_size_kb;
     const maxMB = maxSize ? (maxSize / 1024).toFixed(0) : "?";
     notice.textContent =
       `Check allowed video file types and max upload size (${maxMB} MB) in Settings \u2192 Files before uploading.`;
@@ -961,17 +961,23 @@ function getCsrfToken() {
   return meta ? meta.getAttribute("content") : "";
 }
 
-async function uploadFile(file) {
+async function uploadFile(file, { isVideo = false } = {}) {
   console.log("[CL Upload] Starting upload:", {
     name: file.name,
     type: file.type,
     size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+    isVideo,
   });
 
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_type", "site_setting");
-  formData.append("for_site_setting", "true");
+  if (isVideo) {
+    // Discourse rejects non-image files when for_site_setting is true
+    formData.append("upload_type", "composer");
+  } else {
+    formData.append("upload_type", "site_setting");
+    formData.append("for_site_setting", "true");
+  }
   formData.append("synchronous_uploads", "true");
 
   const csrfToken = getCsrfToken();
@@ -1218,7 +1224,8 @@ function injectUploadButtons() {
         btn.disabled = true;
 
         try {
-          const data = await uploadFile(file);
+          const isVideo = (cfg.accept || "").includes("video");
+          const data = await uploadFile(file, { isVideo });
           await pinUpload(data.id, settingName);
           setSettingValue(row, data.url, cfg.multi);
           updatePreviewThumbnail(wrapper, settingName);
@@ -1298,6 +1305,7 @@ export default {
 
   initialize() {
     withPluginApi("1.0", (api) => {
+      _siteSettings = api.container.lookup("service:site-settings");
       api.onPageChange((url) => {
         if (
           url.includes("community-landing") ||
