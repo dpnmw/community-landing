@@ -26,6 +26,7 @@ module CommunityLanding
       html = +""
       html << render_head
       html << "<body class=\"cl-body\">\n"
+      html << render_preloader if (@s.preloader_enabled rescue false)
       if @s.dynamic_background_enabled
         html << "<div class=\"cl-orb-container\"><div class=\"cl-orb cl-orb--1\"></div><div class=\"cl-orb cl-orb--2\"></div></div>\n"
       end
@@ -144,6 +145,83 @@ module CommunityLanding
       end
 
       html << "</head>\n"
+      html
+    end
+
+    # ── PRELOADER ──
+
+    def render_preloader
+      logo = (@s.preloader_logo_url.presence rescue nil) || logo_dark_url
+      min_ms = (@s.preloader_min_duration rescue 800).to_i.clamp(0, 5000)
+
+      html = +""
+      html << "<div id=\"cl-preloader\" class=\"cl-preloader\">\n"
+      html << "  <div class=\"cl-preloader__content\">\n"
+      if logo
+        html << "    <img src=\"#{e(logo)}\" alt=\"\" class=\"cl-preloader__logo\">\n"
+      end
+      html << "    <div class=\"cl-preloader__counter\" id=\"cl-preloader-pct\">0%</div>\n"
+      html << "    <div class=\"cl-preloader__bar\"><div class=\"cl-preloader__bar-fill\" id=\"cl-preloader-bar\"></div></div>\n"
+      html << "  </div>\n"
+      html << "</div>\n"
+
+      # Inline script — must run immediately, before any other resources
+      html << "<script>\n"
+      html << "(function() {\n"
+      html << "  var el = document.getElementById('cl-preloader');\n"
+      html << "  var pct = document.getElementById('cl-preloader-pct');\n"
+      html << "  var bar = document.getElementById('cl-preloader-bar');\n"
+      html << "  var minMs = #{min_ms};\n"
+      html << "  var start = Date.now();\n"
+      html << "  var current = 0;\n"
+      html << "  var target = 0;\n"
+      html << "  var done = false;\n"
+      html << "\n"
+      html << "  function update() {\n"
+      html << "    if (current < target) {\n"
+      html << "      current += (target - current) * 0.15;\n"
+      html << "      if (target - current < 0.5) current = target;\n"
+      html << "    }\n"
+      html << "    var v = Math.round(current);\n"
+      html << "    pct.textContent = v + '%';\n"
+      html << "    bar.style.width = v + '%';\n"
+      html << "    if (done && current >= 100) {\n"
+      html << "      var elapsed = Date.now() - start;\n"
+      html << "      var remaining = Math.max(0, minMs - elapsed);\n"
+      html << "      setTimeout(function() {\n"
+      html << "        el.classList.add('cl-preloader--hide');\n"
+      html << "        setTimeout(function() { el.remove(); }, 500);\n"
+      html << "      }, remaining);\n"
+      html << "      return;\n"
+      html << "    }\n"
+      html << "    requestAnimationFrame(update);\n"
+      html << "  }\n"
+      html << "\n"
+      html << "  // Track image loading\n"
+      html << "  window.addEventListener('DOMContentLoaded', function() {\n"
+      html << "    var imgs = document.querySelectorAll('img');\n"
+      html << "    var total = imgs.length || 1;\n"
+      html << "    var loaded = 0;\n"
+      html << "    function tick() {\n"
+      html << "      loaded++;\n"
+      html << "      target = Math.min(95, Math.round((loaded / total) * 95));\n"
+      html << "    }\n"
+      html << "    imgs.forEach(function(img) {\n"
+      html << "      if (img.complete) { tick(); return; }\n"
+      html << "      img.addEventListener('load', tick);\n"
+      html << "      img.addEventListener('error', tick);\n"
+      html << "    });\n"
+      html << "    if (imgs.length === 0) target = 95;\n"
+      html << "  });\n"
+      html << "\n"
+      html << "  window.addEventListener('load', function() {\n"
+      html << "    target = 100;\n"
+      html << "    done = true;\n"
+      html << "  });\n"
+      html << "\n"
+      html << "  requestAnimationFrame(update);\n"
+      html << "})();\n"
+      html << "</script>\n"
       html
     end
 
@@ -770,7 +848,9 @@ module CommunityLanding
     end
 
     def render_video_modal
-      return "" unless (@s.hero_video_url.presence rescue nil)
+      has_video = (@s.hero_video_url.presence rescue nil) ||
+                  (@s.hero_video_upload.presence rescue nil)
+      return "" unless has_video
 
       html = +""
       html << "<div class=\"cl-video-modal\" id=\"cl-video-modal\">\n"

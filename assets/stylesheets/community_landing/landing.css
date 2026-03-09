@@ -2132,6 +2132,69 @@ html, .cl-body {
 }
 
 /* ═══════════════════════════════════════════════════════════════════
+   PRELOADER
+   ═══════════════════════════════════════════════════════════════════ */
+.cl-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--cl-preloader-bg, var(--cl-bg, #06060f));
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+
+.cl-preloader--hide {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.cl-preloader__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.cl-preloader__logo {
+  max-width: 120px;
+  max-height: 60px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.cl-preloader__counter {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--cl-preloader-text, var(--cl-text-strong, #ffffff));
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.cl-preloader__bar {
+  width: 180px;
+  height: 3px;
+  background: var(--cl-preloader-bar-track, rgba(255, 255, 255, 0.1));
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cl-preloader__bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--cl-preloader-bar, var(--cl-accent, #d4a24e));
+  border-radius: 3px;
+  transition: width 0.1s ease-out;
+}
+
+[data-theme="light"] .cl-preloader__bar {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
    REDUCED MOTION
    ═══════════════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {

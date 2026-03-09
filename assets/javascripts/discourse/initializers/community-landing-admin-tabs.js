@@ -43,6 +43,16 @@ const DESCRIPTIONS = {
   google_font_name: "Google Font family for body text. Must match exact Google Fonts name (e.g. 'Inter', 'Poppins'). Default: Outfit.",
   title_font_name: "Separate Google Font for titles and headings. Leave blank to use the body font.",
 
+  // ── Preloader ──
+  preloader_enabled: "Show a loading overlay with logo and progress counter while the page loads.",
+  preloader_logo_url: "Custom logo for the preloader. Leave blank to use the site logo.",
+  preloader_bg_dark: "Preloader background for dark mode.",
+  preloader_bg_light: "Preloader background for light mode.",
+  preloader_text_color_dark: "Percentage text color for dark mode.",
+  preloader_text_color_light: "Percentage text color for light mode.",
+  preloader_bar_color: "Progress bar color. Leave blank for accent color.",
+  preloader_min_duration: "Minimum display time (ms). Prevents a flash on fast connections.",
+
   // ── Icons ──
   icon_library: "Icon library for buttons and titles. 'fontawesome' = FA 6 Free, 'google' = Material Symbols Outlined. Syntax: \"icon | Label\" or \"icon | size | Label\" (size in px).",
 
@@ -266,7 +276,11 @@ const TABS = [
       "orb_color", "orb_opacity",
       "scroll_animation", "staggered_reveal_enabled", "dynamic_background_enabled",
       "mouse_parallax_enabled", "scroll_progress_enabled",
-      "google_font_name", "title_font_name", "icon_library"
+      "google_font_name", "title_font_name", "icon_library",
+      "preloader_enabled", "preloader_logo_url",
+      "preloader_bg_dark", "preloader_bg_light",
+      "preloader_text_color_dark", "preloader_text_color_light",
+      "preloader_bar_color", "preloader_min_duration"
     ])
   },
   {
@@ -434,6 +448,7 @@ const IMAGE_UPLOAD_SETTINGS = {
   android_app_badge_image_url: { label: "Upload Badge", multi: false },
   app_cta_image_url:           { label: "Upload Image", multi: false },
   splits_background_image_url: { label: "Upload Image", multi: false },
+  preloader_logo_url:          { label: "Upload Logo", multi: false },
 };
 
 let currentTab = "settings";
@@ -1052,10 +1067,32 @@ function updatePreviewThumbnail(wrapper, settingName) {
     const preview = wrapper.querySelector(".cl-upload-preview");
     if (preview) preview.style.display = "none";
   } else {
-    const preview = wrapper.querySelector(".cl-upload-preview");
-    if (!preview) return;
-    preview.src = url;
-    preview.style.display = url ? "" : "none";
+    const isVideo = cfg && (cfg.accept || "").includes("video");
+    if (isVideo) {
+      // Video: show text label instead of broken img preview
+      let label = wrapper.querySelector(".cl-upload-preview-label");
+      if (!label) {
+        label = document.createElement("span");
+        label.className = "cl-upload-preview-label";
+        // Insert before remove button if it exists
+        const removeBtn = wrapper.querySelector(".cl-upload-remove");
+        if (removeBtn) {
+          wrapper.insertBefore(label, removeBtn);
+        } else {
+          wrapper.appendChild(label);
+        }
+      }
+      label.textContent = url ? "Video uploaded" : "";
+      label.style.display = url ? "" : "none";
+      // Hide img preview if exists
+      const preview = wrapper.querySelector(".cl-upload-preview");
+      if (preview) preview.style.display = "none";
+    } else {
+      const preview = wrapper.querySelector(".cl-upload-preview");
+      if (!preview) return;
+      preview.src = url;
+      preview.style.display = url ? "" : "none";
+    }
   }
 }
 

@@ -123,6 +123,36 @@ plugins:
     type: string
 
   # ══════════════════════════════════════════
+  # Preloader
+  # ══════════════════════════════════════════
+  preloader_enabled:
+    default: false
+    type: bool
+  preloader_logo_url:
+    default: ""
+    type: string
+  preloader_bg_dark:
+    default: ""
+    type: color
+  preloader_bg_light:
+    default: ""
+    type: color
+  preloader_text_color_dark:
+    default: ""
+    type: color
+  preloader_text_color_light:
+    default: ""
+    type: color
+  preloader_bar_color:
+    default: ""
+    type: color
+  preloader_min_duration:
+    default: 800
+    type: integer
+    min: 0
+    max: 5000
+
+  # ══════════════════════════════════════════
   # Icons
   # ══════════════════════════════════════════
   icon_library:

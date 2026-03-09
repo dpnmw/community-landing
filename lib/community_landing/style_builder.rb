@@ -67,6 +67,11 @@ module CommunityLanding
       cta_subtext_light   = safe_hex(:app_cta_subtext_color_light)
       footer_text_dark    = safe_hex(:footer_text_color_dark)
       footer_text_light   = safe_hex(:footer_text_color_light)
+      preloader_bg_dark   = safe_hex(:preloader_bg_dark)
+      preloader_bg_light  = safe_hex(:preloader_bg_light)
+      preloader_text_dark = safe_hex(:preloader_text_color_dark)
+      preloader_text_light = safe_hex(:preloader_text_color_light)
+      preloader_bar       = safe_hex(:preloader_bar_color)
 
       orb_color     = safe_hex(:orb_color)
       orb_opacity   = [[@s.orb_opacity.to_i, 0].max, 100].min rescue 50
@@ -104,6 +109,9 @@ module CommunityLanding
         dark_extras << "\n  --cl-video-btn-glow: rgba(#{video_btn_rgb}, 0.35);"
       end
       dark_extras << "\n  --cl-footer-text: #{footer_text_dark};" if footer_text_dark
+      dark_extras << "\n  --cl-preloader-bg: #{preloader_bg_dark};" if preloader_bg_dark
+      dark_extras << "\n  --cl-preloader-text: #{preloader_text_dark};" if preloader_text_dark
+      dark_extras << "\n  --cl-preloader-bar: #{preloader_bar};" if preloader_bar
 
       light_extras = +""
       light_extras << "\n  --cl-navbar-signin-color: #{navbar_signin_light || navbar_signin_dark};" if navbar_signin_light || navbar_signin_dark
@@ -117,6 +125,9 @@ module CommunityLanding
         light_extras << "\n  --cl-video-btn-glow: rgba(#{video_btn_rgb}, 0.25);"
       end
       light_extras << "\n  --cl-footer-text: #{footer_text_light || footer_text_dark};" if footer_text_light || footer_text_dark
+      light_extras << "\n  --cl-preloader-bg: #{preloader_bg_light || preloader_bg_dark};" if preloader_bg_light || preloader_bg_dark
+      light_extras << "\n  --cl-preloader-text: #{preloader_text_light || preloader_text_dark};" if preloader_text_light || preloader_text_dark
+      light_extras << "\n  --cl-preloader-bar: #{preloader_bar};" if preloader_bar
 
       "<style>
 :root, [data-theme=\"dark\"] {

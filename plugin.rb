@@ -88,6 +88,7 @@ after_initialize do
       about_background_image_url ios_app_badge_image_url
       android_app_badge_image_url app_cta_image_url
       splits_background_image_url hero_video_upload
+      preloader_logo_url
     ].freeze
 
     # POST /community-landing/admin/pin-upload
