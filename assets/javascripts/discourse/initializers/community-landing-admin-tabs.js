@@ -18,8 +18,8 @@ const DESCRIPTIONS = {
   json_ld_enabled: "Add JSON-LD structured data (Organization + WebSite schema) for search engines.",
 
   // ── Branding: Logo ──
-  logo_dark_url: "Logo image URL for dark mode. Shown in navbar and footer. Leave blank to show site name as text.",
-  logo_light_url: "Logo image URL for light mode. If not set, the dark logo is used for both themes.",
+  logo_dark_url: "Logo image URL for dark mode. Shown in navbar and footer. Leave blank to use the Discourse site logo.",
+  logo_light_url: "Logo image URL for light mode. Leave blank to use the dark logo for both themes.",
   logo_height: "Logo height in pixels (16–80). Applies to both navbar and footer logos.",
   logo_use_accent_color: "Tint the logo to match the accent color. Works best with monochrome SVG or PNG logos.",
   footer_logo_url: "Override logo for the footer only. If not set, the navbar logo is reused.",
@@ -45,12 +45,12 @@ const DESCRIPTIONS = {
 
   // ── Preloader ──
   preloader_enabled: "Show a loading overlay with logo and progress counter while the page loads.",
-  preloader_logo_url: "Custom logo for the preloader. Leave blank to use the site logo.",
+  preloader_logo_dark_url: "Logo image for the preloader in dark mode. Leave blank to use the site logo.",
+  preloader_logo_light_url: "Logo image for the preloader in light mode. Leave blank to use the dark preloader logo.",
   preloader_bg_dark: "Preloader background for dark mode.",
   preloader_bg_light: "Preloader background for light mode.",
   preloader_text_color_dark: "Percentage text color for dark mode.",
   preloader_text_color_light: "Percentage text color for light mode.",
-  preloader_logo_color: "Logo color. Works with single-color SVG logos on transparent background.",
   preloader_bar_color: "Progress bar color. Leave blank for accent color.",
   preloader_min_duration: "Minimum display time (ms). Prevents a flash on fast connections.",
 
@@ -278,10 +278,10 @@ const TABS = [
       "scroll_animation", "staggered_reveal_enabled", "dynamic_background_enabled",
       "mouse_parallax_enabled", "scroll_progress_enabled",
       "google_font_name", "title_font_name", "icon_library",
-      "preloader_enabled", "preloader_logo_url",
+      "preloader_enabled", "preloader_logo_dark_url", "preloader_logo_light_url",
       "preloader_bg_dark", "preloader_bg_light",
       "preloader_text_color_dark", "preloader_text_color_light",
-      "preloader_logo_color", "preloader_bar_color", "preloader_min_duration"
+      "preloader_bar_color", "preloader_min_duration"
     ])
   },
   {
@@ -449,7 +449,8 @@ const IMAGE_UPLOAD_SETTINGS = {
   android_app_badge_image_url: { label: "Upload Badge", multi: false },
   app_cta_image_url:           { label: "Upload Image", multi: false },
   splits_background_image_url: { label: "Upload Image", multi: false },
-  preloader_logo_url:          { label: "Upload Logo", multi: false },
+  preloader_logo_dark_url:     { label: "Upload Logo (Dark)", multi: false },
+  preloader_logo_light_url:    { label: "Upload Logo (Light)", multi: false },
 };
 
 let currentTab = "settings";

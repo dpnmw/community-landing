@@ -151,14 +151,17 @@ module CommunityLanding
     # ── PRELOADER ──
 
     def render_preloader
-      logo = (@s.preloader_logo_url.presence rescue nil) || logo_dark_url
+      logo_dark  = (@s.preloader_logo_dark_url.presence rescue nil) || logo_dark_url
+      logo_light = (@s.preloader_logo_light_url.presence rescue nil) || logo_dark
+
       min_ms = (@s.preloader_min_duration rescue 800).to_i.clamp(0, 5000)
 
       html = +""
       html << "<div id=\"cl-preloader\" class=\"cl-preloader\">\n"
       html << "  <div class=\"cl-preloader__content\">\n"
-      if logo
-        html << "    <div class=\"cl-preloader__logo\" style=\"-webkit-mask-image: url('#{e(logo)}'); mask-image: url('#{e(logo)}');\"></div>\n"
+      if logo_dark
+        html << "    <img class=\"cl-preloader__logo cl-preloader__logo--dark\" src=\"#{e(logo_dark)}\" alt=\"\">\n"
+        html << "    <img class=\"cl-preloader__logo cl-preloader__logo--light\" src=\"#{e(logo_light)}\" alt=\"\">\n"
       end
       html << "    <div class=\"cl-preloader__counter\" id=\"cl-preloader-pct\">0%</div>\n"
       html << "    <div class=\"cl-preloader__bar\"><div class=\"cl-preloader__bar-fill\" id=\"cl-preloader-bar\"></div></div>\n"

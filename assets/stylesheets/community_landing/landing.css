@@ -2159,15 +2159,21 @@ html, .cl-body {
 }
 
 .cl-preloader__logo {
-  width: 120px;
-  height: 60px;
-  background: var(--cl-preloader-logo-color, var(--cl-preloader-text, #ffffff));
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-position: center;
-  mask-position: center;
+  max-width: 120px;
+  max-height: 60px;
+  object-fit: contain;
+}
+
+/* Dark/light logo visibility */
+.cl-preloader__logo--light { display: none; }
+.cl-preloader__logo--dark  { display: block; }
+
+[data-theme="light"] .cl-preloader__logo--dark  { display: none; }
+[data-theme="light"] .cl-preloader__logo--light { display: block; }
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) .cl-preloader__logo--dark  { display: none; }
+  :root:not([data-theme="dark"]) .cl-preloader__logo--light { display: block; }
 }
 
 .cl-preloader__counter {

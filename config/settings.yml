@@ -128,7 +128,10 @@ plugins:
   preloader_enabled:
     default: false
     type: bool
-  preloader_logo_url:
+  preloader_logo_dark_url:
+    default: ""
+    type: string
+  preloader_logo_light_url:
     default: ""
     type: string
   preloader_bg_dark:
@@ -141,9 +144,6 @@ plugins:
     default: ""
     type: color
   preloader_text_color_light:
-    default: ""
-    type: color
-  preloader_logo_color:
     default: ""
     type: color
   preloader_bar_color:

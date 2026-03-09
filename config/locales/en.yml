@@ -16,8 +16,8 @@ en:
     json_ld_enabled: "Add JSON-LD structured data (Organization + WebSite schema) for search engines."
 
     # ── Branding: Logo ──
-    logo_dark_url: "━━ BRANDING ━━ — Logo image URL for dark mode. Displayed in the navbar and footer. Leave blank to show the site name as text."
-    logo_light_url: "Logo image URL for light mode. If not set, the dark logo is used for both themes."
+    logo_dark_url: "━━ BRANDING ━━ — Logo image URL for dark mode. Displayed in the navbar and footer. Leave blank to use the Discourse site logo, or show the site name as text if no site logo is set."
+    logo_light_url: "Logo image URL for light mode. Leave blank to use the dark logo for both themes."
     logo_height: "Logo height in pixels (16–80). Applies to both the navbar and footer logos."
     logo_use_accent_color: "Tint the logo to match the accent color. Works best with monochrome SVG or PNG logos."
     footer_logo_url: "Override logo specifically for the footer. If not set, the navbar logo is reused."
@@ -39,12 +39,12 @@ en:
 
     # ── Preloader ──
     preloader_enabled: "━━ PRELOADER ━━ — Show a full-screen loading overlay with logo and progress counter while the page loads."
-    preloader_logo_url: "Custom logo image for the preloader. Leave blank to use the site logo."
+    preloader_logo_dark_url: "Logo image for the preloader in dark mode. Leave blank to use the site logo."
+    preloader_logo_light_url: "Logo image for the preloader in light mode. Leave blank to use the dark mode preloader logo."
     preloader_bg_dark: "Preloader background color for dark mode. Leave blank for default (matches site background)."
     preloader_bg_light: "Preloader background color for light mode."
     preloader_text_color_dark: "Percentage counter text color for dark mode."
     preloader_text_color_light: "Percentage counter text color for light mode."
-    preloader_logo_color: "Logo color override. Works with single-color SVG logos. Leave blank for white (dark mode) or inherits text color."
     preloader_bar_color: "Progress bar color. Leave blank to use the accent color."
     preloader_min_duration: "Minimum time (ms) the preloader is shown, even if loading finishes sooner. Prevents a flash on fast connections. Default: 800."
 

@@ -72,7 +72,6 @@ module CommunityLanding
       preloader_text_dark = safe_hex(:preloader_text_color_dark)
       preloader_text_light = safe_hex(:preloader_text_color_light)
       preloader_bar       = safe_hex(:preloader_bar_color)
-      preloader_logo      = safe_hex(:preloader_logo_color)
 
       orb_color     = safe_hex(:orb_color)
       orb_opacity   = [[@s.orb_opacity.to_i, 0].max, 100].min rescue 50
@@ -113,7 +112,6 @@ module CommunityLanding
       dark_extras << "\n  --cl-preloader-bg: #{preloader_bg_dark};" if preloader_bg_dark
       dark_extras << "\n  --cl-preloader-text: #{preloader_text_dark};" if preloader_text_dark
       dark_extras << "\n  --cl-preloader-bar: #{preloader_bar};" if preloader_bar
-      dark_extras << "\n  --cl-preloader-logo-color: #{preloader_logo};" if preloader_logo
 
       light_extras = +""
       light_extras << "\n  --cl-navbar-signin-color: #{navbar_signin_light || navbar_signin_dark};" if navbar_signin_light || navbar_signin_dark
@@ -130,7 +128,6 @@ module CommunityLanding
       light_extras << "\n  --cl-preloader-bg: #{preloader_bg_light || preloader_bg_dark};" if preloader_bg_light || preloader_bg_dark
       light_extras << "\n  --cl-preloader-text: #{preloader_text_light || preloader_text_dark};" if preloader_text_light || preloader_text_dark
       light_extras << "\n  --cl-preloader-bar: #{preloader_bar};" if preloader_bar
-      light_extras << "\n  --cl-preloader-logo-color: #{preloader_logo};" if preloader_logo
 
       "<style>
 :root, [data-theme=\"dark\"] {
