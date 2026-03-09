@@ -44,7 +44,7 @@ const DESCRIPTIONS = {
   title_font_name: "Separate Google Font for titles and headings. Leave blank to use the body font.",
 
   // ── Icons ──
-  icon_library: "Icon library for buttons and titles. 'fontawesome' = FA 6 Free, 'google' = Material Symbols Outlined.",
+  icon_library: "Icon library for buttons and titles. 'fontawesome' = FA 6 Free, 'google' = Material Symbols Outlined. Syntax: \"icon | Label\" or \"icon | size | Label\" (size in px).",
 
   // ── Navbar ──
   navbar_signin_label: "Sign-in link text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'right-to-bracket | Sign In').",

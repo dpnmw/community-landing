@@ -850,31 +850,57 @@ module CommunityLanding
     end
 
     # Render an icon element based on the chosen icon library
-    def icon_tag(name, extra_class = nil)
+    # size is optional pixel size (renders as inline style)
+    def icon_tag(name, extra_class = nil, size = nil)
       lib = (@s.icon_library rescue "none").to_s
       cls = extra_class ? " #{extra_class}" : ""
+      style = size ? " style=\"font-size: #{size.to_i}px\"" : ""
       case lib
       when "fontawesome"
-        "<i class=\"fa-solid fa-#{e(name)}#{cls}\"></i>"
+        "<i class=\"fa-solid fa-#{e(name)}#{cls}\"#{style}></i>"
       when "google"
-        "<span class=\"material-symbols-outlined#{cls}\">#{e(name)}</span>"
+        "<span class=\"material-symbols-outlined#{cls}\"#{style}>#{e(name)}</span>"
       else
         nil
       end
     end
 
-    def participation_stat(count, raw_label, default_svg)
-      lib = (@s.icon_library rescue "none").to_s
-      # Parse "icon | Label" format — if present, use library icon instead of default SVG
-      if lib != "none" && raw_label.include?("|")
-        parts = raw_label.split("|", 2).map(&:strip)
+    # Parse "icon | Label" or "icon | size | Label" from a raw label string.
+    # Returns [icon_name, size_or_nil, label] or nil if no icon found.
+    def parse_icon_label(raw)
+      parts = raw.split("|").map(&:strip)
+      return nil if parts.length < 2
+
+      if parts.length >= 3
+        # "icon | size | Label" or "Label | size | icon"
+        if parts[0].match?(/\A[\w-]+\z/) && parts[0].length < 30
+          size = parts[1].match?(/\A\d+\z/) ? parts[1].to_i : nil
+          label = size ? parts[2..].join(" | ") : parts[1..].join(" | ")
+          return [parts[0], size, label]
+        elsif parts[-1].match?(/\A[\w-]+\z/) && parts[-1].length < 30
+          size = parts[-2].match?(/\A\d+\z/) ? parts[-2].to_i : nil
+          label = size ? parts[0..-3].join(" | ") : parts[0..-2].join(" | ")
+          return [parts[-1], size, label, :after]
+        end
+      else
+        # "icon | Label" or "Label | icon"
         left, right = parts
         if left.match?(/\A[\w-]+\z/) && left.length < 30
-          icon_html = icon_tag(left, "cl-participation-stat__icon")
-          label = right
+          return [left, nil, right]
         elsif right.match?(/\A[\w-]+\z/) && right.length < 30
-          icon_html = icon_tag(right, "cl-participation-stat__icon")
-          label = left
+          return [right, nil, left, :after]
+        end
+      end
+      nil
+    end
+
+    def participation_stat(count, raw_label, default_svg)
+      lib = (@s.icon_library rescue "none").to_s
+      if lib != "none" && raw_label.include?("|")
+        parsed = parse_icon_label(raw_label)
+        if parsed
+          icon_html = icon_tag(parsed[0], "cl-participation-stat__icon", parsed[1])
+          label = parsed[2]
         else
           icon_html = default_svg
           label = raw_label
@@ -893,15 +919,12 @@ module CommunityLanding
       lib = (@s.icon_library rescue "none").to_s
       return e(raw_label) unless lib != "none" && raw_label.include?("|")
 
-      parts = raw_label.split("|", 2).map(&:strip)
-      left, right = parts
-      if left.match?(/\A[\w-]+\z/) && left.length < 30
-        "#{icon_tag(left)} #{e(right)}"
-      elsif right.match?(/\A[\w-]+\z/) && right.length < 30
-        "#{e(left)} #{icon_tag(right)}"
-      else
-        e(raw_label)
-      end
+      parsed = parse_icon_label(raw_label)
+      return e(raw_label) unless parsed
+
+      icon = icon_tag(parsed[0], nil, parsed[1])
+      label = e(parsed[2])
+      parsed[3] == :after ? "#{label} #{icon}" : "#{icon} #{label}"
     end
   end
 end
