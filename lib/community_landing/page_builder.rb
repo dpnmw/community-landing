@@ -77,8 +77,12 @@ module CommunityLanding
       html << "<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n"
       html << "<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n"
       html << "<link href=\"https://fonts.googleapis.com/css2?#{font_params}&display=swap\" rel=\"stylesheet\">\n"
-      if (@s.fontawesome_enabled rescue false)
+      icon_lib = (@s.icon_library rescue "none").to_s
+      case icon_lib
+      when "fontawesome"
         html << "<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css\" crossorigin=\"anonymous\">\n"
+      when "google"
+        html << "<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap\">\n"
       end
       html << "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\">\n"
       html << "<meta name=\"color-scheme\" content=\"dark light\">\n"
@@ -504,7 +508,7 @@ module CommunityLanding
 
         html << "<a href=\"#{login_url}\" class=\"cl-topic-card\">\n"
         if topic.category
-          html << "<span class=\"cl-topic-card__cat\" style=\"--cat-color: ##{topic.category.color}\">#{e(topic.category.name)}</span>\n"
+          html << "<span class=\"cl-topic-card__cat\">#{e(topic.category.name)}</span>\n"
         end
         html << "<span class=\"cl-topic-card__title\">#{e(topic.title)}</span>\n"
         html << "<div class=\"cl-topic-card__meta\">"
@@ -845,17 +849,31 @@ module CommunityLanding
       size > 0 ? " style=\"font-size: #{size}px\"" : ""
     end
 
+    # Render an icon element based on the chosen icon library
+    def icon_tag(name, extra_class = nil)
+      lib = (@s.icon_library rescue "none").to_s
+      cls = extra_class ? " #{extra_class}" : ""
+      case lib
+      when "fontawesome"
+        "<i class=\"fa-solid fa-#{e(name)}#{cls}\"></i>"
+      when "google"
+        "<span class=\"material-symbols-outlined#{cls}\">#{e(name)}</span>"
+      else
+        nil
+      end
+    end
+
     def participation_stat(count, raw_label, default_svg)
-      fa_enabled = (@s.fontawesome_enabled rescue false)
-      # Parse "icon | Label" format — if present, use FA icon instead of default SVG
-      if fa_enabled && raw_label.include?("|")
+      lib = (@s.icon_library rescue "none").to_s
+      # Parse "icon | Label" format — if present, use library icon instead of default SVG
+      if lib != "none" && raw_label.include?("|")
         parts = raw_label.split("|", 2).map(&:strip)
         left, right = parts
         if left.match?(/\A[\w-]+\z/) && left.length < 30
-          icon_html = "<i class=\"fa-solid fa-#{e(left)} cl-participation-stat__icon\"></i>"
+          icon_html = icon_tag(left, "cl-participation-stat__icon")
           label = right
         elsif right.match?(/\A[\w-]+\z/) && right.length < 30
-          icon_html = "<i class=\"fa-solid fa-#{e(right)} cl-participation-stat__icon\"></i>"
+          icon_html = icon_tag(right, "cl-participation-stat__icon")
           label = left
         else
           icon_html = default_svg
@@ -872,20 +890,15 @@ module CommunityLanding
     end
 
     def button_with_icon(raw_label)
-      fa_enabled = (@s.fontawesome_enabled rescue false)
-      return e(raw_label) unless fa_enabled && raw_label.include?("|")
+      lib = (@s.icon_library rescue "none").to_s
+      return e(raw_label) unless lib != "none" && raw_label.include?("|")
 
       parts = raw_label.split("|", 2).map(&:strip)
-      # Try to detect which side is the icon name (no spaces, short) vs label text
       left, right = parts
       if left.match?(/\A[\w-]+\z/) && left.length < 30
-        # "iconname | Label" — icon before
-        icon_html = "<i class=\"fa-solid fa-#{e(left)}\"></i>"
-        "#{icon_html} #{e(right)}"
+        "#{icon_tag(left)} #{e(right)}"
       elsif right.match?(/\A[\w-]+\z/) && right.length < 30
-        # "Label | iconname" — icon after
-        icon_html = "<i class=\"fa-solid fa-#{e(right)}\"></i>"
-        "#{e(left)} #{icon_html}"
+        "#{e(left)} #{icon_tag(right)}"
       else
         e(raw_label)
       end

@@ -38,7 +38,7 @@ en:
     title_font_name: "Separate Google Font for section titles and headings. Leave blank to use the body font. Must match exact Google Fonts name."
 
     # ── Icons ──
-    fontawesome_enabled: "━━ ICONS ━━ — Enable FontAwesome 6 Free icons. Loads the icon library from CDN for use on buttons."
+    icon_library: "━━ ICONS ━━ — Icon library for buttons and section titles. 'fontawesome' loads FontAwesome 6 Free; 'google' loads Google Material Symbols Outlined. Use the pipe syntax in labels: \"icon_name | Label\"."
 
     # ── 1. Navbar ──
     navbar_signin_label: "━━ ROW 1: NAVBAR ━━ — Fixed navigation bar at the top with logo, theme toggle, sign-in link, and join button. This setting controls the sign-in link text."
@@ -230,4 +230,6 @@ en:
     footer_links: 'Footer navigation links as a JSON array. Format: [{"label":"Terms","url":"/tos"},{"label":"Privacy","url":"/privacy"}].'
     footer_bg_dark: "Section background color override. Dark (left) and light (right) color pickers. Leave blank for default."
     footer_bg_light: "Light mode background for the footer."
+    footer_text_color_dark: "Footer text color for dark mode. Applies to site name, links, copyright, and description. Leave blank for default."
+    footer_text_color_light: "Footer text color for light mode."
     footer_border_style: "Border style at the top of the footer bar."

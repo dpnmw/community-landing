@@ -179,7 +179,7 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="footer_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="google_"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting^="title_font"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="fontawesome_enabled"] {
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="icon_library"] {
   margin-bottom: 20px;
 }
 
@@ -191,7 +191,7 @@ html.dark-scheme .cl-admin-tabs .cl-admin-tab:hover {
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="accent_color"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="google_font_name"],
-.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="fontawesome_enabled"],
+.admin-detail:not(.cl-tabs-active) .row.setting[data-setting="icon_library"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="social_twitter_url"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],
@@ -216,7 +216,7 @@ html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="l
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="accent_color"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="scroll_animation"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="google_font_name"],
-html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="fontawesome_enabled"],
+html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="icon_library"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="social_twitter_url"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="navbar_signin_label"],
 html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="hero_title"],

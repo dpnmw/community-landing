@@ -51,7 +51,7 @@
   --cl-border-hover: rgba(196, 146, 46, 0.25);
   --cl-hero-bg: #faf9f6;
   --cl-hero-text: #1a1a2e;
-  --cl-footer-bg: #f5f4ef;
+  --cl-footer-bg: #ffffff;
   --cl-shadow: rgba(0, 0, 0, 0.04);
   --cl-glass: rgba(255, 255, 255, 0.7);
   --cl-glass-border: rgba(0, 0, 0, 0.04);
@@ -81,7 +81,7 @@
     --cl-border-hover: rgba(212, 162, 78, 0.3);
     --cl-hero-bg: #faf6f0;
     --cl-hero-text: #1a1a2e;
-    --cl-footer-bg: #f5f0e8;
+    --cl-footer-bg: #ffffff;
     --cl-shadow: rgba(0, 0, 0, 0.06);
     --cl-glass: rgba(255, 255, 255, 0.6);
     --cl-glass-border: rgba(0, 0, 0, 0.05);
@@ -388,6 +388,18 @@ html, .cl-body {
 /* FontAwesome icon spacing inside buttons */
 .cl-btn i.fa-solid {
   margin: 0 0.35em;
+}
+
+/* Google Material Symbols icon spacing inside buttons */
+.cl-btn .material-symbols-outlined {
+  margin: 0 0.35em;
+  font-size: 1.1em;
+  vertical-align: middle;
+}
+
+.cl-participation-stat__icon.material-symbols-outlined {
+  font-size: 0.85em;
+  vertical-align: middle;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
@@ -1514,8 +1526,9 @@ html, .cl-body {
   border-radius: 6px;
   font-size: 0.65rem;
   font-weight: 800;
-  color: #fff;
-  background: var(--cat-color);
+  color: var(--cl-text-strong);
+  background: var(--cl-secondary-btn-bg, var(--cl-accent-subtle));
+  border: 1px solid var(--cl-accent);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   white-space: nowrap;
@@ -2034,7 +2047,7 @@ html, .cl-body {
 }
 
 .cl-footer-desc__text {
-  color: var(--cl-muted);
+  color: var(--cl-footer-text, var(--cl-muted));
   font-size: 0.88rem;
   line-height: 1.7;
 }
@@ -2077,7 +2090,7 @@ html, .cl-body {
 .cl-footer__site-name {
   font-size: 0.95rem;
   font-weight: 700;
-  color: var(--cl-text-strong);
+  color: var(--cl-footer-text, var(--cl-text-strong));
 }
 
 .cl-footer__links {
@@ -2088,7 +2101,7 @@ html, .cl-body {
 }
 
 .cl-footer__link {
-  color: var(--cl-muted);
+  color: var(--cl-footer-text, var(--cl-muted));
   text-decoration: none;
   font-size: 0.82rem;
   transition: color 0.2s;
@@ -2106,11 +2119,11 @@ html, .cl-body {
 
 .cl-footer__copy {
   font-size: 0.75rem;
-  color: var(--cl-muted);
+  color: var(--cl-footer-text, var(--cl-muted));
 }
 
 .cl-footer__text {
-  color: var(--cl-muted);
+  color: var(--cl-footer-text, var(--cl-muted));
   font-size: 0.82rem;
   padding: 1rem 0 0;
 }

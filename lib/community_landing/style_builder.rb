@@ -65,6 +65,8 @@ module CommunityLanding
       cta_headline_light  = safe_hex(:app_cta_headline_color_light)
       cta_subtext_dark    = safe_hex(:app_cta_subtext_color_dark)
       cta_subtext_light   = safe_hex(:app_cta_subtext_color_light)
+      footer_text_dark    = safe_hex(:footer_text_color_dark)
+      footer_text_light   = safe_hex(:footer_text_color_light)
 
       orb_color     = safe_hex(:orb_color)
       orb_opacity   = [[@s.orb_opacity.to_i, 0].max, 100].min rescue 50
@@ -101,6 +103,7 @@ module CommunityLanding
         dark_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};"
         dark_extras << "\n  --cl-video-btn-glow: rgba(#{video_btn_rgb}, 0.35);"
       end
+      dark_extras << "\n  --cl-footer-text: #{footer_text_dark};" if footer_text_dark
 
       light_extras = +""
       light_extras << "\n  --cl-navbar-signin-color: #{navbar_signin_light || navbar_signin_dark};" if navbar_signin_light || navbar_signin_dark
@@ -113,6 +116,7 @@ module CommunityLanding
         light_extras << "\n  --cl-video-btn-bg: #{video_btn_bg};"
         light_extras << "\n  --cl-video-btn-glow: rgba(#{video_btn_rgb}, 0.25);"
       end
+      light_extras << "\n  --cl-footer-text: #{footer_text_light || footer_text_dark};" if footer_text_light || footer_text_dark
 
       "<style>
 :root, [data-theme=\"dark\"] {

@@ -44,7 +44,7 @@ const DESCRIPTIONS = {
   title_font_name: "Separate Google Font for titles and headings. Leave blank to use the body font.",
 
   // ── Icons ──
-  fontawesome_enabled: "Load FontAwesome 6 Free icons from CDN for use on buttons.",
+  icon_library: "Icon library for buttons and titles. 'fontawesome' = FA 6 Free, 'google' = Material Symbols Outlined.",
 
   // ── Navbar ──
   navbar_signin_label: "Sign-in link text. Use 'icon | Label' for FA icon before or 'Label | icon' for after (e.g. 'right-to-bracket | Sign In').",
@@ -248,6 +248,8 @@ const DESCRIPTIONS = {
   footer_links: 'Footer links as JSON array: [{\"label\":\"Terms\",\"url\":\"/tos\"}].',
   footer_bg_dark: "Footer background for dark mode. Leave blank for default.",
   footer_bg_light: "Footer background for light mode.",
+  footer_text_color_dark: "Footer text color for dark mode. Applies to site name, links, copyright, and description.",
+  footer_text_color_light: "Footer text color for light mode.",
   footer_border_style: "Border style at the top of the footer bar.",
 };
 
@@ -264,7 +266,7 @@ const TABS = [
       "orb_color", "orb_opacity",
       "scroll_animation", "staggered_reveal_enabled", "dynamic_background_enabled",
       "mouse_parallax_enabled", "scroll_progress_enabled",
-      "google_font_name", "title_font_name", "fontawesome_enabled"
+      "google_font_name", "title_font_name", "icon_library"
     ])
   },
   {
@@ -391,7 +393,9 @@ const TABS = [
     label: "Footer",
     settings: new Set([
       "footer_description", "footer_text", "footer_links",
-      "footer_bg_dark", "footer_bg_light", "footer_border_style"
+      "footer_bg_dark", "footer_bg_light",
+      "footer_text_color_dark", "footer_text_color_light",
+      "footer_border_style"
     ])
   }
 ];
@@ -958,23 +962,38 @@ function getCsrfToken() {
 }
 
 async function uploadFile(file) {
+  console.log("[CL Upload] Starting upload:", {
+    name: file.name,
+    type: file.type,
+    size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+  });
+
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_type", "site_setting");
   formData.append("for_site_setting", "true");
   formData.append("synchronous_uploads", "true");
 
+  const csrfToken = getCsrfToken();
+  console.log("[CL Upload] CSRF token present:", !!csrfToken);
+
   const response = await fetch("/uploads.json", {
     method: "POST",
-    headers: { "X-CSRF-Token": getCsrfToken() },
+    headers: { "X-CSRF-Token": csrfToken },
     body: formData,
   });
 
+  console.log("[CL Upload] Response status:", response.status, response.statusText);
+
   if (!response.ok) {
     const text = await response.text();
+    console.error("[CL Upload] Error response body:", text);
     throw new Error(`Upload failed (${response.status}): ${text}`);
   }
-  return response.json();
+
+  const data = await response.json();
+  console.log("[CL Upload] Success:", { id: data.id, url: data.url, short_url: data.short_url });
+  return data;
 }
 
 async function pinUpload(uploadId, settingName) {
