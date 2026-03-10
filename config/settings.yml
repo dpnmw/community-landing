@@ -300,12 +300,6 @@ plugins:
   hero_secondary_btn_color_light:
     default: ""
     type: color
-  hero_video_upload:
-    default: ""
-    type: string
-  hero_video_url_enabled:
-    default: false
-    type: bool
   hero_video_url:
     default: ""
     type: string

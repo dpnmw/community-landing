@@ -98,8 +98,6 @@ const DESCRIPTIONS = {
   hero_primary_btn_color_light: "Primary button background for light mode.",
   hero_secondary_btn_color_dark: "Secondary button background for dark mode. Leave blank for glass style.",
   hero_secondary_btn_color_light: "Secondary button background for light mode.",
-  hero_video_upload: "Upload a video file to Discourse. Check your site's allowed file types and maximum file size in site settings before uploading.",
-  hero_video_url_enabled: "Use an external video URL instead of uploading a file.",
   hero_video_url: "Hero video URL (MP4 or YouTube). Play button opens a lightbox modal.",
   hero_video_button_color: "Custom color for the video play button. Leave blank for accent color.",
   hero_video_blur_on_hover: "Blur the hero image when hovering the play button.",
@@ -308,7 +306,7 @@ const TABS = [
       "hero_secondary_button_enabled", "hero_secondary_button_label", "hero_secondary_button_url",
       "hero_primary_btn_color_dark", "hero_primary_btn_color_light",
       "hero_secondary_btn_color_dark", "hero_secondary_btn_color_light",
-      "hero_video_upload", "hero_video_url_enabled", "hero_video_url",
+      "hero_video_url",
       "hero_video_button_color", "hero_video_blur_on_hover",
       "hero_bg_dark", "hero_bg_light", "hero_min_height", "hero_border_style",
       "hero_card_bg_dark", "hero_card_bg_light", "hero_card_opacity",
@@ -442,7 +440,6 @@ const IMAGE_UPLOAD_SETTINGS = {
   footer_logo_url:             { label: "Upload Logo", multi: false },
   hero_background_image_url:   { label: "Upload Image", multi: false },
   hero_image_url:              { label: "Upload Image", multi: false },
-  hero_video_upload:           { label: "Upload Video", multi: false, accept: "video/*" },
   about_image_url:             { label: "Upload Image", multi: false },
   about_background_image_url:  { label: "Upload Image", multi: false },
   ios_app_badge_image_url:     { label: "Upload Badge", multi: false },
@@ -877,11 +874,6 @@ const CONDITIONAL_TOGGLES = [
     whenOff: ["hero_image_url"],
     whenOn:  ["hero_image_urls"],
   },
-  {
-    toggle: "hero_video_url_enabled",
-    whenOff: ["hero_video_upload"],
-    whenOn:  ["hero_video_url"],
-  },
 ];
 
 function applyConditionalVisibility(container) {
@@ -912,47 +904,6 @@ function applyConditionalVisibility(container) {
     });
   });
 
-  // Check if file attachments are allowed for video upload toggle
-  injectVideoUploadNotice(container);
-}
-
-function injectVideoUploadNotice(container) {
-  const toggleRow = container.querySelector(
-    '.row.setting[data-setting="hero_video_upload"]'
-  );
-  if (!toggleRow) return;
-  if (toggleRow.dataset.clVideoNoticeInjected) return;
-  toggleRow.dataset.clVideoNoticeInjected = "1";
-
-  // Check Discourse site settings for file attachment support
-  const authorizedExtensions = (
-    (_siteSettings && _siteSettings.authorized_extensions) || ""
-  ).toLowerCase();
-  const attachmentsAllowed =
-    authorizedExtensions.includes("mp4") ||
-    authorizedExtensions.includes("webm") ||
-    authorizedExtensions.includes("mov") ||
-    authorizedExtensions.includes("*");
-
-  const notice = document.createElement("div");
-  notice.className = "cl-upload-notice";
-
-  if (!attachmentsAllowed) {
-    notice.classList.add("cl-upload-notice--warn");
-    notice.textContent =
-      "Video file uploads require video extensions (mp4, webm, mov) to be added to your site\u2019s authorized extensions in Settings \u2192 Files.";
-    // Disable the upload button if injected
-    const uploadBtn = toggleRow.querySelector(".cl-upload-btn");
-    if (uploadBtn) uploadBtn.disabled = true;
-  } else {
-    const maxSize = _siteSettings && _siteSettings.max_attachment_size_kb;
-    const maxMB = maxSize ? (maxSize / 1024).toFixed(0) : "?";
-    notice.textContent =
-      `Check allowed video file types and max upload size (${maxMB} MB) in Settings \u2192 Files before uploading.`;
-  }
-
-  const valueDiv = toggleRow.querySelector(".setting-value") || toggleRow;
-  valueDiv.appendChild(notice);
 }
 
 function listenForConditionalToggles(container) {
@@ -978,23 +929,17 @@ function getCsrfToken() {
   return meta ? meta.getAttribute("content") : "";
 }
 
-async function uploadFile(file, { isVideo = false } = {}) {
+async function uploadFile(file) {
   console.log("[CL Upload] Starting upload:", {
     name: file.name,
     type: file.type,
     size: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
-    isVideo,
   });
 
   const formData = new FormData();
   formData.append("file", file);
-  if (isVideo) {
-    // Discourse rejects non-image files when for_site_setting is true
-    formData.append("upload_type", "composer");
-  } else {
-    formData.append("upload_type", "site_setting");
-    formData.append("for_site_setting", "true");
-  }
+  formData.append("upload_type", "site_setting");
+  formData.append("for_site_setting", "true");
   formData.append("synchronous_uploads", "true");
 
   const csrfToken = getCsrfToken();
@@ -1069,32 +1014,10 @@ function updatePreviewThumbnail(wrapper, settingName) {
     const preview = wrapper.querySelector(".cl-upload-preview");
     if (preview) preview.style.display = "none";
   } else {
-    const isVideo = cfg && (cfg.accept || "").includes("video");
-    if (isVideo) {
-      // Video: show text label instead of broken img preview
-      let label = wrapper.querySelector(".cl-upload-preview-label");
-      if (!label) {
-        label = document.createElement("span");
-        label.className = "cl-upload-preview-label";
-        // Insert before remove button if it exists
-        const removeBtn = wrapper.querySelector(".cl-upload-remove");
-        if (removeBtn) {
-          wrapper.insertBefore(label, removeBtn);
-        } else {
-          wrapper.appendChild(label);
-        }
-      }
-      label.textContent = url ? "Video uploaded" : "";
-      label.style.display = url ? "" : "none";
-      // Hide img preview if exists
-      const preview = wrapper.querySelector(".cl-upload-preview");
-      if (preview) preview.style.display = "none";
-    } else {
-      const preview = wrapper.querySelector(".cl-upload-preview");
-      if (!preview) return;
-      preview.src = url;
-      preview.style.display = url ? "" : "none";
-    }
+    const preview = wrapper.querySelector(".cl-upload-preview");
+    if (!preview) return;
+    preview.src = url;
+    preview.style.display = url ? "" : "none";
   }
 }
 
@@ -1263,8 +1186,7 @@ function injectUploadButtons() {
         btn.disabled = true;
 
         try {
-          const isVideo = (cfg.accept || "").includes("video");
-          const data = await uploadFile(file, { isVideo });
+          const data = await uploadFile(file);
           await pinUpload(data.id, settingName);
           setSettingValue(row, data.url, cfg.multi);
           updatePreviewThumbnail(wrapper, settingName);

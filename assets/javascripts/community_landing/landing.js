@@ -173,7 +173,7 @@
     function openVideoModal(url) {
       var ytId = parseYouTubeId(url);
       if (ytId) {
-        videoPlayer.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" allowfullscreen frameborder="0"></iframe>';
+        videoPlayer.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" referrerpolicy="origin" frameborder="0"></iframe>';
       } else {
         videoPlayer.innerHTML = '<video src="' + url + '" controls autoplay></video>';
       }

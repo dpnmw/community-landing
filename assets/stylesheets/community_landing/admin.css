@@ -449,24 +449,6 @@ html.dark-scheme .admin-detail:not(.cl-tabs-active) .row.setting[data-setting="f
   font-style: italic;
 }
 
-.cl-upload-preview-label {
-  font-size: var(--font-down-1);
-  color: var(--success);
-  font-weight: 600;
-}
-
-.cl-upload-notice {
-  margin-top: 6px;
-  font-size: var(--font-down-2);
-  color: var(--primary-medium);
-  font-style: italic;
-}
-
-.cl-upload-notice--warn {
-  color: var(--danger);
-  font-style: normal;
-  font-weight: 600;
-}
 
 /* ── Multi-image list (hero_image_urls) ── */
 

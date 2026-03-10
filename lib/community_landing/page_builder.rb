@@ -383,11 +383,7 @@ module CommunityLanding
       else
         hero_image_urls_raw = (@s.hero_image_url.presence rescue nil)
       end
-      if (@s.hero_video_url_enabled rescue false)
-        hero_video = (@s.hero_video_url.presence rescue nil)
-      else
-        hero_video = (@s.hero_video_upload.presence rescue nil)
-      end
+      hero_video = (@s.hero_video_url.presence rescue nil)
       blur_attr = (@s.hero_video_blur_on_hover rescue true) ? " data-blur-hover=\"true\"" : ""
       has_images = false
 
@@ -851,8 +847,7 @@ module CommunityLanding
     end
 
     def render_video_modal
-      has_video = (@s.hero_video_url.presence rescue nil) ||
-                  (@s.hero_video_upload.presence rescue nil)
+      has_video = (@s.hero_video_url.presence rescue nil)
       return "" unless has_video
 
       html = +""

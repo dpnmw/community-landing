@@ -87,7 +87,7 @@ after_initialize do
       hero_background_image_url hero_image_url hero_image_urls about_image_url
       about_background_image_url ios_app_badge_image_url
       android_app_badge_image_url app_cta_image_url
-      splits_background_image_url hero_video_upload
+      splits_background_image_url
       preloader_logo_dark_url preloader_logo_light_url
     ].freeze
 

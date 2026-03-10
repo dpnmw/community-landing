@@ -92,8 +92,6 @@ en:
     hero_primary_btn_color_light: "Light mode background for the primary button."
     hero_secondary_btn_color_dark: "Secondary button background color. Dark (left) and light (right) pickers. Leave blank for default glass style."
     hero_secondary_btn_color_light: "Light mode background for the secondary button."
-    hero_video_upload: "Upload a video file to Discourse. Check your site's allowed file types and max file size before uploading."
-    hero_video_url_enabled: "Use an external video URL instead of uploading a file."
     hero_video_url: "URL for a hero video. Supports MP4 and YouTube links. A play button appears in the hero area; clicking opens a lightbox modal with the video."
     hero_video_button_color: "Custom background color for the hero video play button. Leave blank to use the accent color."
     hero_video_blur_on_hover: "Apply a blur effect to the hero image when hovering the play button."
