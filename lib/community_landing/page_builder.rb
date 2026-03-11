@@ -42,6 +42,7 @@ module CommunityLanding
       html << render_footer_desc
       html << render_footer
       html << render_video_modal
+      html << render_designer_badge
       html << "<script>\n#{@js}\n</script>\n"
       html << "</body>\n</html>"
       html
@@ -857,6 +858,25 @@ module CommunityLanding
       html << "<button class=\"cl-video-modal__close\" aria-label=\"Close video\">&times;</button>\n"
       html << "<div class=\"cl-video-modal__player\" id=\"cl-video-player\"></div>\n"
       html << "</div>\n"
+      html << "</div>\n"
+      html
+    end
+
+    def render_designer_badge
+      dark_logo  = File.join(CommunityLanding::PLUGIN_DIR, "..", "logo-dark.png")
+      light_logo = File.join(CommunityLanding::PLUGIN_DIR, "..", "logo-light.png")
+      return "" unless File.exist?(dark_logo) && File.exist?(light_logo)
+
+      dark_b64  = Base64.strict_encode64(File.binread(dark_logo))
+      light_b64 = Base64.strict_encode64(File.binread(light_logo))
+
+      html = +""
+      html << "<div class=\"cl-designer-badge\" id=\"cl-designer-badge\">\n"
+      html << "  <div class=\"cl-designer-badge__tooltip\" id=\"cl-designer-tooltip\">\n"
+      html << "    <a href=\"https://www.dpnmw.com\" target=\"_blank\" rel=\"noopener noreferrer\">Interface design by dpnmw.com</a>\n"
+      html << "  </div>\n"
+      html << "  <img class=\"cl-designer-badge__logo cl-designer-badge__logo--dark\" src=\"data:image/png;base64,#{dark_b64}\" alt=\"Designer\">\n"
+      html << "  <img class=\"cl-designer-badge__logo cl-designer-badge__logo--light\" src=\"data:image/png;base64,#{light_b64}\" alt=\"Designer\">\n"
       html << "</div>\n"
       html
     end

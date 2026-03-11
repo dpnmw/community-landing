@@ -173,7 +173,7 @@
     function openVideoModal(url) {
       var ytId = parseYouTubeId(url);
       if (ytId) {
-        videoPlayer.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1&rel=0" allow="autoplay; encrypted-media; fullscreen" referrerpolicy="origin" frameborder="0"></iframe>';
+        videoPlayer.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + ytId + '?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" allow="autoplay; encrypted-media; fullscreen" referrerpolicy="origin" frameborder="0"></iframe>';
       } else {
         videoPlayer.innerHTML = '<video src="' + url + '" controls autoplay></video>';
       }
@@ -225,5 +225,22 @@
       }
     });
   });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // 9. DESIGNER BADGE TOOLTIP
+  // ═══════════════════════════════════════════════════════════════════
+  var designerBadge = $("#cl-designer-badge");
+  var designerTooltip = $("#cl-designer-tooltip");
+  if (designerBadge && designerTooltip) {
+    designerBadge.addEventListener("click", function (e) {
+      if (e.target.closest("a")) return;
+      designerTooltip.classList.toggle("active");
+    });
+    document.addEventListener("click", function (e) {
+      if (!designerBadge.contains(e.target)) {
+        designerTooltip.classList.remove("active");
+      }
+    });
+  }
 
 })();
