@@ -874,7 +874,7 @@ module CommunityLanding
       html = +""
       html << "<div class=\"cl-designer-badge\" id=\"cl-designer-badge\">\n"
       html << "  <div class=\"cl-designer-badge__tooltip\" id=\"cl-designer-tooltip\">\n"
-      html << "    <a href=\"https://www.dpnmw.com\" target=\"_blank\" rel=\"noopener noreferrer\">Interface design by dpnmw.com</a>\n"
+      html << "    <a href=\"https://www.dpnmw.com\" target=\"_blank\" rel=\"noopener noreferrer\">INTERFACE BY <u>DPN MW</u> <svg width=\"10\" height=\"10\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"vertical-align:middle;margin-left:2px\"><path d=\"M3.5 1.5H10.5V8.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10.5 1.5L1.5 10.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/></svg></a>\n"
       html << "  </div>\n"
       html << "  <img class=\"cl-designer-badge__logo\" src=\"data:image/png;base64,#{logo_b64}\" alt=\"Designer\">\n"
       html << "</div>\n"

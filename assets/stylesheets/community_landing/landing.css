@@ -2328,8 +2328,8 @@ html, .cl-body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.25s ease, border-color 0.25s ease;
-  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+  box-shadow: none;
 }
 .cl-designer-badge:hover {
   transform: scale(1.08);
@@ -2338,7 +2338,7 @@ html, .cl-body {
 [data-theme="light"] .cl-designer-badge {
   background: #ffffff;
   border-color: rgba(0, 0, 0, 0.12);
-  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+  box-shadow: none;
 }
 [data-theme="light"] .cl-designer-badge:hover {
   border-color: var(--cl-accent, #d4a24e);
@@ -2353,20 +2353,21 @@ html, .cl-body {
 .cl-designer-badge__tooltip {
   position: absolute;
   bottom: calc(100% + 10px);
-  right: 0;
+  right: 50%;
+  transform: translateX(50%) translateY(4px);
   background: #111119;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  padding: 8px 12px;
+  padding: 8px 14px;
   white-space: nowrap;
   pointer-events: none;
   opacity: 0;
-  transform: translateY(4px);
   transition: opacity 0.2s ease, transform 0.2s ease;
+  text-align: center;
 }
 .cl-designer-badge__tooltip.active {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(50%) translateY(0);
   pointer-events: auto;
 }
 [data-theme="light"] .cl-designer-badge__tooltip {
@@ -2377,7 +2378,7 @@ html, .cl-body {
   content: "";
   position: absolute;
   bottom: -5px;
-  right: 14px;
+  right: calc(50% - 4px);
   width: 8px;
   height: 8px;
   background: inherit;
@@ -2389,12 +2390,20 @@ html, .cl-body {
   border-color: rgba(0, 0, 0, 0.12);
 }
 .cl-designer-badge__tooltip a {
-  color: var(--cl-accent, #d4a24e);
+  color: #e8b84f;
   text-decoration: none;
   font-size: 12px;
   font-weight: 500;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  display: inline-flex;
+  align-items: center;
 }
 .cl-designer-badge__tooltip a:hover {
-  text-decoration: underline;
+  color: #f0c866;
+}
+[data-theme="light"] .cl-designer-badge__tooltip a {
+  color: #1a6dd4;
+}
+[data-theme="light"] .cl-designer-badge__tooltip a:hover {
+  color: #1458b0;
 }
