@@ -874,7 +874,7 @@ module CommunityLanding
       html = +""
       html << "<div class=\"cl-designer-badge\" id=\"cl-designer-badge\">\n"
       html << "  <div class=\"cl-designer-badge__tooltip\" id=\"cl-designer-tooltip\">\n"
-      html << "    <a href=\"https://www.dpnmw.com\" target=\"_blank\" rel=\"noopener noreferrer\">INTERFACE BY <u>DPN MW</u> <svg width=\"10\" height=\"10\" viewBox=\"0 0 12 12\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\" style=\"vertical-align:middle;margin-left:2px\"><path d=\"M3.5 1.5H10.5V8.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M10.5 1.5L1.5 10.5\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/></svg></a>\n"
+      html << "    <a href=\"https://www.dpnmw.com\" target=\"_blank\" rel=\"noopener noreferrer\">Interface By DPN MW <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"8\" height=\"8\" viewBox=\"0 -960 960 960\" fill=\"currentColor\" style=\"vertical-align:middle;margin-left:2px\"><path d=\"M186.67-120q-27 0-46.84-19.83Q120-159.67 120-186.67v-586.66q0-27 19.83-46.84Q159.67-840 186.67-840H466v66.67H186.67v586.66h586.66V-466H840v279.33q0 27-19.83 46.84Q800.33-120 773.33-120H186.67ZM384-336.67 337.33-384l389.34-389.33h-194V-840H840v307.33h-66.67V-726L384-336.67Z\"/></svg></a>\n"
       html << "  </div>\n"
       html << "  <img class=\"cl-designer-badge__logo\" src=\"data:image/png;base64,#{logo_b64}\" alt=\"Designer\">\n"
       html << "</div>\n"
