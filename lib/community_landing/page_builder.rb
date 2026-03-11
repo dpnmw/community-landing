@@ -863,12 +863,15 @@ module CommunityLanding
     end
 
     def render_designer_badge
-      dark_logo  = File.join(CommunityLanding::PLUGIN_DIR, "..", "logo-dark.png")
-      light_logo = File.join(CommunityLanding::PLUGIN_DIR, "..", "logo-light.png")
-      return "" unless File.exist?(dark_logo) && File.exist?(light_logo)
+      dark_logo  = File.join(CommunityLanding::PLUGIN_DIR, "assets", "images", "badge-dark.png")
+      light_logo = File.join(CommunityLanding::PLUGIN_DIR, "assets", "images", "badge-light.png")
 
-      dark_b64  = Base64.strict_encode64(File.binread(dark_logo))
-      light_b64 = Base64.strict_encode64(File.binread(light_logo))
+      begin
+        dark_b64  = Base64.strict_encode64(File.binread(dark_logo))
+        light_b64 = Base64.strict_encode64(File.binread(light_logo))
+      rescue StandardError
+        return ""
+      end
 
       html = +""
       html << "<div class=\"cl-designer-badge\" id=\"cl-designer-badge\">\n"

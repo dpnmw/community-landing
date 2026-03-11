@@ -11,6 +11,8 @@ enabled_site_setting :community_landing_enabled
 
 register_asset "stylesheets/community_landing/admin.css", :admin
 
+require "base64"
+
 after_initialize do
   module ::CommunityLanding
     PLUGIN_NAME = "community-landing"
