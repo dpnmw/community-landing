@@ -2322,21 +2322,20 @@ html, .cl-body {
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: #111119;
+  background: var(--cl-glass);
+  backdrop-filter: var(--cl-blur);
+  -webkit-backdrop-filter: var(--cl-blur);
   border: none;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: transform 0.3s ease;
+  opacity: 0.4;
+  transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .cl-designer-badge:hover {
   transform: scale(1.08);
-}
-[data-theme="light"] .cl-designer-badge {
-  background: #ffffff;
-}
-[data-theme="light"] .cl-designer-badge:hover {
+  opacity: 1;
 }
 .cl-designer-badge__logo {
   width: 26px;
@@ -2349,8 +2348,8 @@ html, .cl-body {
   position: absolute;
   bottom: calc(100% + 10px);
   right: 0;
-  background: #111119;
-  border: 1px solid var(--cl-accent, #d4a24e);
+  background: var(--cl-accent-subtle);
+  border: 1px solid var(--cl-border-hover);
   border-radius: 40px;
   padding: 0px 12px 4px;
   white-space: nowrap;
@@ -2363,10 +2362,6 @@ html, .cl-body {
   opacity: 1;
   pointer-events: auto;
 }
-[data-theme="light"] .cl-designer-badge__tooltip {
-  background: #ffffff;
-  border-color: var(--cl-accent, #d4a24e);
-}
 .cl-designer-badge__tooltip::after {
   content: "";
   position: absolute;
@@ -2375,12 +2370,12 @@ html, .cl-body {
   width: 8px;
   height: 8px;
   background: inherit;
-  border-right: 1px solid var(--cl-accent, #d4a24e);
-  border-bottom: 1px solid var(--cl-accent, #d4a24e);
+  border-right: 1px solid var(--cl-border-hover);
+  border-bottom: 1px solid var(--cl-border-hover);
   transform: rotate(45deg);
 }
 [data-theme="light"] .cl-designer-badge__tooltip::after {
-  border-color: var(--cl-accent, #d4a24e);
+  border-color: var(--cl-border-hover);
 }
 .cl-designer-badge__tooltip a {
   color: #e8b84f;
