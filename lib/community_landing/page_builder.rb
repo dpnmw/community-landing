@@ -863,12 +863,10 @@ module CommunityLanding
     end
 
     def render_designer_badge
-      dark_logo  = File.join(CommunityLanding::PLUGIN_DIR, "assets", "images", "badge-dark.png")
-      light_logo = File.join(CommunityLanding::PLUGIN_DIR, "assets", "images", "badge-light.png")
+      logo_path = File.join(CommunityLanding::PLUGIN_DIR, "assets", "images", "badge.png")
 
       begin
-        dark_b64  = Base64.strict_encode64(File.binread(dark_logo))
-        light_b64 = Base64.strict_encode64(File.binread(light_logo))
+        logo_b64 = Base64.strict_encode64(File.binread(logo_path))
       rescue StandardError
         return ""
       end
@@ -878,8 +876,7 @@ module CommunityLanding
       html << "  <div class=\"cl-designer-badge__tooltip\" id=\"cl-designer-tooltip\">\n"
       html << "    <a href=\"https://www.dpnmw.com\" target=\"_blank\" rel=\"noopener noreferrer\">Interface design by dpnmw.com</a>\n"
       html << "  </div>\n"
-      html << "  <img class=\"cl-designer-badge__logo cl-designer-badge__logo--dark\" src=\"data:image/png;base64,#{dark_b64}\" alt=\"Designer\">\n"
-      html << "  <img class=\"cl-designer-badge__logo cl-designer-badge__logo--light\" src=\"data:image/png;base64,#{light_b64}\" alt=\"Designer\">\n"
+      html << "  <img class=\"cl-designer-badge__logo\" src=\"data:image/png;base64,#{logo_b64}\" alt=\"Designer\">\n"
       html << "</div>\n"
       html
     end
