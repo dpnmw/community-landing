@@ -2334,7 +2334,6 @@ html, .cl-body {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 .cl-designer-badge:hover {
-  transform: scale(1.08);
   opacity: 1;
 }
 .cl-designer-badge__logo {
@@ -2348,8 +2347,8 @@ html, .cl-body {
   position: absolute;
   bottom: calc(100% + 10px);
   right: 0;
-  background: var(--cl-accent-subtle);
-  border: 1px solid var(--cl-border-hover);
+  background: var(--cl-glass);
+  border: 1px solid var(--cl-glass-border);
   border-radius: 40px;
   padding: 0px 12px 4px;
   white-space: nowrap;
@@ -2370,15 +2369,12 @@ html, .cl-body {
   width: 8px;
   height: 8px;
   background: inherit;
-  border-right: 1px solid var(--cl-border-hover);
-  border-bottom: 1px solid var(--cl-border-hover);
+  border-right: 1px solid var(--cl-glass-border);
+  border-bottom: 1px solid var(--cl-glass-border);
   transform: rotate(45deg);
 }
-[data-theme="light"] .cl-designer-badge__tooltip::after {
-  border-color: var(--cl-border-hover);
-}
 .cl-designer-badge__tooltip a {
-  color: #e8b84f;
+  color: #fff;
   text-decoration: none;
   font-size: 10px;
   font-weight: 500;
@@ -2387,11 +2383,11 @@ html, .cl-body {
   align-items: center;
 }
 .cl-designer-badge__tooltip a:hover {
-  color: #f0c866;
+  color: #b0b0b0;
 }
 [data-theme="light"] .cl-designer-badge__tooltip a {
-  color: #1a6dd4;
+  color: #000;
 }
 [data-theme="light"] .cl-designer-badge__tooltip a:hover {
-  color: #1458b0;
+  color: #444;
 }
